@@ -28,6 +28,10 @@ body {
 .title-job {
 }
 
+.post-title-container {
+    margin-bottom: 10px;
+}
+
 .portfolio-project {
     max-width: 400px;
 }
