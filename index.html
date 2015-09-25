@@ -7,10 +7,12 @@
     <title>Document</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/prism.css">
     <link rel="stylesheet" href="css/style.css">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic' rel='stylesheet' type='text/css'>
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/prism.js"></script>
 
 </head>
 <body>
@@ -35,38 +37,74 @@
             </div>
         </div> -->
 
-        <div class="row">
+        <div class="row left-menu">
             <div class="col-md-2">
                 <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">Menu Item 1</a></li>
-                    <li><a href="#">Menu Item 2</a></li>
-                    <li><a href="#">Menu Item 3</a></li>
+                    <li><a href="#">About me</a></li>
+                    <li><a href="#">Notes</a></li>
+                    <li><a href="#">Book quotes</a></li>
+                    <li><a href="#">Projects list</a></li>
                 </ul>
             </div>
-            <div class="col-md-8">
-                <div class="post-container">
-                    <div class="post-title-container">
-                        <div></div>
-                        <div>
-                            <a href="http://github.com/MrLokans">MrLokans</a>
-                        </div>
-                        <div>11:07 19/09/2015</div>
-                        <div></div>
+            <div class="col-md-8 post-container">
+                <div class="post-title-container">
+                    <div></div>
+                    <div>
+                        <a href="http://github.com/MrLokans">MrLokans</a>
                     </div>
-                    <div class="post-content">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mauris ac massa vulputate sollicitudin ut eu ante. Duis aliquam scelerisque erat pretium rutrum. Sed arcu lacus, dictum luctus condimentum iaculis, aliquam eu tellus. In turpis ipsum, malesuada ut convallis sit amet, pretium et justo. Cras placerat varius velit, sit amet vehicula urna porta quis. Phasellus interdum turpis nisl. Sed vitae ipsum bibendum, scelerisque sem malesuada, egestas enim.</p>
-
-                        <p>Vestibulum aliquet ex turpis, eget cursus metus vulputate porttitor. Nulla eget sodales dolor. In dignissim mauris sollicitudin, mattis arcu hendrerit, posuere leo. In hac habitasse platea dictumst. Fusce pharetra, eros nec dapibus iaculis, lorem ipsum lacinia neque, a pretium sapien nisi at eros. Integer diam velit, interdum et tortor vel, iaculis volutpat tellus. Maecenas blandit massa nec placerat bibendum. Mauris mattis vitae nisl venenatis facilisis.</p>
-
-                        <p>Sed ut vehicula lacus. Aenean convallis sed ante eget consequat. Aenean commodo eros sodales, pretium nisl ultricies, maximus urna. Maecenas elementum magna ac eros semper interdum. Donec purus enim, vehicula quis erat at, feugiat lacinia velit. Ut maximus ut lectus ac pharetra. Donec eget accumsan nisi. Nam id accumsan ex, eget pharetra diam. Aliquam erat volutpat.</p>
-
-                        <p>Maecenas venenatis blandit eros vitae posuere. Fusce id sollicitudin odio, id rutrum massa. Proin dignissim libero id odio ultrices, id pharetra ipsum interdum. Aliquam erat volutpat. Vestibulum sed sapien sed ligula tempor molestie. Pellentesque eget sem id enim efficitur ullamcorper. Fusce ultrices neque lectus, eget vehicula lectus mattis quis. Donec id tellus aliquam, accumsan felis a, ornare urna.</p>
-
-                        <p>Pellentesque vitae massa ac augue ultrices lobortis eu non risus. Aenean aliquet sagittis nunc eu laoreet. Curabitur dignissim purus ut felis ullamcorper luctus. Donec dolor turpis, sodales in libero sed, maximus tempor nunc. Vivamus congue enim eu consectetur vestibulum. Nullam pulvinar lectus vitae facilisis mollis. Donec pulvinar quam a odio consectetur, ut sodales ex blandit. Nunc libero dui, euismod eget cursus vitae, scelerisque a justo.</p>
-                    </div>
+                    <div>11:07 19/09/2015</div>
+                    <div></div>
                 </div>
+                <div class="post-content">
+                    <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mauris ac massa vulputate sollicitudin ut eu ante. Duis aliquam scelerisque erat pretium rutrum. Sed arcu lacus, dictum luctus condimentum iaculis, aliquam eu tellus. In turpis ipsum, malesuada ut convallis sit amet, pretium et justo. Cras placerat varius velit, sit amet vehicula urna porta quis. Phasellus interdum turpis nisl. Sed vitae ipsum bibendum, scelerisque sem malesuada, egestas enim.
+                    </p>
 
-                
+                    <p>
+                        <pre>
+<code class="language-python">
+    def api_method(self, method_name, **kwargs):
+        """Implements vk api methods"""
+        self.second_time = time.time()
+        diff = self.second_time - self.first_time
+        if diff < DELAY:
+            time_to_sleep = DELAY - diff
+            time.sleep(time_to_sleep + 0.03)
+        self.second_time = time.time()
+
+        kwargs["v"] = self.vk_version
+        if self.access_token:
+            kwargs["access_token"] = self.access_token
+
+        url = API_BASE_URL + method_name
+        r = requests.get(url, params=kwargs)
+        self.last_method_url = r.url
+        r = r.json()
+        if "error" in r:
+            return self.handle_error(r["error"])
+        return r
+
+    def construct_auth_dialog_url(self):
+        """Constructs url to get the access token"""
+        perms = ",".join(Vk.permissions)
+        url = '{}\
+client_id={}&\
+scope={}&\
+redirect_uri={}&\
+display={}&\
+v={}&\
+response_type=token'.format(AUTH_BASE_URL, APP_ID, perms, "https://oauth.vk.com/blank.html", "page", "5.27")
+        return url
+</code>
+                        </pre>
+                    </p>
+
+                    <p>Sed ut vehicula lacus. Aenean convallis sed ante eget consequat. Aenean commodo eros sodales, pretium nisl ultricies, maximus urna. Maecenas elementum magna ac eros semper interdum. Donec purus enim, vehicula quis erat at, feugiat lacinia velit. Ut maximus ut lectus ac pharetra. Donec eget accumsan nisi. Nam id accumsan ex, eget pharetra diam. Aliquam erat volutpat.</p>
+
+                    <p>Maecenas venenatis blandit eros vitae posuere. Fusce id sollicitudin odio, id rutrum massa. Proin dignissim libero id odio ultrices, id pharetra ipsum interdum. Aliquam erat volutpat. Vestibulum sed sapien sed ligula tempor molestie. Pellentesque eget sem id enim efficitur ullamcorper. Fusce ultrices neque lectus, eget vehicula lectus mattis quis. Donec id tellus aliquam, accumsan felis a, ornare urna.</p>
+
+                    <p>Pellentesque vitae massa ac augue ultrices lobortis eu non risus. Aenean aliquet sagittis nunc eu laoreet. Curabitur dignissim purus ut felis ullamcorper luctus. Donec dolor turpis, sodales in libero sed, maximus tempor nunc. Vivamus congue enim eu consectetur vestibulum. Nullam pulvinar lectus vitae facilisis mollis. Donec pulvinar quam a odio consectetur, ut sodales ex blandit. Nunc libero dui, euismod eget cursus vitae, scelerisque a justo.</p>
+                </div>
             </div>
             <div class="col-md-2">Future menu</div>
         </div>        
