@@ -1,0 +1,37 @@
+*{
+    /*border: 1px solid red;*/
+    color: #747704;
+}
+
+body {
+    font-family: 'Open Sans Condensed', sans-serif;
+    font-weight: 300;
+}
+
+.text-muted {
+    color: #BCBBB8;
+}
+
+.text-thin {
+    font-weight: 100;
+}
+
+
+.title-logo {
+    margin-top: 20px;
+}
+
+.title-name {
+    margin-top: 45px;
+}
+
+.title-job {
+}
+
+.portfolio-project {
+    max-width: 400px;
+}
+
+.img-center {
+    margin: 0 auto;
+}
