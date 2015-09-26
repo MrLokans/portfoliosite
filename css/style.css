@@ -40,7 +40,10 @@ body {
     margin: 0 auto;
 }
 
+.post-tags{
+    margin-bottom: 10px;
+}
+
 .post-tag {
     margin-right: 10px;
-    margin-bottom: 20px;
 }
