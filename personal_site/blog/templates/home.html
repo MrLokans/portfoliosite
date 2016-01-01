@@ -1,21 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="css/prism.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic' rel='stylesheet' type='text/css'>
-    <script src="js/jquery-1.11.3.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/prism.js"></script>
-
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
     <div class="container">
         <div class="row" id="header">
             <div class="col-md-6 portfolio-logo">
@@ -136,5 +120,4 @@ response_type=token'.format(AUTH_BASE_URL, APP_ID, perms, "https://oauth.vk.com/
 
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
