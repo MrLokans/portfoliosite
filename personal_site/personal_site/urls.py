@@ -23,5 +23,5 @@ urlpatterns = [
     url(r'^books$', 'blog.views.books', name="home"),
     url(r'^about_me$', 'blog.views.about_me', name="about_me"),
     url(r'^projects$', 'blog.views.projects', name="projects"),
-
+    url(r'^projects/', include('isp_coverage.urls')),
 ]
