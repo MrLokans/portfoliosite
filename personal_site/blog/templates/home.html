@@ -2,33 +2,15 @@
 {% load static %}
 {% block content %}
     <div class="container">
-        <div class="row" id="header">
-            <div class="col-md-6 col-xs-6 portfolio-logo">
-                <img src="{% static 'img/logo.png' %}" alt="logo" class="title-logo ing-responsive">
-            </div>
-            <div class="col-md-6 col-xs-6 text-right text-uppercase">
-                <h1 class="title-name">Anders Lokans</h1>
-                <h4 class="title-job">Front-end Ninja</h4>
-            </div>
-        </div>
 
-        <div class="row" id="menu-splitter">
-            <hr/>
-        </div>
-
-<!--         <div class="row">
-            <div class="col-md-12">
-                <img src="http://placehold.it/1180x600" class="img-responsive" alt="big pic">
-            </div>
-        </div> -->
 
         <div class="row left-menu">
             <div class="col-md-2">
                 <ul class="nav nav-pills nav-stacked">
                     <li><a href="#">About me</a></li>
-                    <li><a href="#">Notes</a></li>
-                    <li><a href="books.html">Book quotes</a></li>
-                    <li><a href="#">Projects list</a></li>
+                    <li><a href="/about_me">Notes</a></li>
+                    <li><a href="/books">Book quotes</a></li>
+                    <li><a href="/projects">Projects list</a></li>
                 </ul>
             </div>
             <div class="col-md-8 post-container">
