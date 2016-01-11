@@ -3,14 +3,18 @@ import csv
 
 from django.shortcuts import render
 
-CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "byfly.csv"))
+BYFLY_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "byfly.csv"))
+MTS_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "mts.csv"))
 
 
 def providers_map(request):
-    dots = []
-    with open(CSV_FILE, 'r') as csv_file:
+    byfly_dots = []
+    mts_dots = []
+    with open(BYFLY_CSV_FILE, 'r') as csv_file:
         reader = csv.reader(csv_file)
-        dots = [row for row in reader if row[0] != "longitude"]
+        byfly_dots = [row for row in reader if row[0] != "longitude"]
+    with open(MTS_CSV_FILE, 'r') as csv_file:
+        reader = csv.reader(csv_file)
+        mts_dots = [row for row in reader if row[0] != "longitude"]
     # coords = [()]
-    print(dots)
-    return render(request, "isp_map.html", {"coords": dots})
+    return render(request, "isp_map.html", {"byfly_coords": byfly_dots, "mts_coords": mts_dots})
