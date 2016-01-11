@@ -1,5 +1,5 @@
 *{
-    /*border: 1px solid red;*/
+    border: 1px solid red;
     color: #747704;
 }
 
@@ -19,6 +19,7 @@ body {
 
 .title-logo {
     margin-top: 20px;
+    height: 128px;
 }
 
 .title-name {

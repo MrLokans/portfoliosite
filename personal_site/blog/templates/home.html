@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
     <div class="container">
         <div class="row" id="header">
-            <div class="col-md-6 portfolio-logo">
-                <img src="http://placehold.it/120x120" alt="logo" class="title-logo">
+            <div class="col-md-6 col-xs-6 portfolio-logo">
+                <img src="{% static 'img/logo.png' %}" alt="logo" class="title-logo ing-responsive">
             </div>
-            <div class="col-md-6 text-right text-uppercase">
+            <div class="col-md-6 col-xs-6 text-right text-uppercase">
                 <h1 class="title-name">Anders Lokans</h1>
                 <h4 class="title-job">Front-end Ninja</h4>
             </div>
