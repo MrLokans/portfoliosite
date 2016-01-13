@@ -1,21 +1,20 @@
+from django.views.generic import TemplateView
 from django.shortcuts import render
 
-from .models import Book
+
+class HomeView(TemplateView):
+
+    def get(self, request):
+        return render(request, "home.html")
 
 
-def index(request):
-    print("test")
-    return render(request, "home.html")
+class AboutMeView(TemplateView):
+
+    def get(self, request):
+        return render(request, "about_me.html")
 
 
-def books(request):
-    books = Book.objects.all()
-    return render(request, "book.html", {"books": books})
+class ProjectView(TemplateView):
 
-
-def about_me(request):
-    return render(request, "about_me.html")
-
-
-def projects(request):
-    return render(request, "projects.html")
+    def get(self, request):
+        return render(request, "projects.html")
