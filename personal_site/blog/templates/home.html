@@ -1,18 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-    <div class="container">
-
-
-        <div class="row left-menu">
-            <div class="col-md-2">
-                <ul class="nav nav-pills nav-stacked">
-                    <li><a href="#">About me</a></li>
-                    <li><a href="/about_me">Notes</a></li>
-                    <li><a href="/books">Book quotes</a></li>
-                    <li><a href="/projects">Projects list</a></li>
-                </ul>
-            </div>
             <div class="col-md-8 post-container">
                 <div class="post-title-container">
                     <div></div>
@@ -73,34 +61,4 @@ response_type=token'.format(AUTH_BASE_URL, APP_ID, perms, "https://oauth.vk.com/
                     <p>Pellentesque vitae massa ac augue ultrices lobortis eu non risus. Aenean aliquet sagittis nunc eu laoreet. Curabitur dignissim purus ut felis ullamcorper luctus. Donec dolor turpis, sodales in libero sed, maximus tempor nunc. Vivamus congue enim eu consectetur vestibulum. Nullam pulvinar lectus vitae facilisis mollis. Donec pulvinar quam a odio consectetur, ut sodales ex blandit. Nunc libero dui, euismod eget cursus vitae, scelerisque a justo.</p>
                 </div>
             </div>
-            <div class="col-md-2">Future menu</div>
-        </div>        
-
-        <div class="row">
-            <div class="col-md-12" id="FeaturedWorkText">
-                <h2>Featured Work</h2>
-            </div>
-        </div>
-
-        <div class="row project-list text-center">
-            <div class="col-md-4 portfolio-project">
-                <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
-                <h3 class="text-uppercase">Appify</h3>
-                <a href="#">https://github.com/MrLokans</a>
-            </div>
-
-            <div class="col-md-4 portfolio-project">
-                <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
-                <h3 class="text-uppercase">Appify</h3>
-                <a href="#">https://github.com/MrLokans</a>
-            </div>
-
-            <div class="col-md-4 portfolio-project">
-                <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
-                <h3 class="text-uppercase">Appify</h3>
-                <a href="#">https://github.com/MrLokans</a>
-            </div>
-
-        </div>
-    </div>
 {% endblock %}

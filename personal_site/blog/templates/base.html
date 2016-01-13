@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Document</title>
+    <title>{% block title %}MrLokans{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/prism.css' %}">
@@ -14,10 +14,33 @@
 </head>
     
 <body>
-    {% include "header.html" %}
-    {% block content %}
-    {% endblock %}
+    {% block header %}
+         {% include "header.html" %}
+     {% endblock header %} 
+
+    <div class="container">
+        <div class="row">
+            {% block left_menu %}
+                {% include "left_menu.html" %}
+            {% endblock %}
+            
+
+            {% block content %}{% endblock %}
+
+            {% block right_menu %}
+                {% include "right_menu.html" %}
+            {% endblock %}
+
+
+            {% block featured_works %}
+                {% include "featured_works.html" %}
+            {% endblock %}
+        </div>
+    
+
+    </div>
+
     <script src="{% static 'vendor/jquery.min.js' %}"></script>
-     <script src="{% static 'vendor/bootstrap.min.js' %}"></script>
-     <script src="{% static 'vendor/prism.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap.min.js' %}"></script>
+    <script src="{% static 'vendor/prism.js' %}"></script>
 </body>
