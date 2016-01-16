@@ -1,8 +1,20 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-
+    <link rel="stylesheet" href="{% static 'vendor/vis.min.css' %}">
+    <h3>Short Info</h3>
+    <h4>About me</h4>
+    <p>Linux and python fan.</p>
     <div class="social-networks">
         <div class="social-network" id="linkedin-social"></div>
         <div class="social-network" id="gitgub-social"></div>
     </div>
+    
+    <div id="work-timeline"></div>
+
 {% endblock content %}
+
+{% block extra_scripts %}
+    <script type="text/javascript" src="{% static 'vendor/vis.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/work_timeline.js' %}"></script>
+{% endblock extra_scripts %}
