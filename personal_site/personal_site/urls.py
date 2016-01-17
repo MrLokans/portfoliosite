@@ -4,6 +4,7 @@ from django.contrib import admin
 from blog.views import HomeView, AboutMeView, ProjectView, LoginView, LogoutView
 
 urlpatterns = [
+    url(r'^tinymce/', include('tinymce.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', HomeView.as_view(), name="home"),
     url(r'^about_me$', AboutMeView.as_view(), name="about_me"),

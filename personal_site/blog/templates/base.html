@@ -2,15 +2,16 @@
 {% load staticfiles %}
 <html lang="en">
 <head>
+    <title>{% block title %}MrLokans{% endblock title %}</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}MrLokans{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/prism.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic' rel='stylesheet' type='text/css'>
+    {{ form.media }}
 </head>
     
 <body>

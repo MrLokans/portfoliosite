@@ -1,19 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-
-
-            <div class="input-group">
-                <input type="text" placeholder='Message' id="post-text" class="form-control input">
-                <span class="input-group-btn">
-                    <button class="btn btn-default" id="new-post" type="submit">
-                        <span class="glyphicon glyphicon-camera"></span>
-                    </button>
-                </span>
-            </div>
-
-            {# <h3>{{ user.is_authenticated() }}</h3> #}
-
+            {# {% if user.is_authenticated %} #}
+                <button type="button" class="btn btn-default new-post-btn" data-toggle="modal" data-target="#newPostModal">New post</button>
+                {% include "new_post.html" %}        
+            {# {% endif %} #}
                 <div class="post-title-container">
                     <div></div>
                     <div>

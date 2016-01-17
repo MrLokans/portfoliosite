@@ -1,11 +1,14 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 
+from .forms import FlatPageForm
+
 
 class HomeView(TemplateView):
 
     def get(self, request):
-        return render(request, "home.html")
+        form = FlatPageForm()
+        return render(request, "home.html", {'new_post_form': form})
 
 
 class AboutMeView(TemplateView):
