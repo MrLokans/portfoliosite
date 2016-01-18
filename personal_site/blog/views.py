@@ -40,3 +40,12 @@ class LogoutView(TemplateView):
 
     def get(self, request):
         pass
+
+
+class SignUpView(TemplateView):
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'signup.html')
+
+    def post(self, request, *args, **kwargs):
+        pass
