@@ -1,7 +1,10 @@
 from django.views.generic import TemplateView
+from django.views.generic.list import ListView
+
 from django.shortcuts import render, redirect
 
 from .forms import FlatPageForm
+from .models import Book
 
 
 class HomeView(TemplateView):
@@ -49,3 +52,12 @@ class SignUpView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         pass
+
+
+class BookListView(ListView):
+
+    model = Book
+    context_object_name = 'book_data'
+    import os
+    print(os.getcwd())
+    template_name = 'book_list.html'

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h1>Books</h1>
+    <ul>
+    {% for book in book_data %}
+        <li>{{ book.author }} - {{ book.title }}</li>
+        {% for note in book.get_related_notes %}
+            <blockquote>{{ note.text }}</blockquote>
+        {% empty %}
+            <p>No notes</p>
+        {% endfor %}
+    {% empty %}
+        <li>No books yet.</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

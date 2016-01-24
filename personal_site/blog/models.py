@@ -1,3 +1,6 @@
+import os
+import json
+
 from django.db import models
 from tinymce import models as tinymce_models
 
@@ -18,14 +21,31 @@ class Book(models.Model):
 
     author = models.CharField(max_length=300)
     title = models.CharField(max_length=200)
+    percentage = models.IntegerField(default=0)
     tag = models.ManyToManyField(Tag)
 
     def __str__(self):
         return '<Book {}>'.format(self.title)
+
+    @staticmethod
+    def from_json(json_path):
+        assert os.path.exists(json_path)
+        data = []
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        for book in data.get('books', []):
+            db_book = Book(title=book['title'], percentage=book['percentage'])
+            db_book.save()
+            for note in book.get('notes', []):
+                note = BookNote(text=note['text'], book=db_book)
+                note.save()
+            db_book.save()
+
+    def get_related_notes(self):
+        return BookNote.objects.filter(book=self)
 
 
 class BookNote(models.Model):
 
     book = models.ForeignKey('Book')
     text = models.TextField()
-    type = models.IntegerField()

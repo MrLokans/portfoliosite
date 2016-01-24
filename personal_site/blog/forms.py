@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.flatpages.models import FlatPage
 
 from .models import Post
 from tinymce.widgets import TinyMCE
