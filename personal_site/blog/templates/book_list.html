@@ -6,6 +6,11 @@
     <ul>
     {% for book in book_data %}
         <li>{{ book.author }} - {{ book.title }}</li>
+        <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
+                {{ book.percentage}}%
+            </div>
+        </div>
         {% for note in book.get_related_notes %}
             <blockquote>{{ note.text }}</blockquote>
         {% empty %}
@@ -18,7 +23,11 @@
 
     <ul class="pagination">
         {% for p in paginator.page_range %}
+            {% if p == page_obj.number %}
+              <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+            {% else %}
               <li><a href="?page={{ p }}">{{ p }}</a></li>
+            {% endif %}  
         {% endfor %}  
     </ul>
 {% endblock %}
