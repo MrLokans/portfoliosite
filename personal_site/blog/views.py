@@ -58,6 +58,4 @@ class BookListView(ListView):
 
     model = Book
     context_object_name = 'book_data'
-    import os
-    print(os.getcwd())
     template_name = 'book_list.html'
