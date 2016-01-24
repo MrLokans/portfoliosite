@@ -15,4 +15,10 @@
         <li>No books yet.</li>
     {% endfor %}
     </ul>
+
+    <ul class="pagination">
+        {% for p in paginator.page_range %}
+              <li><a href="?page={{ p }}">{{ p }}</a></li>
+        {% endfor %}  
+    </ul>
 {% endblock %}

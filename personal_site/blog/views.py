@@ -59,3 +59,4 @@ class BookListView(ListView):
     model = Book
     context_object_name = 'book_data'
     template_name = 'book_list.html'
+    paginate_by = 10
