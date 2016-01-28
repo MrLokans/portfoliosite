@@ -41,8 +41,15 @@ class Book(models.Model):
                 note.save()
             db_book.save()
 
+    @classmethod
+    def non_empty(cls):
+        return cls.objects.exclude(booknote=None)
+
     def get_related_notes(self):
-        return BookNote.objects.filter(book=self)
+        return self.booknote_set.all()
+
+    def is_empty(self):
+        return self.booknote_set.count() == 0
 
 
 class BookNote(models.Model):

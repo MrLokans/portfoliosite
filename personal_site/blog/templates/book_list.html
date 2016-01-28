@@ -3,24 +3,34 @@
 
 {% block content %}
     <h1>Books</h1>
+    <!-- Book list -->
     <ul>
+
     {% for book in book_data %}
-        <li>{{ book.author }} - {{ book.title }}</li>
+        {% if not book.is_empty %}
+        <h3>{{ book.title }}</h3>
         <div class="progress">
               <div class="progress-bar" role="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
                 {{ book.percentage}}%
             </div>
         </div>
-        {% for note in book.get_related_notes %}
-            <blockquote>{{ note.text }}</blockquote>
-        {% empty %}
-            <p>No notes</p>
-        {% endfor %}
+        
+            {% for note in book.get_related_notes %}
+                <blockquote>{{ note.text }}</blockquote>
+            {% empty %}
+                <p>No notes</p>
+            {% endfor %}
+
+
+
+        {% endif %}
+
     {% empty %}
         <li>No books yet.</li>
     {% endfor %}
     </ul>
 
+    <!-- Pagination -->
     <ul class="pagination">
         {% for p in paginator.page_range %}
             {% if p == page_obj.number %}

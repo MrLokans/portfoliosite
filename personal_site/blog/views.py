@@ -60,3 +60,6 @@ class BookListView(ListView):
     context_object_name = 'book_data'
     template_name = 'book_list.html'
     paginate_by = 10
+
+    def get_queryset(self, *args, **kwargs):
+        return Book.non_empty()
