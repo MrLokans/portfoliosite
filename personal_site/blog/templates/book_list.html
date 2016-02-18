@@ -4,22 +4,32 @@
 {% block content %}
     <h1>Books</h1>
     <!-- Book list -->
-    <ul>
+    <ul class="book-list">
 
     {% for book in book_data %}
+
         {% if not book.is_empty %}
-        <h3>{{ book.title }}</h3>
-        <div class="progress">
-              <div class="progress-bar" role="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
-                {{ book.percentage}}%
+        <div class="book-data-container">
+            <h3 class="book-data__title">{{ book.title }}</h3>
+            <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
+                    {{ book.percentage}}%
+                </div>
             </div>
+
+            <div class="book-data__notes-list">
+            
+                {% for note in book.get_related_notes %}
+                    <div class="book-data__single-note">
+                        <blockquote>{{ note.text }}</blockquote>
+                    </div>
+                {% empty %}
+                    <p>No notes</p>
+                {% endfor %}           
+            </div>
+
         </div>
-        
-            {% for note in book.get_related_notes %}
-                <blockquote>{{ note.text }}</blockquote>
-            {% empty %}
-                <p>No notes</p>
-            {% endfor %}
+
 
 
 
