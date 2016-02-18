@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^', include('blog.urls')),
     # url(r'^$', HomeView.as_view(), name="home"),
     url(r'^login$', LoginView.as_view(), name="login"),
+    url(r'^logout$', LogoutView.as_view(), name="logout"),
     url(r'^signup$', SignUpView.as_view(), name="signup"),
 
 ]
