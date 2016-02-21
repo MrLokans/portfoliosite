@@ -2,6 +2,7 @@ import os
 import json
 
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 from tinymce import models as tinymce_models
 
 
@@ -22,6 +23,7 @@ class Book(models.Model):
     author = models.CharField(max_length=300)
     title = models.CharField(max_length=200)
     percentage = models.IntegerField(default=0)
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
     tag = models.ManyToManyField(Tag)
 
     def __str__(self):
