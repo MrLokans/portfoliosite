@@ -2,6 +2,7 @@ from django.views.generic import TemplateView
 from django.views.generic.list import ListView
 
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 
 from .forms import FlatPageForm
 from .models import Book
@@ -32,17 +33,24 @@ class LoginView(TemplateView):
         return render(request, "login.html")
 
     def post(self, request, *args, **kwargs):
-        print("POST DATA: {}".format(request.POST))
         username = request.POST['username']
         password = request.POST['password']
-
-        return redirect('/')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                return redirect('/')
+            else:
+                return redirect('/login')
+        else:
+            print("Given user does not exist.")
 
 
 class LogoutView(TemplateView):
 
     def get(self, request):
-        pass
+        logout(request)
+        return redirect('/')
 
 
 class SignUpView(TemplateView):
