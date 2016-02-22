@@ -3,7 +3,6 @@ import json
 
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from tinymce import models as tinymce_models
 
 
 class Tag(models.Model):
@@ -15,7 +14,7 @@ class Post(models.Model):
     # TODO: reference user
     author = models.CharField(max_length=100, default="John Doe")
     title = models.CharField(max_length=200)
-    text = tinymce_models.HTMLField()
+    text = models.TextField()
     # Deal withmany to many fields
     created = models.DateTimeField(auto_now=True)
     tags = models.ManyToManyField(Tag)
