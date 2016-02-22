@@ -6,6 +6,7 @@
                         <div class="modal-header">Creating new post</div>
                             <div class="modal-body">
                              <form action="/new-post" method="post">
+                                {% csrf_token %}
                                 {{ new_post_form }}
                                 <input type="submit" value="Submit">
                             </form>

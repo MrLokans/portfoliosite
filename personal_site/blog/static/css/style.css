@@ -29,6 +29,12 @@ body {
 .title-job {
 }
 
+.post-container{
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #EBEBEB;
+}
+
 .post-title-container {
     margin-bottom: 10px;
 }

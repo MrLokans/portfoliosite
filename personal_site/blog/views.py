@@ -1,24 +1,39 @@
-from django.views.generic import TemplateView
+from django.http import HttpResponse, HttpResponseForbidden
+from django.views.generic import TemplateView, View
 from django.views.generic.list import ListView
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
 from .forms import FlatPageForm
-from .models import Book
+from .models import Book, Post
 
 
 class HomeView(TemplateView):
 
     def get(self, request):
         form = FlatPageForm()
-        return render(request, "home.html", {'new_post_form': form})
+        posts = Post.objects.all()
+        return render(request, "home.html", {'posts': posts, 'new_post_form': form})
 
 
 class AboutMeView(TemplateView):
 
     def get(self, request):
         return render(request, "about_me.html")
+
+
+class NewPost(View):
+
+    def post(self, request):
+        if not request.user.is_authenticated():
+            return HttpResponseForbidden()
+        user = request.user
+        content = request.POST['content']
+
+        post = Post(author=user, text=content)
+        post.save()
+        return redirect('/')
 
 
 class ProjectView(TemplateView):

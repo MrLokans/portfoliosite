@@ -1,66 +1,26 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-            {# {% if user.is_authenticated %} #}
+            {% if user.is_authenticated %}
                 <button type="button" class="btn btn-default new-post-btn" data-toggle="modal" data-target="#newPostModal">New post</button>
                 {% include "new_post.html" %}        
-            {# {% endif %} #}
-                <div class="post-title-container">
-                    <div></div>
-                    <div>
-                        <a href="http://github.com/MrLokans">MrLokans</a>
+            {% endif %}
+
+            {% for post in posts %}
+                <div class="post-container">
+                    <div class="post-title-container">
+                        <div></div>
+                        <div>
+                            <a href="http://github.com/MrLokans">MrLokans</a>
+                        </div>
+                        <div>{{ post.created | date:"H M - d.m.y" }}</div>
+                        <div></div>
+                    </div> 
+                    <div class="post-content">
+                        {{ post.text }}
                     </div>
-                    <div>11:07 19/09/2015</div>
-                    <div></div>
                 </div>
-                <div class="post-content">
-                    <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at mauris ac massa vulputate sollicitudin ut eu ante. Duis aliquam scelerisque erat pretium rutrum. Sed arcu lacus, dictum luctus condimentum iaculis, aliquam eu tellus. In turpis ipsum, malesuada ut convallis sit amet, pretium et justo. Cras placerat varius velit, sit amet vehicula urna porta quis. Phasellus interdum turpis nisl. Sed vitae ipsum bibendum, scelerisque sem malesuada, egestas enim.
-                    </p>
+               
+            {% endfor %}
 
-                    <p>
-                        <pre>
-<code class="language-python">
-    def api_method(self, method_name, **kwargs):
-        """Implements vk api methods"""
-        self.second_time = time.time()
-        diff = self.second_time - self.first_time
-        if diff < DELAY:
-            time_to_sleep = DELAY - diff
-            time.sleep(time_to_sleep + 0.03)
-        self.second_time = time.time()
-
-        kwargs["v"] = self.vk_version
-        if self.access_token:
-            kwargs["access_token"] = self.access_token
-
-        url = API_BASE_URL + method_name
-        r = requests.get(url, params=kwargs)
-        self.last_method_url = r.url
-        r = r.json()
-        if "error" in r:
-            return self.handle_error(r["error"])
-        return r
-
-    def construct_auth_dialog_url(self):
-        """Constructs url to get the access token"""
-        perms = ",".join(Vk.permissions)
-        url = '{}\
-client_id={}&\
-scope={}&\
-redirect_uri={}&\
-display={}&\
-v={}&\
-response_type=token'.format(AUTH_BASE_URL, APP_ID, perms, "https://oauth.vk.com/blank.html", "page", "5.27")
-        return url
-</code>
-                        </pre>
-                    </p>
-
-                    <p>Sed ut vehicula lacus. Aenean convallis sed ante eget consequat. Aenean commodo eros sodales, pretium nisl ultricies, maximus urna. Maecenas elementum magna ac eros semper interdum. Donec purus enim, vehicula quis erat at, feugiat lacinia velit. Ut maximus ut lectus ac pharetra. Donec eget accumsan nisi. Nam id accumsan ex, eget pharetra diam. Aliquam erat volutpat.</p>
-
-                    <p>Maecenas venenatis blandit eros vitae posuere. Fusce id sollicitudin odio, id rutrum massa. Proin dignissim libero id odio ultrices, id pharetra ipsum interdum. Aliquam erat volutpat. Vestibulum sed sapien sed ligula tempor molestie. Pellentesque eget sem id enim efficitur ullamcorper. Fusce ultrices neque lectus, eget vehicula lectus mattis quis. Donec id tellus aliquam, accumsan felis a, ornare urna.</p>
-
-                    <p>Pellentesque vitae massa ac augue ultrices lobortis eu non risus. Aenean aliquet sagittis nunc eu laoreet. Curabitur dignissim purus ut felis ullamcorper luctus. Donec dolor turpis, sodales in libero sed, maximus tempor nunc. Vivamus congue enim eu consectetur vestibulum. Nullam pulvinar lectus vitae facilisis mollis. Donec pulvinar quam a odio consectetur, ut sodales ex blandit. Nunc libero dui, euismod eget cursus vitae, scelerisque a justo.</p>
-                </div>
 {% endblock %}
