@@ -15,7 +15,8 @@ project:
     - ./personal_site:/opt/project
     - ./dockerfiles/sshdconf/sshd_config/:/etc/ssh/sshd_config
     - ./dockerfiles/id_rsa.pub:/root/.ssh/authorized_keys
-    - ./supervisord.conf:/etc/djangod.conf
+    - ./supervisord.conf:/etc/supervisord.conf
+    - ./djangod.conf:/etc/djangod.conf
   links:
     - postgresql
   ports:
