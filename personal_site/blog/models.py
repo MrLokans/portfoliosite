@@ -25,7 +25,8 @@ class Book(models.Model):
     author = models.CharField(max_length=300)
     title = models.CharField(max_length=200)
     percentage = models.IntegerField(default=0)
-    rating = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(5)])
+    rating = models.IntegerField(default=0, validators=[MinValueValidator(0),
+                                                        MaxValueValidator(5)])
     tag = models.ManyToManyField(Tag)
 
     def __str__(self):
