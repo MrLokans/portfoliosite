@@ -1,0 +1,2 @@
+ - Remove empty pagination rendering
+ - Add gulp container to build front end
