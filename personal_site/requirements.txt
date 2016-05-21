@@ -1,3 +1,6 @@
 Django==1.8
 psycopg2
 supervisor
+
+# Own libraries
+git+git://github.com/MrLokans/MoonReader_tools#egg=moonreader_tools
