@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^signup$', SignUpView.as_view(), name="signup"),
     url(r'^new-post$', NewPost.as_view(), name="new-post"),
 
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
