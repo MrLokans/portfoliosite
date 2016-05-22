@@ -14,4 +14,5 @@ urlpatterns = [
     url(r'^new-post$', NewPost.as_view(), name="new-post"),
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api/books/', include('books.api.urls', namespace='books-api')),
 ]
