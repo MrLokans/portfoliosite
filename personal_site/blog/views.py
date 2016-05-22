@@ -1,12 +1,13 @@
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views.generic import TemplateView, View
-from django.views.generic.list import ListView
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 
 from .forms import FlatPageForm
-from .models import Book, Post
+from blog.models import Post
+from books.models import Book
 
 
 class HomeView(TemplateView):
@@ -75,15 +76,3 @@ class SignUpView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         pass
-
-
-class BookListView(ListView):
-
-    model = Book
-    context_object_name = 'book_data'
-    template_name = 'book_list.html'
-    paginate_by = 10
-    # TODO; do not render empty pagination
-
-    def get_queryset(self, *args, **kwargs):
-        return Book.non_empty()

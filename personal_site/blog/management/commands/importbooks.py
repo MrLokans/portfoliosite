@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from blog.models import Book, BookNote
+from books.models import Book, BookNote
 
 from dropbox.rest import ErrorResponse
 

@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
+    'books',
     'isp_coverage',
 )
 
@@ -84,13 +85,17 @@ WSGI_APPLICATION = 'personal_site.wsgi.application'
 # }
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.getenv('POSTGRES_DB'),
+    #     'USER': os.getenv('POSTGRES_USER'),
+    #     'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+    #     'HOST': os.getenv('POSTGRES_HOST'),
+    #     'PORT': int(os.getenv('POSTGRES_PORT'))
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST'),
-        'PORT': int(os.getenv('POSTGRES_PORT'))
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 
