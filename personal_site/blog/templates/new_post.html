@@ -1,21 +1,20 @@
 {% load static %}
 
-            <div class="modal fade" id="newPostModal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">Creating new post</div>
-                            <div class="modal-body">
-                             <form action="/new-post" method="post">
-                                {% csrf_token %}
-                                {{ new_post_form }}
-                                <input type="submit" value="Submit">
-                            </form>
-                            </div>
-                    <div class="modal-footer">
-
-                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    </div>
-                    </div>
-
+<div class="modal fade" id="newPostModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">Creating new post</div>
+                <div class="modal-body">
+                 <form action="/new-post" method="post">
+                    {% csrf_token %}
+                    {{ new_post_form }}
+                    <input type="submit" value="Submit">
+                </form>
                 </div>
-            </div>    
+        <div class="modal-footer">
+
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+    </div>
+</div>

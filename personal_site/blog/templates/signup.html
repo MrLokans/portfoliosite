@@ -1,4 +1,5 @@
 {% load static %}
+{% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,47 +10,31 @@
     <link rel="stylesheet" href="{% static 'css/registration.css' %}">
 </head>
 <body>
-    
     <div class="container">
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-3">
-              <form class="form-signin">
-              {% csrf_token %}
-                <h2 class="form-signin-heading">Please sign in</h2>
-                <label for="inputEmail" class="sr-only">Email address</label>
-                <input type="text" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-                <label for="inputPassword" class="sr-only">Password</label>
-                <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-
-                <a href="">
-                    <img class="social-icon" src="{% static 'img/social/google_plus.svg' %}" alt="google_plus_icon">
-                </a>
-                <a href="">
-                    <img class="social-icon" src="{% static 'img/social/github.svg' %}" alt="github_icon">
-                </a>
-                <a href="">
-                    <img class="social-icon" src="{% static 'img/social/facebook.svg' %}" alt="facebook_icon">
-                </a>
-                <a href="">
-                    <img class="social-icon" src="{% static 'img/social/linked_in.svg' %}" alt="linked_in_icon">
-                </a>
-                <a href="">
-                    <img class="social-icon" src="{% static 'img/social/vk.svg' %}" alt="vkontakte_icon">
-                </a>
-
-                <div class="checkbox">
-                  <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                  </label>
+            <div class="col-md-3 col-md-offset-4">
+                {% crispy form %}
+                <div class="social-login-icons">
+                    <a href="">
+                        <img class="social-icon" src="{% static 'img/social/google_plus.svg' %}" alt="google_plus_icon">
+                    </a>
+                    <a href="">
+                        <img class="social-icon" src="{% static 'img/social/github.svg' %}" alt="github_icon">
+                    </a>
+                    <a href="">
+                        <img class="social-icon" src="{% static 'img/social/facebook.svg' %}" alt="facebook_icon">
+                    </a>
+                    <a href="">
+                        <img class="social-icon" src="{% static 'img/social/linked_in.svg' %}" alt="linked_in_icon">
+                    </a>
+                    <a href="">
+                        <img class="social-icon" src="{% static 'img/social/vk.svg' %}" alt="vkontakte_icon">
+                    </a>
                 </div>
-                <button class="btn btn-lg btn-primary btn-block" id="signinButton">Sign in</button>
-              </form>                
             </div>
-            <div class="col-md-4"></div>
         </div>
-
     </div>
+
     <script src="{% static 'vendor/jquery.min.js' %}"></script>  
     <script src="{% static 'js/login.js' %}"></script>
 </body>
