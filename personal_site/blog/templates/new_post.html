@@ -8,6 +8,7 @@
                  <form action="/new-post" method="post">
                     {% csrf_token %}
                     {{ new_post_form }}
+                    {{ new_post_form.media }}
                     <input type="submit" value="Submit">
                 </form>
                 </div>

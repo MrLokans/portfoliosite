@@ -6,6 +6,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Field, ButtonHolder, HTML
 
+from markdownx.fields import MarkdownxFormField
+
 from .models import Post
 
 User = get_user_model()
@@ -51,7 +53,7 @@ class UserForm(AuthenticationForm):
 
 class FlatPageForm(forms.ModelForm):
     post_title = forms.CharField(label='You name', max_length=100)
-    content = forms.CharField()
+    content = MarkdownxFormField()
 
     class Meta:
         model = Post

@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{% static 'vendor/jquery.min.js' %}"></script>
     {% block styles %}
         {% include "page_styles.html" %}
     {% endblock %}
@@ -45,12 +46,7 @@
 
     </div>
 
-    <script src="{% static 'vendor/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap.min.js' %}"></script>
-    <script src="{% static 'vendor/prism.js' %}"></script>
-    <!-- <script src="{% static 'vendor/tinymce.min.js' %}"></script> -->
-    <script src="{% static 'js/books.js' %}"></script>
-    <script src="{% static 'js/post.js' %}"></script>
+   {% include "scripts.html" %}
 
     {% block extra_scripts %}
         
