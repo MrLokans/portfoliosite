@@ -13,4 +13,4 @@ six==1.10.0
 urllib3==1.15.1
 
 # Own libraries
-git+git://github.com/MrLokans/MoonReader_tools#egg=moonreader_tools
+git+git://github.com/MrLokans/isp-coverage-map#egg=by_isp_coverage
