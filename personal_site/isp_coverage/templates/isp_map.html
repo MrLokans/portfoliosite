@@ -9,6 +9,7 @@
   <script>
    byflyDots = {{ byfly_coords|safe }};
    mtsDots = {{ mts_coords|safe }};
+   unetDots = {{ unet_coords|safe }};
 
   </script>
   <script>
@@ -18,10 +19,10 @@
     var markers = new OpenLayers.Layer.Markers( "Markers" );
     map.addLayer(markers);
 
-    var byflyIconSize = new OpenLayers.Size(4, 4);
-    var mtsIconSize = new OpenLayers.Size(4, 4);
-    var byflyIcon = new OpenLayers.Icon("{% static 'img/byfly.png' %}", byflyIconSize);
-    var mtsIcon = new OpenLayers.Icon("{% static 'img/mts.png' %}", mtsIconSize);
+    var ISPIconSize = new OpenLayers.Size(4, 4);
+    var byflyIcon = new OpenLayers.Icon("{% static 'img/byfly.png' %}", ISPIconSize);
+    var mtsIcon = new OpenLayers.Icon("{% static 'img/mts.png' %}", ISPIconSize);
+    var unetIcon = new OpenLayers.Icon("{% static 'img/unet.png' %}", ISPIconSize);
 
     // minsk center: 53.902523, 27.561504 
     var minskCenter = new OpenLayers.LonLat(27.561504, 53.902523)
@@ -29,32 +30,24 @@
                 new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
                 map.getProjectionObject());
 
-    for(var i=0; i<byflyDots.length; ++i){
-        var lonLat = new OpenLayers.LonLat( byflyDots[i][0] ,byflyDots[i][1] )
-            .transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
-            );
-        if (i === 0){
-            markers.addMarker(new OpenLayers.Marker(lonLat, byflyIcon)); 
-        } else {
-            markers.addMarker(new OpenLayers.Marker(lonLat, byflyIcon.clone()));              
-        }
-    }
-    for(var i=0; i<mtsDots.length; ++i){
-        var lonLat = new OpenLayers.LonLat( mtsDots[i][0] ,mtsDots[i][1] )
-            .transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject() // to Spherical Mercator Projection
-            );
-        if (i === 0){
-            markers.addMarker(new OpenLayers.Marker(lonLat, mtsIcon)); 
-        } else {
-            markers.addMarker(new OpenLayers.Marker(lonLat, mtsIcon.clone()));              
+    var drawDots = function(dots, icon){
+        for(var i=0; i<dots.length; ++i){
+            var lonLat = new OpenLayers.LonLat( dots[i][0] ,dots[i][1] )
+                .transform(
+                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                    map.getProjectionObject() // to Spherical Mercator Projection
+                );
+            if (i === 0){
+                markers.addMarker(new OpenLayers.Marker(lonLat, icon)); 
+            } else {
+                markers.addMarker(new OpenLayers.Marker(lonLat, icon.clone()));              
+            }
         }
     }
 
-          
+    drawDots(byflyDots, byflyIcon);
+    drawDots(mtsDots, mtsIcon);
+    drawDots(unetDots, unetIcon);
 
    var zoom=12;
     map.setCenter (minskCenter, zoom);
