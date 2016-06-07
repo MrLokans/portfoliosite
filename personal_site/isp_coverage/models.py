@@ -1,7 +1,22 @@
 from django.db import models
 
 
-class ProviderCoords(models.Model):
+class Provider(models.Model):
 
+    name = models.TextField(null=True, unique=True)
+    url = models.CharField(max_length=120, unique=True)
+
+
+class ProviderCoordinate(models.Model):
+
+    description = models.TextField(null=True, blank=True)
     longitude = models.FloatField()
     latitude = models.FloatField()
+    provider = models.ForeignKey(Provider)
+
+    @classmethod
+    def fromnamedtuple(cls, tpl, provider):
+        return cls(longitude=tpl.longitude,
+                   latitude=tpl.latitude,
+                   description=tpl.latitude,
+                   provider=provider)
