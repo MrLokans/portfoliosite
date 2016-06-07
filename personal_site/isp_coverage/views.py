@@ -1,8 +1,12 @@
 import os
 import csv
+import json
 
 from django.shortcuts import render
+from django.http import HttpResponse
 from django.views.generic import TemplateView
+
+from isp_coverage.models import Provider, ProviderCoordinate
 
 
 BYFLY_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "byfly.csv"))
@@ -13,18 +17,19 @@ UNET_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "unet.csv"))
 class MapView(TemplateView):
 
     def get(self, request):
-        byfly_dots = []
-        mts_dots = []
-        with open(BYFLY_CSV_FILE, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            byfly_dots = [row for row in reader if row[0] != "longitude"]
-        with open(MTS_CSV_FILE, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            mts_dots = [row for row in reader if row[0] != "longitude"]
         with open(UNET_CSV_FILE, 'r') as csv_file:
             reader = csv.reader(csv_file)
             unet_dots = [row for row in reader if row[0] != "longitude"]
-        # coords = [()]
-        return render(request, "isp_map.html", {"byfly_coords": byfly_dots,
-                                                "mts_coords": mts_dots,
-                                                "unet_coords": unet_dots})
+        return render(request, "isp_map.html", {"unet_coords": unet_dots})
+
+
+def get_provider_dots(request):
+    provider_name = request.GET.get("provider", "byfly")
+    provider_dots = ProviderCoordinate.objects.filter(provider__name=provider_name)
+
+    dots = {"dots": []}
+
+    for dot in provider_dots:
+        dots["dots"].append({"longitude": dot.longitude,
+                             "latitude": dot.latitude})
+    return HttpResponse(json.dumps(dots), content_type="application/json")
