@@ -3,7 +3,7 @@
 {% block content %}
             {% if user.is_authenticated %}
                 <button type="button" class="btn btn-default new-post-btn" data-toggle="modal" data-target="#newPostModal">New post</button>
-                {% include "new_post.html" %}        
+                {% include "blog/new_post.html" %}        
             {% endif %}
 
             {% for post in posts %}

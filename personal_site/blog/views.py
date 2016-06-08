@@ -19,7 +19,7 @@ class HomeView(TemplateView):
         form = FlatPageForm()
         posts = Post.objects.all()
         context = {'posts': posts, 'new_post_form': form}
-        return render(request, "home.html", context)
+        return render(request, "blog/home.html", context)
 
 
 class AboutMeView(TemplateView):
@@ -50,12 +50,11 @@ class ProjectView(TemplateView):
 class LoginView(FormView):
     form_class = UserForm
     success_url = reverse_lazy('home')
-    template_name = 'login.html'
+    template_name = 'auth/login.html'
 
     def form_valid(self, form):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        print(username, password)
         user = authenticate(username=username, password=password)
 
         if user is not None and user.is_active:
@@ -76,7 +75,7 @@ class SignUpView(CreateView):
     form_class = RegistrationForm
     model = User
     success_url = reverse_lazy('home')
-    template_name = 'signup.html'
+    template_name = 'auth/signup.html'
 
     def form_valid(self, form):
         user = authenticate(username=form.cleaned_data.get('username'),
