@@ -1,4 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    <li><a href="/projects/providers">ISP coverage Map</a></li>
+    <div class="projects">
+        <div class="project-block">
+            <h4 class="project-header">
+                <a href="/projects/providers">ISP coverage Map</a>
+            </h4>
+            <div class="project-description">
+                Map of Belarus high-speed internet access. Each point represents house with some ISP availability.
+                Blue represents ByFly's XPON, red - MTS ethernet, purple - Unet.by.
+            </div>
+        </div>
+        
+    </div>
 {% endblock content %}
