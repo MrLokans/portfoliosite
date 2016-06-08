@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 
-from isp_coverage.models import Provider, ProviderCoordinate
+from isp_coverage.models import ProviderCoordinate
 
 
 BYFLY_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "byfly.csv"))

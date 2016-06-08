@@ -1,15 +1,15 @@
 <ul class="nav nav-pills nav-stacked">
-    <li><a href="{% url 'about_me' %}">About me</a></li>
-    <li><a href="/">Blog</a></li>
-    <li><a href="{% url 'projects_list' %}">Notes</a></li>
-    <li><a href="{% url 'book-list' %}">Book quotes</a></li>
-    <li><a href="{% url 'projects_list' %}">Projects list</a></li>
+    <li class="menu-item"><a href="{% url 'about_me' %}">About me</a></li>
+    <li class="menu-item"><a href="/">Blog</a></li>
+    <li class="menu-item"><a href="{% url 'projects_list' %}">Notes</a></li>
+    <li class="menu-item"><a href="{% url 'book-list' %}">Book quotes</a></li>
+    <li class="menu-item"><a href="{% url 'projects_list' %}">Projects list</a></li>
 
     {% if user.is_authenticated %}
-        <li><a href="{% url 'logout' %}">Log Out</a></li>
+        <li class="menu-item"><a href="{% url 'logout' %}">Log Out</a></li>
     {% else %}
-        <li><a href="{% url 'signup' %}">Sign up</a></li>
-        <li><a href="{% url 'login' %}">Log In</a></li>
+        <li class="menu-item"><a href="{% url 'signup' %}">Sign up</a></li>
+        <li class="menu-item"><a href="{% url 'login' %}">Log In</a></li>
     {% endif %}
 
 </ul>

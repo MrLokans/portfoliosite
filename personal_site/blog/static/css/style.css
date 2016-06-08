@@ -54,3 +54,24 @@ body {
 .post-tag {
     margin-right: 10px;
 }
+
+ul.nav li.menu-item a{
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #4559FF;
+}
+
+ul.nav li.menu-item a:hover{
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #131F85;
+}
+
+.project-block {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #F1F1F1;
+}
+
+.project-block .project-links {
+    padding-top: 5px;
+}
