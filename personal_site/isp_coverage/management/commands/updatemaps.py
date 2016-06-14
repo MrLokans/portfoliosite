@@ -3,10 +3,14 @@ from threading import Thread
 
 from django.core.management.base import BaseCommand
 
-from by_isp_coverage import ByflyParser, MTS_Parser, UNETParser, AtlantParser, CSV_Exporter
+from by_isp_coverage import (
+    AtlantParser,
+    ByflyParser,
+    MTS_Parser,
+    UNETParser
+)
 
 from isp_coverage.models import Provider, ProviderCoordinate
-from isp_coverage.views import MTS_CSV_FILE, BYFLY_CSV_FILE
 
 
 logger = logging.getLogger(__name__)
@@ -19,8 +23,9 @@ class CoordSaver(Thread):
         self.parser = parser
 
     def run(self):
-        print("Obtaining data from {}".format(self.parser.PARSER_NAME))
-        provider, _ = Provider.objects.get_or_create(name=ByflyParser.PARSER_NAME)
+        name = self.parser.PARSER_NAME
+        print("Obtaining data from {}".format(name))
+        provider, _ = Provider.objects.get_or_create(name=name)
         data = self.parser.get_points()
         for point in data:
             coord = ProviderCoordinate.fromnamedtuple(point, provider)
@@ -33,14 +38,14 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         ProviderCoordinate.objects.all().delete()
+        Provider.objects.all().delete()
 
         byfly_parser = ByflyParser()
         mts_parser = MTS_Parser()
         unet_parser = UNETParser()
         atlant_parser = AtlantParser()
-        # exporter = CSV_Exporter()
 
-        parsers = [byfly_parser, mts_parser, atlant_parser, unet_parser]
+        parsers = (atlant_parser, byfly_parser, mts_parser, unet_parser)
 
         threads = [CoordSaver(p) for p in parsers]
         for t in threads:

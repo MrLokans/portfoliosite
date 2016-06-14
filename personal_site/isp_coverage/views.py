@@ -25,7 +25,8 @@ class MapView(TemplateView):
 
 def get_provider_dots(request):
     provider_name = request.GET.get("provider", "byfly")
-    provider_dots = ProviderCoordinate.objects.filter(provider__name=provider_name)
+    provider_name = provider_name.lower()
+    provider_dots = ProviderCoordinate.objects.filter(provider__name__icontains=provider_name)
 
     dots = {"dots": []}
 
