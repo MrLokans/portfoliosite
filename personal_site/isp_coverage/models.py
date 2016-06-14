@@ -4,7 +4,7 @@ from django.db import models
 class Provider(models.Model):
 
     name = models.TextField(null=True, unique=True)
-    url = models.CharField(max_length=120, unique=True)
+    # url = models.CharField(max_length=120, unique=True)
 
 
 class ProviderCoordinate(models.Model):
