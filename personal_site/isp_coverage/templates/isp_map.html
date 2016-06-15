@@ -22,9 +22,12 @@
     var byflyIconPath = "{% static 'img/byfly.png' %}"
     var mtsIconPath = "{% static 'img/mts.png' %}"
     var unetIconPath = "{% static 'img/unet.png' %}"
+    var atlantIconPath = "{% static 'img/atlant.png' %}"
+
     var byflyIcon = new OpenLayers.Icon(byflyIconPath, ISPIconSize);
     var mtsIcon = new OpenLayers.Icon(mtsIconPath, ISPIconSize);
     var unetIcon = new OpenLayers.Icon(unetIconPath, ISPIconSize);
+    var atlantIcon = new OpenLayers.Icon(atlantIconPath, ISPIconSize);
 
     // minsk center: 53.902523, 27.561504 
     var minskCenter = new OpenLayers.LonLat(27.561504, 53.902523)
@@ -33,13 +36,16 @@
                 map.getProjectionObject());
 
     var getIconByProviderName = function(providerName){
-        providerIcon = byflyIcon
-        if (providerName === "byfly"){
+        console.log("Obtaining icon for provider " + providerName);
+        var providerNameIconMap = {
+            "byfly": byflyIcon,
+            "mts": mtsIcon,
+            "atlant": atlantIcon,
+            "unet": unetIcon
+        }
+        var providerIcon = providerNameIconMap[providerName];
+        if (typeof providerIcon === "undefined"){
             providerIcon = byflyIcon;
-        } else if (providerName === "mts"){
-            providerIcon = mtsIcon;
-        } else if (providerName === "unet"){
-            providerIcon = unetIcon;
         }
         return providerIcon;
     };
@@ -87,6 +93,8 @@
 
     getProviderPoints("byfly");
     getProviderPoints("mts");
+    getProviderPoints("unet");
+    getProviderPoints("atlant");
 
     drawDots(unetDots, unetIcon);
 
