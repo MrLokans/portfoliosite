@@ -1,3 +1,5 @@
+import logging
+
 from django.core.management.base import BaseCommand, CommandError
 
 from books.models import Book, BookNote
@@ -5,6 +7,9 @@ from books.models import Book, BookNote
 from dropbox.rest import ErrorResponse
 
 from moonreader_tools.handlers import DropboxDownloader
+
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -18,7 +23,7 @@ class Command(BaseCommand):
         parser.add_argument('--count',
                             type=int,
                             help='Number of books to download',
-                            default=20)
+                            default=200)
 
     def handle(self, *args, **kwargs):
         token = kwargs.get('token')
@@ -41,4 +46,5 @@ class Command(BaseCommand):
         Book.objects.all().delete()
 
         for book_dict in book_dicts:
+            logger.info("Saving book {}.".format(book_dict))
             Book.from_dict(book_dict)

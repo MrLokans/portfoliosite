@@ -12,4 +12,5 @@ class BookListView(ListView):
     # TODO; do not render empty pagination
 
     def get_queryset(self, *args, **kwargs):
-        return Book.objects.non_empty()
+        qs = Book.objects.non_empty()
+        return qs
