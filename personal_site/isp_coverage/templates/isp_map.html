@@ -1,105 +1,92 @@
-{% extends "base.html" %}
-{% block content %}
 {% load static %}
- <link rel="stylesheet" href="{% static 'css/map_style.css' %}">
-    <div class="container">
-      <div id="mapdiv"></div>
-    </div>
-  <script src="{% static 'OpenLayers.js' %}"></script>
-  <script>
+<html>
+    <head>
+        <title>Belarus providers map</title>
+        <link rel="stylesheet" href="{% static 'css/map_style.css' %}">
+    </head>
+    <body>
+        <div class="container">
+              <div id="mapdiv"></div>
+        </div>      
+          <script src="{% static 'vendor/jquery.min.js' %}"></script>
+          <script src="{% static 'OpenLayers.js' %}"></script>
 
-   var unetDots = {{ unet_coords|safe }};
+          <script>
+            map = new OpenLayers.Map("mapdiv");
+            map.addLayer(new OpenLayers.Layer.OSM());
 
-  </script>
-  <script>
-    map = new OpenLayers.Map("mapdiv");
-    map.addLayer(new OpenLayers.Layer.OSM());
+            var markers = new OpenLayers.Layer.Markers( "Markers" );
+            map.addLayer(markers);
 
-    var markers = new OpenLayers.Layer.Markers( "Markers" );
-    map.addLayer(markers);
+            var ISPIconSize = new OpenLayers.Size(4, 4);
+            var byflyIconPath = "{% static 'img/byfly.png' %}"
+            var mtsIconPath = "{% static 'img/mts.png' %}"
+            var unetIconPath = "{% static 'img/unet.png' %}"
+            var atlantIconPath = "{% static 'img/atlant.png' %}"
 
-    var ISPIconSize = new OpenLayers.Size(4, 4);
-    var byflyIconPath = "{% static 'img/byfly.png' %}"
-    var mtsIconPath = "{% static 'img/mts.png' %}"
-    var unetIconPath = "{% static 'img/unet.png' %}"
-    var atlantIconPath = "{% static 'img/atlant.png' %}"
+            var byflyIcon = new OpenLayers.Icon(byflyIconPath, ISPIconSize);
+            var mtsIcon = new OpenLayers.Icon(mtsIconPath, ISPIconSize);
+            var unetIcon = new OpenLayers.Icon(unetIconPath, ISPIconSize);
+            var atlantIcon = new OpenLayers.Icon(atlantIconPath, ISPIconSize);
 
-    var byflyIcon = new OpenLayers.Icon(byflyIconPath, ISPIconSize);
-    var mtsIcon = new OpenLayers.Icon(mtsIconPath, ISPIconSize);
-    var unetIcon = new OpenLayers.Icon(unetIconPath, ISPIconSize);
-    var atlantIcon = new OpenLayers.Icon(atlantIconPath, ISPIconSize);
+            // minsk center: 53.902523, 27.561504 
+            var minskCenter = new OpenLayers.LonLat(27.561504, 53.902523)
+                        .transform(
+                        new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                        map.getProjectionObject());
 
-    // minsk center: 53.902523, 27.561504 
-    var minskCenter = new OpenLayers.LonLat(27.561504, 53.902523)
-                .transform(
-                new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                map.getProjectionObject());
+            var getIconByProviderName = function(providerName){
+                console.log("Obtaining icon for provider " + providerName);
+                var providerNameIconMap = {
+                    "byfly": byflyIcon,
+                    "mts": mtsIcon,
+                    "atlant": atlantIcon,
+                    "unet": unetIcon
+                }
+                var providerIcon = providerNameIconMap[providerName];
+                if (typeof providerIcon === "undefined"){
+                    providerIcon = byflyIcon;
+                }
+                return providerIcon;
+            };
 
-    var getIconByProviderName = function(providerName){
-        console.log("Obtaining icon for provider " + providerName);
-        var providerNameIconMap = {
-            "byfly": byflyIcon,
-            "mts": mtsIcon,
-            "atlant": atlantIcon,
-            "unet": unetIcon
-        }
-        var providerIcon = providerNameIconMap[providerName];
-        if (typeof providerIcon === "undefined"){
-            providerIcon = byflyIcon;
-        }
-        return providerIcon;
-    };
+            var getProviderPoints = function(providerName){
+                $.get("/projects/providers-api?provider=" + providerName)
+                 .done(function(data){
+                    var points = data.dots;
+                    drawPoints(points, getIconByProviderName(providerName));
+                 })
+                 .error(function(e){
+                    console.error("Error obtaining providers map data.");
+                 });
+            };
 
-    var getProviderPoints = function(providerName){
-        $.get("/projects/providers-api?provider=" + providerName)
-         .done(function(data){
-            var points = data.dots;
-            drawPoints(points, getIconByProviderName(providerName));
-         })
-         .error(function(e){
-            console.error("Error obtaining providers map data.");
-         });
-    };
+            var drawPoints = function(points, icon){
+                for(var i=0; i<points.length; ++i){
+                    var lonLat = new OpenLayers.LonLat(points[i].longitude, points[i].latitude)
+                        .transform(
+                            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+                            map.getProjectionObject() // to Spherical Mercator Projection
+                        );
+                    if (i === 0){
+                        markers.addMarker(new OpenLayers.Marker(lonLat, icon)); 
+                    } else {
+                        markers.addMarker(new OpenLayers.Marker(lonLat, icon.clone()));              
+                    }
+                }
+            };
 
-    var drawDots = function(dots, icon){
-        for(var i=0; i<dots.length; ++i){
-            var lonLat = new OpenLayers.LonLat( dots[i][0] ,dots[i][1] )
-                .transform(
-                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                    map.getProjectionObject() // to Spherical Mercator Projection
-                );
-            if (i === 0){
-                markers.addMarker(new OpenLayers.Marker(lonLat, icon)); 
-            } else {
-                markers.addMarker(new OpenLayers.Marker(lonLat, icon.clone()));              
-            }
-        }
-    };
+            getProviderPoints("byfly");
+            getProviderPoints("mts");
+            getProviderPoints("unet");
+            getProviderPoints("atlant");
 
-    var drawPoints = function(points, icon){
-        for(var i=0; i<points.length; ++i){
-            var lonLat = new OpenLayers.LonLat( points[i]["longitude"], points[i]["latitude"] )
-                .transform(
-                    new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
-                    map.getProjectionObject() // to Spherical Mercator Projection
-                );
-            if (i === 0){
-                markers.addMarker(new OpenLayers.Marker(lonLat, icon)); 
-            } else {
-                markers.addMarker(new OpenLayers.Marker(lonLat, icon.clone()));              
-            }
-        }
-    };
+            var zoom=12;
+            map.setCenter (minskCenter, zoom);
+          </script>
 
-    getProviderPoints("byfly");
-    getProviderPoints("mts");
-    getProviderPoints("unet");
-    getProviderPoints("atlant");
+        {# {% include "scripts.html" %} #}
 
-    drawDots(unetDots, unetIcon);
-
-   var zoom=12;
-    map.setCenter (minskCenter, zoom);
-  </script>
-
-{% endblock content %}
+    </body>
+</html>
+ 
