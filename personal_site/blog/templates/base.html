@@ -6,11 +6,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="{% static 'vendor/jquery.min.js' %}"></script>
     {% block styles %}
         {% include "page_styles.html" %}
     {% endblock %}
+
+    {% block extra_styles %}
+    {% endblock %}
     {{ form.media }}
+    <!-- We need for markdownx application to work correctly -->
+    <script src="{% static 'vendor/jquery.min.js' %}"></script>
+
+
 </head>
     
 <body>
@@ -49,6 +55,5 @@
    {% include "scripts.html" %}
 
     {% block extra_scripts %}
-        
     {% endblock extra_scripts %}
 </body>
