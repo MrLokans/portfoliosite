@@ -1,6 +1,7 @@
 import logging
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction, IntegrityError
 
 from books.models import Book, BookNote
 
@@ -39,12 +40,13 @@ class Command(BaseCommand):
 
         book_dicts = [book.to_dict() for book in books]
 
-        # We delete all objects here
-        # Absolutely, worst idea ever
-        # TODO:
-        BookNote.objects.all().delete()
-        Book.objects.all().delete()
+        try:
+            with transaction.atomic():
+                BookNote.objects.all().delete()
+                Book.objects.all().delete()
 
-        for book_dict in book_dicts:
-            logger.info("Saving book {}.".format(book_dict))
-            Book.from_dict(book_dict)
+                for book_dict in book_dicts:
+                    logger.info("Saving book {}.".format(book_dict))
+                    Book.from_dict(book_dict)
+        except IntegrityError:
+            logger.exception("Transaction error.")
