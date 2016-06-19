@@ -5,7 +5,6 @@ django-markdownx==1.5
 djangorestframework==3.3.3
 dropbox==6.2
 Markdown==2.6.6
-moonreader-tools==0.8.7
 Pillow==3.2.0
 psycopg2==2.6.1
 requests==2.10.0
@@ -13,4 +12,5 @@ six==1.10.0
 urllib3==1.15.1
 
 # Own libraries
+moonreader_tools
 git+git://github.com/MrLokans/isp-coverage-map#egg=by_isp_coverage

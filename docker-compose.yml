@@ -1,24 +1,23 @@
-postgresql:
-  image: postgres:9.3
-  env_file: .env
-  volumes:
-    - ./dockerfiles/pgdata:/var/lib/postgresql/data/pgdata
-  ports:
-    - "5433:5432"
+version: '2'
 
-project:
-  build: ./
-  env_file: .env
-  working_dir: /opt/project
-  command: bash -c "sleep 3 && /etc/init.d/ssh start && supervisord -n"
-  volumes:
-    - ./personal_site:/opt/project
-    - ./dockerfiles/sshdconf/sshd_config/:/etc/ssh/sshd_config
-    - ./dockerfiles/id_rsa.pub:/root/.ssh/authorized_keys
-    - ./supervisord.conf:/etc/supervisord.conf
-    - ./djangod.conf:/etc/djangod.conf
-  links:
-    - postgresql
-  ports:
-    - "2225:22"
-    - "8005:8000"
+services:
+  db:
+    image: postgres:9.4
+    env_file: .env
+    volumes:
+      - ./dockerfiles/pgdata:/var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+
+  kv_storage:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  web:
+    build: ./
+    env_file: .env
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "2222:22"
+      - "8000:8000"
