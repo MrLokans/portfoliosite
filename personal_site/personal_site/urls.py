@@ -16,4 +16,5 @@ urlpatterns = [
 
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
+    url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
 ]
