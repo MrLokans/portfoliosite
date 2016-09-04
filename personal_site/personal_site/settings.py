@@ -116,6 +116,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder'
 ]
 
@@ -144,10 +146,12 @@ MARKDOWNX_EDITOR_RESIZABLE = True
 # Update editor's height to inner content height while typing
 
 
-BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "bower_components")
+BOWER_COMPONENTS_ROOT = BASE_DIR
 
 BOWER_INSTALLED_APPS = (
     'jquery#3.1.0',
     'bootstrap#3.3.7',
     'angular#1.5.8',
+    'prism#1.5.1',
+    'marked#0.3.6'
 )
