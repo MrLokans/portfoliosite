@@ -14,8 +14,14 @@ $(document).ready(function(){
       id: 2, 
       content: 'VPI Photonics', 
       start: '2014-07-16', 
-      end: new Date()
+      end: '2016-07-16'
     },
+    {
+      id: 3,
+      content: 'itransition',
+      start: '2016-07-18',
+      end: new Date()
+    }
   ]);
 
   // Configuration for the Timeline
