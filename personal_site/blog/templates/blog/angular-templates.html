@@ -1,0 +1,58 @@
+{% verbatim %}
+<script type="text/ng-template" id="post-list.html">
+    <div class="post-container" ng-repeat="post in posts">
+        <div class="post-title-container">
+            <div></div>
+            <div>
+                <a href="http://github.com/MrLokans">MrLokans</a>
+            </div>
+            <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
+            <div></div>
+        </div> 
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script type="text/ng-template" id="about_me.html">
+    <h3>Short Info</h3>
+    <h4>About me</h4>
+    <p>Linux and python fan.</p>
+    <div class="social-networks">
+        <h4>Social networks profiles</h4>
+        <div class="social-network" id="linkedin-social">
+            <a href="https://www.linkedin.com/in/andrei-sviridov-9619b9109">LinkedIn</a>
+        </div>
+        <div class="social-network" id="github-social">
+            <a href="https://github.com/MrLokans">Github</a>
+        </div>
+    </div>
+    
+    <h3>Working time:</h3>
+    <div id="work-timeline"></div>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script type="text/ng-template" id="projects.html">
+        <div class="projects" ng-repeat="project in projects">
+            <div class="project-block">
+                <h4 class="project-header">
+                    <a href="{{ project.url }}">{{ project.title }}</a>
+                </h4>
+                <div class="project-description">
+                    {{ project.description }}
+                    <br/>
+                    <div class="project-links" ng-repeat="link in project.links">
+                        <strong class="project-link-title">{{ link.type }}</strong>
+                        <a class="project-link" href="{{ link.url }}">{{ link.url }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+{% endverbatim %}

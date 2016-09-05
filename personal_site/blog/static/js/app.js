@@ -1,7 +1,13 @@
 (function(){
     'use strict';
 
-    angular.module('andersblog', ['andersblog.posts']);
+    angular.module('andersblog', ['andersblog.posts',
+                                  'andersblog.config',
+                                  'andersblog.routes',
+                                    ]);
+    angular.module('andersblog.config', []);
+    angular.module('andersblog.routes', ['ngRoute']);
+
     angular.module('andersblog').run(run);
 
     run.$inject = ['$http'];

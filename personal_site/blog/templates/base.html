@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/"></base>
     {% block styles %}
         {% include "page_styles.html" %}
     {% endblock %}
@@ -34,7 +35,7 @@
             </div>
             
             <div class="col-md-8">
-                {% block content %}{% endblock %}
+                <div ng-view></div>
             </div>
 
             <div class="col-md-2">
@@ -53,6 +54,7 @@
     </div>
 
    {% include "scripts.html" %}
+   {% include "blog/angular-templates.html" %}
 
     {% block extra_scripts %}
     {% endblock extra_scripts %}
