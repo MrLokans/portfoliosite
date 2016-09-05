@@ -153,5 +153,6 @@ BOWER_INSTALLED_APPS = (
     'bootstrap#3.3.7',
     'angular#1.5.8',
     'prism#1.5.1',
-    'marked#0.3.6'
+    'marked#0.3.6',
+    'angular-resource#1.5.8'
 )
