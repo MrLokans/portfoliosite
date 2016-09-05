@@ -154,5 +154,6 @@ BOWER_INSTALLED_APPS = (
     'angular#1.5.8',
     'prism#1.5.1',
     'marked#0.3.6',
-    'angular-resource#1.5.8'
+    'angular-resource#1.5.8',
+    'angular-route#1.5.8',
 )
