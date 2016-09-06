@@ -2,6 +2,7 @@
     'use strict';
 
     angular.module('andersblog', ['andersblog.posts',
+                                  'andersblog.books',
                                   'andersblog.config',
                                   'andersblog.routes',
                                     ]);

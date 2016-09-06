@@ -62,3 +62,36 @@
     <post-list></post-list>
 </script>
 {% endverbatim %}
+
+
+{% verbatim %}
+<script type="text/ng-template" id="books.html">
+    <books-list></books-list>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
+<script type="text/ng-template" id="books-list.html">
+   <h1>Books</h1>
+    <!-- Book list -->
+    <ul class="book-list" ng-repeat="book in books">
+
+        <div class="book-data-container">
+            <h3 class="book-data__title">{{ book.title }}</h3>
+            <div class="progress">
+                  <div class="progress-bar" role="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
+                    {{ book.percentage}}%
+                </div>
+            </div>
+
+            <div class="book-data__notes-list" ng-repeat="note in book.notes">
+                <div class="book-data__single-note">
+                    <blockquote>{{ note.text }}</blockquote>
+                </div>
+            </div>
+
+        </div>
+
+    </ul>
+</script>
+{% endverbatim %}

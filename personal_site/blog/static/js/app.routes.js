@@ -22,6 +22,10 @@
                 templateUrl: 'blog.html',
             })
 
+            .when('/books', {
+                templateUrl: 'books.html'
+            })
+
             .when('/about_me', {
                 templateUrl: 'about_me.html',
                 controller: "AboutController",
