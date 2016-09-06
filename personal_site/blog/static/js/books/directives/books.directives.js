@@ -9,5 +9,25 @@
                     }],
                     templateUrl: 'books-list.html'
                 };
-           }]);
+           }])
+
+           .directive('bookSingle', function(){
+                return {
+                    restrict: 'E',
+                    scope: {
+                        book: '=',
+                    },
+                    templateUrl: 'book-single.html'
+                };
+           })
+
+           .directive('bookNote', function(){
+                return {
+                    restrict: 'E',
+                    scope: {
+                        note: '=',
+                    },
+                    templateUrl: 'books-note.html'
+                };
+           });
 })();
