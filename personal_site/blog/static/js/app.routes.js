@@ -18,6 +18,10 @@
                 controller: "ProjectController"
             })
 
+            .when('/blog', {
+                templateUrl: 'blog.html',
+            })
+
             .when('/about_me', {
                 templateUrl: 'about_me.html',
                 controller: "AboutController",
