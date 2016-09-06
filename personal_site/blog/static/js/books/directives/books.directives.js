@@ -17,6 +17,12 @@
                     scope: {
                         book: '=',
                     },
+                    link: function postLink(scope, element, attrs){
+                        var bookTitle = element.find('.book-data__title')
+                        bookTitle.on('click', function(){
+                            element.find(".book-data__notes-list").toggle("hide");
+                        });
+                    },
                     templateUrl: 'book-single.html'
                 };
            })
