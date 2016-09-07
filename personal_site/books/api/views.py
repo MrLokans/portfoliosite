@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from books.api.pagination import BookPageNumberPagination
@@ -19,7 +19,7 @@ class BookListAPIView(ListAPIView):
         return qs
 
 
-class BookDetailAPIView(RetrieveAPIView):
+class BookDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
 
     def get_queryset(self):
