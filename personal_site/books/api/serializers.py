@@ -13,7 +13,7 @@ class BookNoteSerializer(serializers.ModelSerializer):
         ]
 
 
-class BookListSerializer(serializers.ModelSerializer):
+class BookSerializer(serializers.ModelSerializer):
     notes = serializers.SerializerMethodField()
 
     class Meta:
