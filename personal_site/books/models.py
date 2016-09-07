@@ -9,7 +9,9 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 class BookManager(models.Manager):
     def non_empty(self, *args, **kwargs):
-        return super().exclude(booknote=None)
+        qs = super().annotate(num_notes=models.Count('notes'))\
+            .filter(num_notes__gt=0)
+        return qs
 
 
 class Book(models.Model):
@@ -62,9 +64,7 @@ class Book(models.Model):
         return self.booknote_set.count() == 0
 
 
-
-
 class BookNote(models.Model):
 
-    book = models.ForeignKey('Book')
+    book = models.ForeignKey('Book', related_name='notes')
     text = models.TextField()

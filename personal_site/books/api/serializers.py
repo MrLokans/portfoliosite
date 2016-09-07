@@ -14,7 +14,7 @@ class BookNoteSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    notes = serializers.SerializerMethodField()
+    notes = BookNoteSerializer(many=True)
 
     class Meta:
         model = Book
@@ -25,6 +25,26 @@ class BookSerializer(serializers.ModelSerializer):
             'rating',
             'notes'
         ]
+
+    def create(self, validated_data):
+        notes_data = validated_data.pop('notes')
+
+        book = Book.objects.create(**validated_data)
+        for note_data in notes_data:
+            BookNote.objects.create(book=book, **note_data)
+        return book
+
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.percentage = validated_data.get('percentage',
+                                                 instance.percentage)
+        instance.rating = validated_data.get('rating', instance.rating)
+        instance.save()
+        notes = validated_data.get('notes', None)
+        if notes is not None:
+            # TODO: notes are not passed with notes JSON array
+            pass
+        return instance
 
     def get_notes(self, obj):
         notes = BookNote.objects.filter(book=obj)
