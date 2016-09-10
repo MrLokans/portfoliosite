@@ -18,12 +18,15 @@
                         book: '=',
                     },
                     link: function postLink(scope, element, attrs){
-                        var bookTitle = element.find('.book-data__title')
+                        var bookTitle = element.find('.book-data__title');
                         bookTitle.on('click', function(){
-                            element.find(".book-data__notes-list").toggle("hide");
+                            var notesList = element.find('.book-data__notes-list');
+                            notesList.toggle("hide");
                         });
                     },
-                    templateUrl: 'book-single.html'
+                    templateUrl: 'book-single.html',
+                    controller: 'SingleBookController',
+                    controllerAs: 'vm'
                 };
            })
 

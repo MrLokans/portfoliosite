@@ -7,7 +7,7 @@
          'andersblog.books.services',
          'andersblog.books.directives',
          ]);
-    angular.module('andersblog.books.controllers', []);
+    angular.module('andersblog.books.controllers', ['ngDialog']);
     angular.module('andersblog.books.services', ['ngResource']);
     angular.module('andersblog.books.directives', []);
 })();

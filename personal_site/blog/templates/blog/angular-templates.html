@@ -82,8 +82,8 @@
 {% verbatim %}
 <script type="text/ng-template" id="book-single.html">
     <div class="book-data-container">
-        <h3 class="book-data__title">
-            <a ng-href="/api/books/{{ book.id }}">{{ book.title }}</a>
+        <h3 class="book-data__title" id="book-header-{{ book.id }}">
+            <a ng-click="openDetails();">{{ book.title }}</a>
         </h3>
         <div class="progress">
               <div class="progress-bar" bookNoterole="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
@@ -99,11 +99,19 @@
 {% endverbatim %}
 
 {% verbatim %}
+<script type="text/ng-template" id="book-detail-edit.html">
+   <h1>Book details</h1>
+   <input id="book-details__title" type="text" ng-model="book.title">
+   <hr>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
 <script type="text/ng-template" id="books-list.html">
    <h1>Books</h1>
     <!-- Book list -->
-    <ul class="book-list" ng-repeat="book in books">
-        <book-single book="book"></book-single>
+    <ul class="book-list">
+        <book-single book="book" ng-click="testClick()" ng-repeat="book in books"></book-single>
     </ul>
 </script>
 {% endverbatim %}
