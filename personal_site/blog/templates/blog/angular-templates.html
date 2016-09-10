@@ -90,9 +90,8 @@
                 {{ book.percentage}}%
             </div>
         </div>
-
-        <div class="book-data__notes-list" ng-repeat="note in book.notes">
-            <book-note note="note"></book-note>
+        <div class="book-data__notes-list">
+            <book-note note="note" ng-repeat="note in book.notes"></book-note>
         </div>
 
     </div>
