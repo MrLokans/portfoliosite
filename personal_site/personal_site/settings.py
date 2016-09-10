@@ -156,4 +156,5 @@ BOWER_INSTALLED_APPS = (
     'marked#0.3.6',
     'angular-resource#1.5.8',
     'angular-route#1.5.8',
+    'ng-dialog#0.6.4',
 )
