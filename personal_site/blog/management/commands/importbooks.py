@@ -1,5 +1,7 @@
 import logging
 
+from tqdm import tqdm
+
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction, IntegrityError
 
@@ -37,8 +39,8 @@ class Command(BaseCommand):
             raise CommandError(msg.format(str(e)))
 
         books = downloader.get_books(book_count=kwargs['count'])
-
-        book_dicts = [book.to_dict() for book in books]
+        book_dicts = [book.to_dict()
+                      for book in tqdm(books, total=kwargs['count'])]
 
         try:
             with transaction.atomic():
