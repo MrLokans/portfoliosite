@@ -145,6 +145,16 @@ MARKDOWNX_IMAGE_MAX_SIZE = {'size': (500, 500), 'quality': 90}
 MARKDOWNX_EDITOR_RESIZABLE = True
 # Update editor's height to inner content height while typing
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
 
 BOWER_COMPONENTS_ROOT = BASE_DIR
 

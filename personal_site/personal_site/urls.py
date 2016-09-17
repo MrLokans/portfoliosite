@@ -1,5 +1,10 @@
 from django.conf.urls import include, url
 from django.contrib import admin
+from rest_framework_jwt.views import (
+    obtain_jwt_token,
+    refresh_jwt_token,
+    verify_jwt_token
+)
 
 from blog.views import LoginView, LogoutView, SignUpView, NewPost
 
@@ -17,4 +22,8 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
+
+    url(r'^api/token-auth', obtain_jwt_token),
+    url(r'^api/token-refresh/', refresh_jwt_token),
+    url(r'^api/token-verify/', verify_jwt_token),
 ]

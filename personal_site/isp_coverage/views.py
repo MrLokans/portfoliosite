@@ -17,10 +17,10 @@ UNET_CSV_FILE = os.path.abspath(os.path.join('isp_coverage', "unet.csv"))
 class MapView(TemplateView):
 
     def get(self, request):
-        with open(UNET_CSV_FILE, 'r') as csv_file:
-            reader = csv.reader(csv_file)
-            unet_dots = [row for row in reader if row[0] != "longitude"]
-        return render(request, "isp_map.html", {"unet_coords": unet_dots})
+        # with open(UNET_CSV_FILE, 'r') as csv_file:
+        #     reader = csv.reader(csv_file)
+        #     unet_dots = [row for row in reader if row[0] != "longitude"]
+        return render(request, "isp_map.html", {"unet_coords": []})
 
 
 def get_provider_dots(request):

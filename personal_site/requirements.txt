@@ -6,6 +6,7 @@ django-crispy-forms==1.6.0
 django-filter==0.13.0
 django-markdownx==1.5
 djangorestframework==3.3.3
+djangorestframework-jwt==1.8.0
 dropbox==6.2
 geopy==1.11.0
 gevent==1.1.1
