@@ -7,6 +7,7 @@ from rest_framework_jwt.views import (
 )
 
 from blog.views import LoginView, LogoutView, SignUpView, NewPost
+from personal_site.api.views import CreateUserView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -23,7 +24,9 @@ urlpatterns = [
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
 
+    url(r'^api/register', CreateUserView.as_view(), name='api-register'),
+
     url(r'^api/token-auth', obtain_jwt_token),
-    url(r'^api/token-refresh/', refresh_jwt_token),
-    url(r'^api/token-verify/', verify_jwt_token),
+    url(r'^api/token-refresh', refresh_jwt_token),
+    url(r'^api/token-verify', verify_jwt_token),
 ]

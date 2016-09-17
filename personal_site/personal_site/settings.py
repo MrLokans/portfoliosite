@@ -123,6 +123,8 @@ STATICFILES_FINDERS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+LOGIN_REDIRECT_URL = '/'
+
 # Markdownify
 MARKDOWNX_MARKDOWNIFY_FUNCTION = 'markdownx.utils.markdownify'
 
