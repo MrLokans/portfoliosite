@@ -1,14 +1,14 @@
 (function(){
     'use strict';
-    angular.module('application.auth', [
-      'application.auth.controllers',
-      'application.auth.interceptors',
-      'application.auth.services'
+    angular.module('andersblog.auth', [
+      // 'andersblog.auth.controllers',
+      // 'andersblog.auth.interceptors',
+      'andersblog.auth.services'
     ]);
 
-    angular.module('application.auth.controllers', []);
-    angular.module('application.auth.interceptors', []);
-    angular.module('application.auth.services', []);
+    // angular.module('andersblog.auth.controllers', []);
+    // angular.module('andersblog.auth.interceptors', []);
+    angular.module('andersblog.auth.services', []);
 
 })();
 

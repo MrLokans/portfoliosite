@@ -1,7 +1,8 @@
 (function(){
     'use strict';
 
-    angular.module('andersblog', ['andersblog.posts',
+    angular.module('andersblog', ['andersblog.auth',
+                                  'andersblog.posts',
                                   'andersblog.books',
                                   'andersblog.config',
                                   'andersblog.routes',
