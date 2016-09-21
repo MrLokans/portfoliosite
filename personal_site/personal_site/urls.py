@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
 
+    url(r'^api/technologies/', include('about_me.urls', namespace='tech-api')),
+
     url(r'^api/register', CreateUserView.as_view(), name='api-register'),
 
     url(r'^api/token-auth', obtain_jwt_token),
