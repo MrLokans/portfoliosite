@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'blog',
     'books',
     'isp_coverage',
+    'about_me',
 )
 
 MIDDLEWARE_CLASSES = (
