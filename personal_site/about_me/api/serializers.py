@@ -16,10 +16,12 @@ class TechnologySerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    technologies = TechnologySerializer(many=True)
 
     class Meta:
         model = Project
         fields = [
             'title',
-            'description'
+            'description',
+            'technologies'
         ]
