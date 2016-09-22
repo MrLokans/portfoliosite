@@ -24,7 +24,8 @@ urlpatterns = [
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
 
-    url(r'^api/technologies/', include('about_me.urls', namespace='tech-api')),
+    url(r'^api/technologies/', include('about_me.urls_technologies', namespace='tech-api')),
+    url(r'^api/projects/', include('about_me.urls_projects', namespace='projects-api')),
 
     url(r'^api/register', CreateUserView.as_view(), name='api-register'),
 
