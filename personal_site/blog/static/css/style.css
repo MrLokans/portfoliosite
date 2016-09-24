@@ -1,10 +1,10 @@
 *{
     /*border: 1px solid red;*/
-    color: #747704;
+    color: #1A1C00;
 }
 
 body {
-    font-family: 'Open Sans Condensed', sans-serif;
+    font-family: 'Merriweather', serif;
     font-weight: 300;
 }
 
@@ -78,4 +78,20 @@ ul.nav li.menu-item a:hover{
 
 #book-details__title {
     width: 90%;
+}
+
+.skills-wrapper {
+}
+
+.skill-container {
+    display: inline-block;
+    max-width: 150px;
+    border: 1px solid #E0E0E0;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.skill-title {
+    text-align: center;
 }

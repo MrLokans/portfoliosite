@@ -61,16 +61,21 @@
 
 {% verbatim %}
 <script type="text/ng-template" id="skill-list.html">
-    <h4>Skills</h4>
-    <skill-single skill="skill" ng-repeat="skill in skills"></skill-single>
+    <hr>
+    <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
+    <div class="skills-wrapper">
+        <skill-single skill="skill" ng-repeat="skill in skills"></skill-single>
+    </div>
 </script>
 {% endverbatim %}
 
 {% verbatim %}
 <script type="text/ng-template" id="skill-single.html">
-    <div class="skill-title">{{ skill.name }}</div>
-    <div class="skill-mastery">{{ skill.mastery_level }} / 3</div>
-    <div class="skill-description">{{ skill.general_description }} / 3</div>
+    <div class="skill-container">
+        <div class="skill-title"><strong>{{ skill.name }}</strong></div>
+        <br>
+        <div class="skill-mastery"><strong>{{ skill.mastery_level | skillLevelizer }}</strong></div>
+    </div>
 </script>
 {% endverbatim %}
 
