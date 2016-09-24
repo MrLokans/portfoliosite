@@ -6,10 +6,12 @@
                                   'andersblog.books',
                                   'andersblog.about_me',
                                   'andersblog.config',
+                                  'andersblog.filters',
                                   'andersblog.routes',
                                     ]);
     angular.module('andersblog.config', []);
     angular.module('andersblog.routes', ['ngRoute']);
+    angular.module('andersblog.filters', []);
 
     angular.module('andersblog').run(run);
 
