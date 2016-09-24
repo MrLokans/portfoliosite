@@ -4,6 +4,7 @@
     angular.module('andersblog', ['andersblog.auth',
                                   'andersblog.posts',
                                   'andersblog.books',
+                                  'andersblog.about_me',
                                   'andersblog.config',
                                   'andersblog.routes',
                                     ]);
