@@ -8,7 +8,7 @@ from about_me.models import Project, Technology
 class TechnologyListAPIView(ListAPIView):
     serializer_class = TechnologySerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    ordering = 'name'
+    ordering = '-mastery_level'
     search_fields = ['name', ]
 
     def get_queryset(self):
