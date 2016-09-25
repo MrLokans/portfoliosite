@@ -8,6 +8,14 @@
                     }
                 };
                 return Skills;
+           })
+           .service('Projects', function($http){
+                var Projects = {
+                    getProjects: function(){
+                        return $http.get('/api/projects/');
+                    }
+                };
+                return Projects;
            });
 
 })();
