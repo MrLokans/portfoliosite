@@ -95,3 +95,10 @@ ul.nav li.menu-item a:hover{
 .skill-title {
     text-align: center;
 }
+
+.project-technology {
+    color: #393939;
+    font-size: 0.65em;
+    display: inline-block;
+    padding-left: 6px;
+}

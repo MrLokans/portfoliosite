@@ -12,7 +12,7 @@
         $routeProvider
             .when('/projects', {
                 templateUrl: 'projects.html',
-                controller: "ProjectController"
+                controller: "ProjectsController"
             })
             .when('/blog', {
                 templateUrl: 'blog.html',

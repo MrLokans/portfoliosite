@@ -1,22 +1,4 @@
 {% verbatim %}
-<script type="text/ng-template" id="post-list.html">
-    <div class="post-container" ng-repeat="post in posts">
-        <div class="post-title-container">
-            <div></div>
-            <div>
-                <a href="http://github.com/MrLokans">MrLokans</a>
-            </div>
-            <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
-            <div></div>
-        </div> 
-        <div class="post-content">
-            {{ post.content }}
-        </div>
-    </div>
-</script>
-{% endverbatim %}
-
-{% verbatim %}
 <script type="text/ng-template" id="about_me.html">
     <h3>About me</h3>
     <p>I am a great linux lover and python language fan. I love good music, well-directed movies, and delicious food.</p>
@@ -40,17 +22,21 @@
 
 {% verbatim %}
 <script type="text/ng-template" id="projects.html">
-        <div class="projects" ng-repeat="project in projects">
-            <div class="project-block">
+        <div class="projects-list">
+            <div class="project-block" ng-repeat="project in projects">
                 <h4 class="project-header">
                     <a href="{{ project.url }}">{{ project.title }}</a>
                 </h4>
                 <div class="project-description">
                     {{ project.description }}
-                    <br/>
+                    <div class="project-technolgies-list">
+                        <div class="project-technology" ng-repeat="skill in project.technologies">
+                            {{ skill.name }}
+                        </div>
+                    </div>
                     <div class="project-links" ng-repeat="link in project.links">
-                        <strong class="project-link-title">{{ link.type }}</strong>
-                        <a class="project-link" href="{{ link.url }}">{{ link.url }}</a>
+                        <strong class="project-link-title">{{ link.name }}</strong>
+                        <a class="project-link" href="{{ link.url }}">{{ link.link }}</a>
                     </div>
                 </div>
             </div>
@@ -58,6 +44,8 @@
     </div>
 </script>
 {% endverbatim %}
+
+{# ------------SKILL TEMPLATES----------- #}
 
 {% verbatim %}
 <script type="text/ng-template" id="skill-list.html">
@@ -79,12 +67,32 @@
 </script>
 {% endverbatim %}
 
+{# ------------POST TEMPLATES----------- #}
+{% verbatim %}
+<script type="text/ng-template" id="post-list.html">
+    <div class="post-container" ng-repeat="post in posts">
+        <div class="post-title-container">
+            <div></div>
+            <div>
+                <a href="http://github.com/MrLokans">MrLokans</a>
+            </div>
+            <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
+            <div></div>
+        </div> 
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
 {% verbatim %}
 <script type="text/ng-template" id="blog.html">
     <post-list></post-list>
 </script>
 {% endverbatim %}
 
+{# ------------BOOK TEMPLATES----------- #}
 
 {% verbatim %}
 <script type="text/ng-template" id="books.html">
