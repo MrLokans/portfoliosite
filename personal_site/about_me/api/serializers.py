@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from about_me.models import Technology, Project
+from about_me.models import Technology, Project, ProjectLink
 
 
 class TechnologySerializer(serializers.ModelSerializer):
@@ -15,13 +15,26 @@ class TechnologySerializer(serializers.ModelSerializer):
         ]
 
 
+class ProjectLinkSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProjectLink
+
+        fields = [
+            'link',
+            'name'
+        ]
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     technologies = TechnologySerializer(many=True)
+    links = ProjectLinkSerializer(many=True)
 
     class Meta:
         model = Project
         fields = [
             'title',
             'description',
-            'technologies'
+            'technologies',
+            'links'
         ]

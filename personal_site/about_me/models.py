@@ -41,7 +41,8 @@ class ProjectLink(models.Model):
     """Model, representing single link of the project"""
     link = models.URLField()
     name = models.CharField(max_length=120)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE,
+                                related_name='links')
 
     def __str__(self):
         return '<Project: {} - {}>'.format(self.project, self.link)
