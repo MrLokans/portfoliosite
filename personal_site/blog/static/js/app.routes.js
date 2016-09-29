@@ -17,6 +17,10 @@
             .when('/blog', {
                 templateUrl: 'blog.html',
             })
+            .when('/blog/:post_id', {
+                templateUrl: 'post-details.html',
+                controller: "PostDetailController",
+            })
             .when('/books', {
                 templateUrl: 'books.html'
             })

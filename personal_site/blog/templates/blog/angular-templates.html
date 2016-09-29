@@ -74,7 +74,7 @@
         <div class="post-title-container">
             <div></div>
             <div>
-                <a href="http://github.com/MrLokans">MrLokans</a>
+                <a href="#/blog/{{ post.id }}">MrLokans</a>
             </div>
             <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
             <div></div>
@@ -91,6 +91,23 @@
     <post-list></post-list>
 </script>
 {% endverbatim %}
+
+{% verbatim %}
+<script type="text/ng-template" id="post-details.html">
+    <div class="post-title-container">
+        <div></div>
+        <div>
+            <a href="#">MrLokans</a>
+        </div>
+        <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
+        <div></div>
+    </div> 
+    <div class="post-content">
+        {{ post.content }}
+    </div>
+</script>
+{% endverbatim %}
+
 
 {# ------------BOOK TEMPLATES----------- #}
 
