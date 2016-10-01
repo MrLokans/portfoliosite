@@ -24,6 +24,10 @@
             .when('/books', {
                 templateUrl: 'books.html'
             })
+            .when('/books/:book_id', {
+                templateUrl: 'book-details.html',
+                controller: "BookDetailController",
+            })
             .when('/about_me', {
                 templateUrl: 'about_me.html',
                 controller: "AboutController",

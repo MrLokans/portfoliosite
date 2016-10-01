@@ -156,6 +156,17 @@
 {% endverbatim %}
 
 {% verbatim %}
+<script type="text/ng-template" id="book-details.html">
+    <h2>{{ book.title }}</h2>
+    <img ng-click="openDetails();" src="/static/img/edit.png" alt="edit-icon"
+         class="col-md-1 book-edit-icon">
+    <div class="book-data__notes-list">
+        <book-note note="note" ng-repeat="note in book.notes"></book-note>
+    </div>
+</script>
+{% endverbatim %}
+
+{% verbatim %}
 <script type="text/ng-template" id="books-list.html">
    <h1>Books</h1>
     <!-- Book list -->

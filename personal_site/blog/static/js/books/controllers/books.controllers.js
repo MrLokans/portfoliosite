@@ -1,8 +1,14 @@
 (function(){
     'use strict';
     angular.module('andersblog.books.directives')
-           .controller('SingleBookController', ['$scope', '$http', 'ngDialog', function($scope, $http, ngDialog){
+           .controller('SingleBookController', SingleBookController)
+           .controller('BookDetailController', BookDetailController);
 
+           SingleBookController.$inject = ['$scope', '$http', 'Books'];
+           BookDetailController.$inject = ['$scope', '$http', '$routeParams', 'ngDialog', 'Books'];
+
+
+            function SingleBookController($scope, $http, Books){
                 $scope.save = function(){
                     var book = $scope.book;
                     var id = book.id;
@@ -12,6 +18,10 @@
                         'notes': book.notes,
                     });
                 };
+            }
+
+            function BookDetailController($scope, $http, $routeParams, ngDialog, Books){
+                $scope.book = Books.get({id: $routeParams.book_id});
 
                 $scope.openDetails = function(){
                     var options = {
@@ -21,6 +31,5 @@
                     };
                     ngDialog.open(options);
                 };
-
-           }]);
+            }
 })();
