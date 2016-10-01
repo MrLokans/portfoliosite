@@ -18,8 +18,9 @@
                         book: '=',
                     },
                     link: function postLink(scope, element, attrs){
-                        var bookTitle = element.find('.book-data__title');
-                        bookTitle.on('click', function(){
+                        var collapseNotesBlock = element.find('.collapse-notes');
+                        collapseNotesBlock.on('click', function(e){
+                            e.preventDefault();
                             var notesList = element.find('.book-data__notes-list');
                             notesList.toggle("hide");
                         });

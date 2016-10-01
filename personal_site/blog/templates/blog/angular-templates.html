@@ -129,9 +129,10 @@
 {% verbatim %}
 <script type="text/ng-template" id="book-single.html">
     <div class="book-data-container">
-        <h3 class="book-data__title" id="book-header-{{ book.id }}">
-            <a ng-click="openDetails();">{{ book.title }}</a>
-        </h3>
+        <div class="book-data__title row">
+            <a href="#/books/{{ book.id }}" class="col-md-11"><h3>{{ book.title }}<h3></a>
+            <div class="collapse-notes"><a href="#">-</a></div>
+        </div>
         <div class="progress">
               <div class="progress-bar" bookNoterole="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
                 {{ book.percentage}}%
