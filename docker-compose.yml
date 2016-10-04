@@ -1,23 +1,23 @@
 version: '2'
 
 services:
-  db:
-    image: postgres:9.4
+  database:
+    image: postgres:9.4.4
     env_file: .env
     volumes:
       - ./dockerfiles/pgdata:/var/lib/postgresql/data/pgdata
     ports:
-      - "5433:5432"
+      - "15432:5432"
 
-  kv_storage:
+  redis:
     image: redis
     ports:
-      - "6379:6379"
+      - "16379:6379"
 
   web:
-    build: ./
+    build: ./personal_site
     env_file: .env
-    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "2222:22"
       - "8000:8000"
+    command: gunicorn -w 2 -b :8000 personal_site.wsgi:application
