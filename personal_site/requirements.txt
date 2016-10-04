@@ -12,6 +12,7 @@ geopy==1.11.0
 gevent==1.1.1
 greenlet==0.4.10
 grequests==0.3.0
+gunicorn==19.6.0
 lxml==3.6.0
 Markdown==2.6.6
 Pillow==3.2.0
@@ -24,4 +25,4 @@ tqdm==4.8.4
 
 # Own libraries
 moonreader_tools
-git+git://github.com/MrLokans/isp-coverage-map@0.9.2.1
+git+git://github.com/MrLokans/isp-coverage-map@0.4.7
