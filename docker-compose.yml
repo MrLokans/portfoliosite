@@ -17,7 +17,15 @@ services:
   web:
     build: ./personal_site
     env_file: .env
-    ports:
-      - "2222:22"
-      - "8000:8000"
+    volumes:
+      - ./personal_site/staticfiles:/app/static
     command: gunicorn -w 2 -b :8000 personal_site.wsgi:application
+
+  nginx:
+    build: ./nginx/
+    ports:
+      - "8080:80"
+    volumes_from:
+      - web
+    links:
+      - web
