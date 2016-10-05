@@ -8,7 +8,8 @@
                                   'andersblog.config',
                                   'andersblog.filters',
                                   'andersblog.routes',
-                                    ]);
+                                  'angulartics',
+                                  'angulartics.google.analytics']);
     angular.module('andersblog.config', []);
     angular.module('andersblog.routes', ['ngRoute']);
     angular.module('andersblog.filters', []);

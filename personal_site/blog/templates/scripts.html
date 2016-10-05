@@ -1,10 +1,15 @@
 <!-- {% load staticfiles %} -->
 {% load static %}
+
 <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'angular/angular.js' %}"></script>
 <script src="{% static 'angular-resource/angular-resource.min.js' %}"></script>
 <script src="{% static 'angular-route/angular-route.min.js' %}"></script>
 <script src="{% static 'ng-dialog/js/ngDialog.js' %}"></script>
+<script src="{% static 'angulartics/dist/angulartics.min.js' %}"></script>
+<script src="{% static 'angulartics-google-analytics/dist/angulartics-ga.min.js' %}"></script>
+{% include "analytics.html" %}
+
 <script src="{% static 'prism/prism.js' %}"></script>
 <script src="{% static 'marked/marked.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'vendor/vis.min.js' %}"></script>
