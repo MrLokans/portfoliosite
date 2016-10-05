@@ -6,7 +6,8 @@ from rest_framework_jwt.views import (
     verify_jwt_token
 )
 
-from blog.views import LoginView, LogoutView, SignUpView, NewPost
+from siteauth.views import LoginView, LogoutView, SignUpView
+from blog.views import NewPost
 from blog.feed import LatestPostsFeed
 from personal_site.api.views import CreateUserView
 

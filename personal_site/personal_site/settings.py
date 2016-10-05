@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'djangobower',
 
     # Custom apps
+    'siteauth',
     'blog',
     'books',
     'isp_coverage',
