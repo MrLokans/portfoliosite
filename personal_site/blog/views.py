@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseForbidden
 from django.views.generic import TemplateView, View, FormView, CreateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse_lazy
 from .forms import FlatPageForm
 from blog.models import Post
 from blog.forms import UserForm, RegistrationForm
-from books.models import Book
 
 
 User = get_user_model()

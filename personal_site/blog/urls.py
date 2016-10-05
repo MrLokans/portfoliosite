@@ -1,6 +1,6 @@
 from django.conf.urls import include, url
 
-from .views import HomeView, AboutMeView, ProjectView
+from .views import HomeView, ProjectView
 
 urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
