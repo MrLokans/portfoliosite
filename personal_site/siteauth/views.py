@@ -46,7 +46,7 @@ class SignUpView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         user = authenticate(username=form.cleaned_data.get('username'),
-                            password=form.cleaned_data.get('username'))
+                            password=form.cleaned_data.get('password]'))
         if user:
             login(self.request, user)
         return super().form_valid(form)
