@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.views.generic import CreateView, FormView, TemplateView
@@ -33,7 +34,11 @@ class LogoutView(TemplateView):
         return redirect('/')
 
 
-class SignUpView(CreateView):
+class SignUpView(LoginRequiredMixin, CreateView):
+    """Sign Up view is closed temporariliy
+    """
+    login_url = reverse_lazy('login')
+    redirect_field_name = 'redirect_to'
     form_class = RegistrationForm
     model = User
     success_url = reverse_lazy('home')
