@@ -36,7 +36,6 @@ INSTALLED_APPS = (
     'siteauth',
     'blog',
     'books',
-    'isp_coverage',
     'about_me',
 )
 
