@@ -1,6 +1,5 @@
 beautifulsoup4==4.4.1
 bs4==0.0.1
-by-isp-coverage==0.2.5
 Django==1.10.2
 django-bower==5.2.0
 django-crispy-forms==1.6.0
@@ -9,7 +8,6 @@ django-markdownx==1.5
 djangorestframework==3.4.7
 djangorestframework-jwt==1.8.0
 dropbox==6.2
-geopy==1.11.0
 gevent==1.1.1
 greenlet==0.4.10
 grequests==0.3.0
@@ -27,4 +25,3 @@ urllib3==1.15.1
 
 # Own libraries
 moonreader_tools
-git+git://github.com/MrLokans/isp-coverage-map@0.4.7
