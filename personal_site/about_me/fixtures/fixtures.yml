@@ -1,0 +1,135 @@
+- model: about_me.technology
+  pk: 1
+  fields: {name: Python, general_description: Python programming language, mastery_level: 3}
+- model: about_me.technology
+  pk: 2
+  fields: {name: Ansible, general_description: 'Ansible is a radically simple IT automation
+      engine that automates cloud provisioning, configuration management, application
+      deployment, intra-service orchestration, and many other IT needs.', mastery_level: 2}
+- model: about_me.technology
+  pk: 3
+  fields: {name: Docker, general_description: "Docker is the world\u2019s leading
+      software containerization platform", mastery_level: 2}
+- model: about_me.technology
+  pk: 4
+  fields: {name: Golang, general_description: Go programming language, mastery_level: 1}
+- model: about_me.technology
+  pk: 5
+  fields: {name: Vanilla JS, general_description: 'JavaScript, the good, the bad,
+      and the ugly.', mastery_level: 2}
+- model: about_me.technology
+  pk: 6
+  fields: {name: AngularJS 1, general_description: MVVM Javascript Framework, mastery_level: 2}
+- model: about_me.technology
+  pk: 7
+  fields: {name: Django, general_description: Web-framework for perfectionists with
+      deadlines ;), mastery_level: 2}
+- model: about_me.technology
+  pk: 8
+  fields: {name: RabbitMQ, general_description: Message-broker, mastery_level: 1}
+- model: about_me.technology
+  pk: 9
+  fields: {name: Redis, general_description: In-memory cache, mastery_level: 1}
+- model: about_me.technology
+  pk: 10
+  fields: {name: Bash, general_description: De-facto scripting language in *nix systems,
+    mastery_level: 1}
+- model: about_me.technology
+  pk: 11
+  fields: {name: Flask, general_description: Python microframework, mastery_level: 1}
+- model: about_me.technology
+  pk: 12
+  fields: {name: SQLAlchemy, general_description: Python ORM, mastery_level: 2}
+- model: about_me.technology
+  pk: 13
+  fields: {name: Bootstrap, general_description: CSS framework providing responsible
+      layout, mastery_level: 2}
+- model: about_me.technology
+  pk: 14
+  fields: {name: docker-compose, general_description: Docker ochestration tool, mastery_level: 2}
+- model: about_me.technology
+  pk: 15
+  fields: {name: pytest, general_description: Advanced python testing framework.,
+    mastery_level: 2}
+- model: about_me.technology
+  pk: 16
+  fields: {name: unittest, general_description: Python's built-in unit-testing framework.,
+    mastery_level: 2}
+- model: about_me.technology
+  pk: 17
+  fields: {name: restframework, general_description: Django battery providing eloquent
+      way of building REST APIs, mastery_level: 2}
+- model: about_me.technology
+  pk: 18
+  fields: {name: Vagrant, general_description: CLI for virtualization tools., mastery_level: 2}
+- model: about_me.project
+  pk: 1
+  fields:
+    title: Moonreader Tools
+    description: "A library handling parsing MoonReader statistics and notes files.\r\nIt
+      is capable of reading files from local files and from dropbox."
+    technologies: [1, 16]
+- model: about_me.project
+  pk: 2
+  fields:
+    title: Personal Site
+    description: This site itself. Personal blog, portfolio site, playground for experiments.
+    technologies: [1, 2, 3, 6, 7, 14, 17]
+- model: about_me.project
+  pk: 3
+  fields:
+    title: ISP coverage Map
+    description: Map of Belarus high-speed internet access. Each point represents
+      house with some ISP availability. Blue represents ByFly \'s XPON, red - MTS
+      ethernet, purple - Unet.by.
+    technologies: [1]
+- model: about_me.project
+  pk: 4
+  fields:
+    title: Currency TelegramBot
+    description: Telegram bot that displays currency exchange rates for several belarusian
+      banks and also shows some pretty plots.
+    technologies: [1]
+- model: about_me.project
+  pk: 5
+  fields:
+    title: IT Books spider
+    description: Scrapy spider that parsers diffrent sites like onliner.by and grabs
+      latest book data, in search of cheap IT books.
+    technologies: [1]
+- model: about_me.project
+  pk: 6
+  fields:
+    title: Koshelek.org exporter
+    description: Exports CSV data about incomes and spendings from <a href="https://koshelek.org/">koshelek.org</a>
+      website
+    technologies: [1]
+- model: about_me.project
+  pk: 7
+  fields:
+    title: VK API
+    description: Simple library that wraps requests to <a href="https://new.vk.com/dev/methods">vkontakte
+      API</a>.
+    technologies: [1]
+- model: about_me.projectlink
+  pk: 1
+  fields: {link: 'https://github.com/mrlokans/moonreader_tools', name: github, project: 1}
+- model: about_me.projectlink
+  pk: 2
+  fields: {link: 'https://pypi.python.org/pypi/moonreader_tools', name: PyPI, project: 1}
+- model: about_me.projectlink
+  pk: 3
+  fields: {link: 'https://github.com/MrLokans/vk_api', name: Github, project: 7}
+- model: about_me.projectlink
+  pk: 4
+  fields: {link: 'https://github.com/MrLokans/KoshelekOrgExporter', name: Github,
+    project: 6}
+- model: about_me.projectlink
+  pk: 5
+  fields: {link: 'https://github.com/MrLokans/IT_books_spider', name: Github, project: 5}
+- model: about_me.projectlink
+  pk: 6
+  fields: {link: 'https://github.com/MrLokans/bank_telegram_bot', name: Github, project: 4}
+- model: about_me.projectlink
+  pk: 7
+  fields: {link: 'https://github.com/MrLokans/portfoliosite', name: Github, project: 2}

@@ -25,3 +25,4 @@ urllib3==1.15.1
 
 # Own libraries
 moonreader_tools
+PyYAML==3.12
