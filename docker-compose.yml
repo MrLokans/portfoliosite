@@ -37,7 +37,7 @@ services:
     volumes:
       - ./personal_site:/personalsite
       - ./personal_site/staticfiles:/static
-    command: bash -c "python manage.py migrate; gunicorn -w 4 -b :8000 personal_site.wsgi:application"
+    command: bash -c "python manage.py loaddata about_me/fixures/fixtures.yml python manage.py migrate; gunicorn -w 4 -b :8000 personal_site.wsgi:application"
     ports:
       - "8001:8000"
     links:

@@ -1,7 +1,7 @@
 from .base import *
 
 
-SECRET_KEY = os.environ.get('PERSONAL_SITE_SECRET_KEY')
+SECRET_KEY = os.environ.get('PERSONAL_SITE_SECRET_KEY', 'jenkins')
 DEBUG = True
 
 ALLOWED_HOSTS = ("*",)
