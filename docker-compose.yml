@@ -1,11 +1,22 @@
 version: '2'
 
 services:
+  # This container is data-only
+  # It is used to provide storage volume for the postgres container
+  # https://medium.com/@ramangupta/why-docker-data-containers-are-good-589b3c6c749e
+  postgres_data:
+    image: alpine:latest
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/pgdata
+    command: "true"
+
   database:
     image: postgres:9.4.4
-    env_file: .env
-    volumes:
-      - ./dockerfiles/pgdata:/var/lib/postgresql/data/pgdata
+    env_file: ./docker-env/db.env
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes_from:
+      - postgres_data
     ports:
       - "15432:5432"
 
