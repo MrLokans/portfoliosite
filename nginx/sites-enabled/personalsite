@@ -1,11 +1,11 @@
 server {
 
     listen 80;
-    server_name example.org;
+    server_name mrlokans.com;
     charset utf-8;
 
     location /static {
-        alias /app/static;
+        alias /static;
     }
 
     location / {
