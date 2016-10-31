@@ -1,0 +1,22 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.ssh.insert_key = false
+
+    config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+
+    config.vm.define "andersblog-centos" do |app|
+        app.vm.hostname = "andersblog.dev"
+        app.vm.box = "centos/7"
+        app.vm.network :private_network, ip: "192.168.91.91"
+        app.vm.network "forwarded_port", guest: 80, host: 8080
+    end
+
+    config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "playbook.yml"
+        # ansible.inventory_path = "inventory.dev"
+        ansible.sudo = true
+    end
+end
