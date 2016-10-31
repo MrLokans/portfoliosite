@@ -1,0 +1,5 @@
+- name: Checkout repository
+  git:
+    repo: "{{ project_repo }}"
+    dest: "{{ project_root }}"
+    refspec: "{{ project_revision }}"

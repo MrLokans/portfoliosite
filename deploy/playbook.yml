@@ -1,5 +1,16 @@
 ---
 - hosts: andersblog-centos
 
+  vars:
+    project_user: personalsite
+    project_group: personalsite
+    project_root: /opt/personalsite/
+    project_repo: https://github.com/MrLokans/portfoliosite
+    project_revision: master
+    project_venv: "{{ project_root }}/venv"
+
   roles:
     - epel
+    - git
+    - _users
+    - _checkout
