@@ -3,3 +3,6 @@
     repo: "{{ project_repo }}"
     dest: "{{ project_root }}"
     refspec: "{{ project_revision }}"
+
+- name: Set correct permissions for the directory
+  file: name={{ project_root }} owner={{ project_user }} group={{ project_group }}

@@ -1,0 +1,17 @@
+---
+- name: Check installed python version
+  command: "{{ python_executable }} -V"
+  register: python_output
+  ignore_errors: true
+
+- include: tasks/install.yml
+  when: python_output.failed is defined and python_output.failed
+
+- name: Download pip install script
+  get_url: url=https://bootstrap.pypa.io/get-pip.py dest=.
+
+- name: Install PIP
+  command: /usr/local/bin/python3.5 get-pip.py
+
+- name: Install virtualenv package
+  command: /usr/local/bin/pip install virtualenv
