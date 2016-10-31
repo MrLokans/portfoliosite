@@ -11,6 +11,7 @@
 
   roles:
     - epel
+    - supervisord
     - git
     - _users
     - _checkout
