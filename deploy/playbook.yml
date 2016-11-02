@@ -4,14 +4,17 @@
   vars:
     project_user: personalsite
     project_group: personalsite
-    project_root: /opt/personalsite/
+    project_root: /opt/personalsite
     project_repo: https://github.com/MrLokans/portfoliosite
     project_revision: master
     project_venv: "{{ project_root }}/venv"
+    project_static_dir: /opt/personalsite/static/
+    project_gunicorn_socket: unix:/tmp/gunicorn-personalsite.sock
 
   roles:
     - epel
     - supervisord
     - git
+    - python3.5
     - _users
-    - _checkout
+    - project
