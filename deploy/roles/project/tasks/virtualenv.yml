@@ -1,0 +1,3 @@
+- name: Create virtualenv
+  command: /usr/local/bin/python3.5 -m virtualenv {{ project_venv }}
+          creates={{ project_venv }}
