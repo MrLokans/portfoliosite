@@ -17,6 +17,8 @@
     chdir: "{{ project_root }}/personal_site"
   become: yes
   become_user: "{{ project_user }}"
+  environment:
+    PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
 
 - name: Run migrations
   command: "{{ project_venv }}/bin/python3.5 manage.py migrate --run-syncdb"
@@ -24,6 +26,8 @@
     chdir: "{{ project_root }}/personal_site"
   become: yes
   become_user: "{{ project_user }}"
+  environment:
+    PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
 
 - name: Collect static files
   command: "{{ project_venv }}/bin/python manage.py collectstatic"
@@ -31,6 +35,8 @@
     chdir: "{{ project_root }}/personal_site"
   become: yes
   become_user: "{{ project_user }}"
+  environment:
+    PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
 
 - name: Copy nginx configuration file
   template: src=mrlokans.com.conf.j2
