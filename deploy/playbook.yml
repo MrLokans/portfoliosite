@@ -8,8 +8,17 @@
     project_repo: https://github.com/MrLokans/portfoliosite
     project_revision: master
     project_venv: "{{ project_root }}/venv"
-    project_static_dir: /opt/personalsite/static/
+    project_static_dir: /opt/personalsite/static
     project_gunicorn_socket: unix:/tmp/gunicorn-personalsite.sock
+
+    use_tls: false
+    ssl_certificate: /etc/letsencrypt/live/mrlokans.com/fullchain.pem;
+    ssl_certificate_key: /etc/letsencrypt/live/mrlokans.com/privkey.pem;
+
+    # Only for development
+    project_secret_key: SOMESECRETKEY!@#@!#@!$
+    project_domain_name: mrlokans.com
+
 
   roles:
     - epel
