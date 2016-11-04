@@ -16,14 +16,15 @@
     ssl_certificate_key: /etc/letsencrypt/live/mrlokans.com/privkey.pem;
 
     # Only for development
-    project_secret_key: SOMESECRETKEY!@#@!#@!$
+    project_secret_key: SOMESECRETKEY
+    project_settings_module: personal_site.settings.prod
     project_domain_name: mrlokans.com
 
 
   roles:
-    - epel
-    - supervisord
-    - git
-    - python3.5
-    - _users
+    # - epel
+    # - supervisord
+    # - git
+    # - python3.5
+    # - _users
     - project

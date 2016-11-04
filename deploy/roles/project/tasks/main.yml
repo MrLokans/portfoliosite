@@ -19,32 +19,47 @@
   become_user: "{{ project_user }}"
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
+    DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
 
 - name: Run migrations
   command: "{{ project_venv }}/bin/python3.5 manage.py migrate --run-syncdb"
   args:
     chdir: "{{ project_root }}/personal_site"
-  become: yes
-  become_user: "{{ project_user }}"
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
+    DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
+  become: yes
+  become_user: "{{ project_user }}"
 
-- name: Collect static files
-  command: "{{ project_venv }}/bin/python manage.py collectstatic"
+- name: Install front-end dependencies with bower
+  command: "{{ project_venv }}/bin/python manage.py bower install"
   args:
     chdir: "{{ project_root }}/personal_site"
   become: yes
   become_user: "{{ project_user }}"
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
+    DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
+    STATIC_ROOT: "{{ project_static_dir }}"
 
-- name: Copy nginx configuration file
-  template: src=mrlokans.com.conf.j2
-            dest=/etc/nginx/sites-available/mrlokans.com
+- name: Collect static files
+  command: "{{ project_venv }}/bin/python manage.py collectstatic --noinput"
+  args:
+    chdir: "{{ project_root }}/personal_site"
+  become: yes
+  become_user: "{{ project_user }}"
+  environment:
+    PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
+    DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
+    STATIC_ROOT: "{{ project_static_dir }}"
 
-- name: Create symlink to config
-  file: src=/etc/nginx/sites-available/mrlokans.com
-        dest=/etc/nginx/sites-enabled/mrlokans.com
-        state=link
+# - name: Copy nginx configuration file
+#   template: src=mrlokans.com.conf.j2
+#             dest=/etc/nginx/sites-available/mrlokans.com
+
+# - name: Create symlink to config
+#   file: src=/etc/nginx/sites-available/mrlokans.com
+#         dest=/etc/nginx/sites-enabled/mrlokans.com
+#         state=link
 
 # - name: Restart nginx
