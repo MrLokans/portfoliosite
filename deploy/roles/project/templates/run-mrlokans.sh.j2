@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd {{ project_root }}/personal_site/
+{{ project_venv }}/bin/gunicorn personal_site.wsgi -c {{ project_root }}/mrlokans.gunicorn.py

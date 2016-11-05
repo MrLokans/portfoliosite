@@ -1,6 +1,6 @@
 - include: checkout.yml
 - include: virtualenv.yml
-# - include: gunicorn.yml
+- include: gunicorn.yml
 
 - name: Install binary dependencies
   yum: name={{ item }} state=present
@@ -52,6 +52,33 @@
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
     STATIC_DIR: "{{ project_static_dir }}"
+
+- name: Copy launching script
+  template: src=run-mrlokans.sh.j2
+            dest={{ project_root }}/run-mrlokans.sh
+
+- name: Set executice bit on script
+  file: name={{ project_root }}/run-mrlokans.sh
+        mode="u+x,g+x"
+
+- name: Copy supervisord config
+  template: src=personalsite-supervisord.conf.j2
+            dest=/etc/supervisord.d/personalsite.conf
+
+- name: Restart supervisord
+  service: name=supervisord
+           state=restarted
+
+- name: Stop process if it is running
+  supervisorctl: name={{ project_supervisor_name }}
+                 state=stopped
+                 config=/etc/supervisord.conf
+  ignore_errors: true
+
+- name: Start process
+  supervisorctl: name={{ project_supervisor_name }}
+                 state=started
+                 config=/etc/supervisord.conf
 
 # - name: Copy nginx configuration file
 #   template: src=mrlokans.com.conf.j2
