@@ -1,0 +1,14 @@
+---
+
+- name: Download repo file
+  # Unsafe operation, requires downloading shell script from the untrusted URL
+  get_url: url={{ node_repo }} dest=/tmp/nodejs.repo
+
+- name: Install nodejs repository
+  command: bash /tmp/nodejs.repo
+
+- name: Install nodejs
+  yum: name=nodejs state=latest update_cache=yes
+
+- name: Install bower globally
+  npm: name=bower global=true state=present
