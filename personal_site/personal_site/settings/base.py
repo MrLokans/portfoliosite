@@ -4,9 +4,6 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ''
 
@@ -98,7 +95,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.environ.get('STATIC_DIR',
                              os.path.join(BASE_DIR,
                                           'staticfiles'))
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
