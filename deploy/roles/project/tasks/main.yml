@@ -40,7 +40,7 @@
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
-    STATIC_ROOT: "{{ project_static_dir }}"
+    STATIC_DIR: "{{ project_static_dir }}"
 
 - name: Collect static files
   command: "{{ project_venv }}/bin/python manage.py collectstatic --noinput"
@@ -51,7 +51,7 @@
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
-    STATIC_ROOT: "{{ project_static_dir }}"
+    STATIC_DIR: "{{ project_static_dir }}"
 
 # - name: Copy nginx configuration file
 #   template: src=mrlokans.com.conf.j2

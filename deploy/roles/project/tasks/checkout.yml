@@ -5,4 +5,6 @@
     refspec: "{{ project_revision }}"
 
 - name: Set correct permissions for the directory
-  file: name={{ project_root }} owner={{ project_user }} group={{ project_group }}
+  file: name={{ project_root }}
+        recurse=yes
+        owner={{ project_user }} group={{ project_group }}
