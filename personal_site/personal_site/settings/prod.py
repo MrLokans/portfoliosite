@@ -5,7 +5,10 @@ from .base import *
 
 SECRET_KEY = os.environ.get('PERSONAL_SITE_SECRET_KEY')
 DEBUG = False
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*.mrlokans.com', ]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 DATABASES = {
     'default': {
