@@ -9,9 +9,12 @@
     project_revision: master
     project_venv: "{{ project_root }}/venv"
     project_static_dir: /opt/personalsite/static
-    project_gunicorn_socket: unix:/tmp/gunicorn-personalsite.sock
+    project_gunicorn_bind: 127.0.0.1:8099
+
+    project_configuration: dev
 
     use_tls: false
+    dh_key_path: /etc/nginx/ssl/dh.key
     ssl_certificate: /etc/letsencrypt/live/mrlokans.com/fullchain.pem;
     ssl_certificate_key: /etc/letsencrypt/live/mrlokans.com/privkey.pem;
 
@@ -30,4 +33,5 @@
     # - python3.5
     # - _users
     # - node
+    - nginx
     - project
