@@ -1,3 +1,5 @@
-bind = '{{ project_gunicorn_socket }}'
-workers = 2 
+import multiprocessing
+
+bind = "{{ project_gunicorn_bind }}"
+workers = multiprocessing.cpu_count() * 2 + 1
 timeout = 30
