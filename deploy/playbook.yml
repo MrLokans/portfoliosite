@@ -20,18 +20,18 @@
 
     # Only for development
     project_secret_key: SOMESECRETKEY
-    project_settings_module: personal_site.settings.prod
+    project_settings_module: personal_site.settings.jenkins
     project_domain_name: mrlokans.com
 
     project_supervisor_name: mrlokans
 
 
   roles:
-    # - epel
-    # - supervisord
-    # - git
-    # - python3.5
-    # - _users
-    # - node
+    - epel
+    - supervisord
+    - git
+    - python3.5
+    - _users
+    - node
     - nginx
     - project

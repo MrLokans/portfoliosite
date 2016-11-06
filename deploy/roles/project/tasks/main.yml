@@ -54,10 +54,6 @@
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
     STATIC_DIR: "{{ project_static_dir }}"
 
-- name: Set executice bit on script
-  file: name={{ project_root }}/run-mrlokans.sh
-        mode="u+x,g+x"
-
 - name: Copy supervisord config
   template: src=personalsite-supervisord.conf.j2
             dest=/etc/supervisord.d/personalsite.conf
@@ -86,8 +82,8 @@
 - name: Create DH key if not exists
   command: openssl dhparam -out {{ dh_key_path }} 2048
            creates={{ dh_key_path }}
-  # when:
-  #   project_configuration=='prod'
+  when:
+    project_configuration=='prod'
 
 - name: Copy nginx configuration file
   template: src=mrlokans.com.dev.conf.j2
@@ -105,6 +101,9 @@
   file: src=/etc/nginx/sites-available/mrlokans.com.conf
         dest=/etc/nginx/sites-enabled/mrlokans.com.conf
         state=link
+
+- name: Enable HTTPD connection settings in SELinux
+  command: setsebool httpd_can_network_connect 1
 
 - name: Restart nginx
   service: name=nginx state=restarted
