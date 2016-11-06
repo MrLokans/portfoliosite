@@ -10,6 +10,7 @@
     - libjpeg-devel
     - libxslt-devel
     - zlib-devel
+    - openssl
 
 - name: Install required dependencies
   command: "{{ project_venv }}/bin/pip install -r {{ project_root }}/requirements/base-requirements.txt"  
@@ -53,10 +54,6 @@
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
     STATIC_DIR: "{{ project_static_dir }}"
 
-- name: Copy launching script
-  template: src=run-mrlokans.sh.j2
-            dest={{ project_root }}/run-mrlokans.sh
-
 - name: Set executice bit on script
   file: name={{ project_root }}/run-mrlokans.sh
         mode="u+x,g+x"
@@ -64,6 +61,8 @@
 - name: Copy supervisord config
   template: src=personalsite-supervisord.conf.j2
             dest=/etc/supervisord.d/personalsite.conf
+  become: yes
+  become_user: "{{ project_user }}"
 
 - name: Restart supervisord
   service: name=supervisord
@@ -80,13 +79,32 @@
                  state=started
                  config=/etc/supervisord.conf
 
-# - name: Copy nginx configuration file
-#   template: src=mrlokans.com.conf.j2
-#             dest=/etc/nginx/sites-available/mrlokans.com
+- name: Create directory for DH key
+  file: dest={{ dh_key_path | dirname }}
+        state=directory
 
-# - name: Create symlink to config
-#   file: src=/etc/nginx/sites-available/mrlokans.com
-#         dest=/etc/nginx/sites-enabled/mrlokans.com
-#         state=link
+- name: Create DH key if not exists
+  command: openssl dhparam -out {{ dh_key_path }} 2048
+           creates={{ dh_key_path }}
+  # when:
+  #   project_configuration=='prod'
 
-# - name: Restart nginx
+- name: Copy nginx configuration file
+  template: src=mrlokans.com.dev.conf.j2
+            dest=/etc/nginx/sites-available/mrlokans.com.conf
+  when:
+    project_configuration=='dev'
+
+- name: Copy nginx configuration file
+  template: src=mrlokans.com.prod.conf.j2
+            dest=/etc/nginx/sites-available/mrlokans.com.conf
+  when:
+    project_configuration=='prod'
+
+- name: Create symlink to config
+  file: src=/etc/nginx/sites-available/mrlokans.com.conf
+        dest=/etc/nginx/sites-enabled/mrlokans.com.conf
+        state=link
+
+- name: Restart nginx
+  service: name=nginx state=restarted
