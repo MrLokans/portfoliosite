@@ -85,6 +85,15 @@
   when:
     project_configuration=='prod'
 
+- name: Copy 404 and 500 error pages templates
+  template: src={{ item }}.html.j2
+            dest={{ project_static_dir }}/{{ item }}.html
+  with_items:
+    - 404
+    - 50x
+  become: yes
+  become_user: "{{ project_user }}"
+
 - name: Copy nginx configuration file
   template: src=mrlokans.com.dev.conf.j2
             dest=/etc/nginx/sites-available/mrlokans.com.conf
