@@ -1,4 +1,3 @@
-{% verbatim %}
 <script type="text/ng-template" id="about_me.html">
     <h3>About me</h3>
     <p>I am a great linux lover and python language fan. I love good music, well-directed movies, and delicious food.</p>
@@ -18,9 +17,7 @@
     <h3>Working time:</h3>
     <div id="work-timeline"></div>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="projects.html">
         <div class="projects-list">
             <div class="project-block" ng-repeat="project in projects">
@@ -43,11 +40,7 @@
         </div>
     </div>
 </script>
-{% endverbatim %}
 
-{# ------------SKILL TEMPLATES----------- #}
-
-{% verbatim %}
 <script type="text/ng-template" id="skill-list.html">
     <hr>
     <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
@@ -55,9 +48,7 @@
         <skill-single skill="skill" ng-repeat="skill in skills"></skill-single>
     </div>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="skill-single.html">
     <div class="skill-container">
         <div class="skill-title"><strong>{{ skill.name }}</strong></div>
@@ -65,10 +56,7 @@
         <div class="skill-mastery"><strong>{{ skill.mastery_level | skillLevelizer }}</strong></div>
     </div>
 </script>
-{% endverbatim %}
 
-{# ------------POST TEMPLATES----------- #}
-{% verbatim %}
 <script type="text/ng-template" id="post-list.html">
     <div class="post-container" ng-repeat="post in posts">
         <div class="post-title-container">
@@ -84,15 +72,11 @@
         </div>
     </div>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="blog.html">
     <post-list></post-list>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="post-details.html">
     <div class="post-title-container">
         <div></div>
@@ -106,27 +90,19 @@
         {{ post.content }}
     </div>
 </script>
-{% endverbatim %}
 
 
-{# ------------BOOK TEMPLATES----------- #}
-
-{% verbatim %}
 <script type="text/ng-template" id="books.html">
     <books-list></books-list>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="books-note.html">
     <div class="book-data__single-note">
         <blockquote>{{ note.text }}</blockquote>
     </div>
 </script>
-{% endverbatim %}
 
 
-{% verbatim %}
 <script type="text/ng-template" id="book-single.html">
     <div class="book-data-container">
         <div class="book-data__title row">
@@ -144,9 +120,7 @@
 
     </div>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="book-detail-edit.html">
    <h1>Book details</h1>
    <input id="book-details__title" type="text" ng-model="book.title">
@@ -154,9 +128,7 @@
 
    <button ng-click="save()">Save</button>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="book-details.html">
     <h2>{{ book.title }}</h2>
     <img ng-click="openDetails();" src="/static/img/edit.png" alt="edit-icon"
@@ -165,9 +137,7 @@
         <book-note note="note" ng-repeat="note in book.notes"></book-note>
     </div>
 </script>
-{% endverbatim %}
 
-{% verbatim %}
 <script type="text/ng-template" id="books-list.html">
    <h1>Books</h1>
     <!-- Book list -->
@@ -175,4 +145,3 @@
         <book-single book="book" ng-click="testClick()" ng-repeat="book in books"></book-single>
     </ul>
 </script>
-{% endverbatim %}
