@@ -1,0 +1,119 @@
+*{
+    /*border: 1px solid red;*/
+    color: #1A1C00;
+}
+
+.scroll-to-top {
+    position: fixed;
+    /*min-width: 150px;*/
+    min-width: 10%;
+    height: 100%;
+}
+
+.scroll-to-top:hover{
+    border-right: 1px solid #DFDFDF;
+}
+
+body {
+    font-family: 'Merriweather', serif;
+    font-weight: 300;
+}
+
+.text-muted {
+    color: #BCBBB8;
+}
+
+.text-thin {
+    font-weight: 100;
+}
+
+
+.title-logo {
+    margin-top: 20px;
+    height: 128px;
+}
+
+.title-name {
+    margin-top: 45px;
+}
+
+.title-job {
+}
+
+.post-container{
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #EBEBEB;
+}
+
+.post-title-container {
+    margin-bottom: 10px;
+}
+
+.portfolio-project {
+    max-width: 400px;
+}
+
+.img-center {
+    margin: 0 auto;
+}
+
+.post-tags{
+    margin-bottom: 10px;
+}
+
+.post-tag {
+    margin-right: 10px;
+}
+
+ul.nav li.menu-item a{
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #4559FF;
+}
+
+ul.nav li.menu-item a:hover{
+    font-size: 14px;
+    background-color: #ffffff;
+    color: #131F85;
+}
+
+.project-block {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #F1F1F1;
+}
+
+.project-block .project-links {
+    padding-top: 5px;
+}
+
+#book-details__title {
+    width: 90%;
+}
+
+.book-edit-icon{
+    margin-top: 10px;
+}
+
+.skills-wrapper {
+}
+
+.skill-container {
+    display: inline-block;
+    max-width: 150px;
+    border: 1px solid #E0E0E0;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.skill-title {
+    text-align: center;
+}
+
+.project-technology {
+    color: #393939;
+    font-size: 0.65em;
+    display: inline-block;
+    padding-left: 6px;
+}

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MrLokans</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="/"></base>
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="bower_components/ng-dialog/css/ngDialog-theme-default.min.css">
+    <link rel="stylesheet" href="css/prism.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="js/vendor/vis.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+</head>
+    
+<body ng-app="andersblog">
+    <div class="container">
+        <div class="row" id="header">
+            <div class="col-md-6 col-xs-6 portfolio-logo">
+                <a href="/">
+                    <img src="img/logo.png" alt="logo" class="title-logo ing-responsive">
+                </a>
+            </div>
+            <div class="col-md-6 col-xs-6 text-right text-uppercase">
+                <h1 class="title-name">Anders Lokans</h1>
+                <h4 class="title-job">Python Ninja</h4>
+            </div>
+        </div>    
+
+        <div class="row" id="menu-splitter">
+            <hr/>
+        </div>
+
+    </div>
+
+    <div class="scroll-to-top"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="menu-item"><a href="#about_me">About me</a></li>
+                    <li class="menu-item"><a href="#blog">Blog</a></li>
+                    <li class="menu-item"><a href="#projects">Projects list</a></li>
+                    <li class="menu-item"><a href="#books">Book quotes</a></li>
+
+                    {% if user.is_authenticated %}
+                        <li class="menu-item"><a href="{% url 'logout' %}">Log Out</a></li>
+                    {% else %}
+                        <li class="menu-item"><a href="{% url 'signup' %}">Sign up</a></li>
+                        <li class="menu-item"><a href="{% url 'login' %}">Log In</a></li>
+                    {% endif %}
+                </ul>
+
+            </div>
+            
+            <div class="col-md-8">
+                <div ng-view></div>
+            </div>
+
+            <div class="col-md-2">
+            <!-- Right menu goes here -->
+            </div>
+
+
+            <footer class="footer">
+                <div class="row">
+                    <div class="col-md-12" id="FeaturedWorkText">
+                        <h2>Featured Work</h2>
+                    </div>
+                </div>
+
+                <div class="row project-list text-center">
+                    <div class="col-md-4 portfolio-project">
+                        <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
+                        <h3 class="text-uppercase">Appify</h3>
+                        <a href="#">https://github.com/MrLokans</a>
+                    </div>
+
+                    <div class="col-md-4 portfolio-project">
+                        <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
+                        <h3 class="text-uppercase">Appify</h3>
+                        <a href="#">https://github.com/MrLokans</a>
+                    </div>
+
+                    <div class="col-md-4 portfolio-project">
+                        <img src="http://placehold.it/250x150" alt="" class="img-responsive img-center">
+                        <h3 class="text-uppercase">Appify</h3>
+                        <a href="#">https://github.com/MrLokans</a>
+                    </div>
+
+                </div>
+            </footer>
+        </div>
+    
+
+    </div>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/ng-dialog/js/ngDialog.js"></script>
+    <script src="bower_components/angulartics/dist/angulartics.min.js"></script>
+    <script src="bower_components/angulartics-google-analytics/dist/angulartics-ga.min.js"></script>
+    <script src="js/scroll.js"></script>
+    <script src="bower_components/prism/prism.js"></script>
+    <script src="bower_components/marked/marked.min.js"></script>
+    <script type="text/javascript" src="js/vendor/vis.min.js"></script>
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-85248738-1', 'auto');
+
+    </script>
+
+    <script src="js/post.js"></script>
+
+    <script src="js/app/app.js"></script>
+    <script src="js/app/app.config.js"></script>
+    <script src="js/app/app.routes.js"></script>
+    <script src="js/app/app.filters.js"></script>
+
+    <script src="js/app/posts/posts.module.js"></script>
+    <script src="js/app/posts/controllers/posts.controller.js"></script>
+    <script src="js/app/posts/services/posts.service.js"></script>
+    <script src="js/app/posts/directives/post-list.directive.js"></script>
+
+    <script src="js/app/books/books.module.js"></script>
+    <script src="js/app/books/controllers/books.controllers.js"></script>
+    <script src="js/app/books/services/books.services.js"></script>
+    <script src="js/app/books/directives/books.directives.js"></script>
+
+    <script src="js/app/auth/auth.module.js"></script>
+    <script src="js/app/auth/interceptors/auth.interceptors.js"></script>
+    <script src="js/app/auth/services/auth.services.js"></script>
+
+
+    <script src="js/app/about_me/about_me.module.js"></script>
+    <script src="js/app/about_me/controllers/about_me.controllers.js"></script>
+    <script src="js/app/about_me/services/about_me.services.js"></script>
+    <script src="js/app/about_me/directives/about_me.directives.js"></script>
+
+    <script type="text/ng-template" id="about_me.html">
+        <h3>About me</h3>
+        <p>I am a great linux lover and python language fan. I love good music, well-directed movies, and delicious food.</p>
+
+        <skill-list></skill-list>  
+
+        <div class="social-networks">
+            <h4>Links</h4>
+            <div class="social-network" id="linkedin-social">
+                <a href="https://www.linkedin.com/in/andrei-sviridov-9619b9109">LinkedIn</a>
+            </div>
+            <div class="social-network" id="github-social">
+                <a href="https://github.com/MrLokans">Github</a>
+            </div>
+        </div>
+        
+        <h3>Working time:</h3>
+        <div id="work-timeline"></div>
+    </script>
+
+    <script type="text/ng-template" id="projects.html">
+            <div class="projects-list">
+                <div class="project-block" ng-repeat="project in projects">
+                    <h4 class="project-header">
+                        <a href="{{ project.url }}">{{ project.title }}</a>
+                    </h4>
+                    <div class="project-description">
+                        {{ project.description }}
+                        <div class="project-technolgies-list">
+                            <div class="project-technology" ng-repeat="skill in project.technologies">
+                                {{ skill.name }}
+                            </div>
+                        </div>
+                        <div class="project-links" ng-repeat="link in project.links">
+                            <strong class="project-link-title">{{ link.name }}</strong>
+                            <a class="project-link" href="{{ link.url }}">{{ link.link }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skill-list.html">
+        <hr>
+        <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
+        <div class="skills-wrapper">
+            <skill-single skill="skill" ng-repeat="skill in skills"></skill-single>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skill-single.html">
+        <div class="skill-container">
+            <div class="skill-title"><strong>{{ skill.name }}</strong></div>
+            <br>
+            <div class="skill-mastery"><strong>{{ skill.mastery_level | skillLevelizer }}</strong></div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="post-list.html">
+        <div class="post-container" ng-repeat="post in posts">
+            <div class="post-title-container">
+                <div></div>
+                <div>
+                    <a href="#/blog/{{ post.id }}">MrLokans</a>
+                </div>
+                <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
+                <div></div>
+            </div> 
+            <div class="post-content">
+                {{ post.content }}
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="blog.html">
+        <post-list></post-list>
+    </script>
+
+    <script type="text/ng-template" id="post-details.html">
+        <div class="post-title-container">
+            <div></div>
+            <div>
+                <a href="#">MrLokans</a>
+            </div>
+            <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
+            <div></div>
+        </div> 
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="books.html">
+        <books-list></books-list>
+    </script>
+
+    <script type="text/ng-template" id="books-note.html">
+        <div class="book-data__single-note">
+            <blockquote>{{ note.text }}</blockquote>
+        </div>
+    </script>
+
+
+    <script type="text/ng-template" id="book-single.html">
+        <div class="book-data-container">
+            <div class="book-data__title row">
+                <a href="#/books/{{ book.id }}" class="col-md-11"><h3>{{ book.title }}<h3></a>
+                <div class="collapse-notes"><a href="#">-</a></div>
+            </div>
+            <div class="progress">
+                  <div class="progress-bar" bookNoterole="progressbar" aria-valuenow="{{ book.percentage}}" aria-valuemin="0" aria-valuemax="100" style="width:{{ book.percentage}}%">
+                    {{ book.percentage}}%
+                </div>
+            </div>
+            <div class="book-data__notes-list">
+                <book-note note="note" ng-repeat="note in book.notes"></book-note>
+            </div>
+
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="book-detail-edit.html">
+       <h1>Book details</h1>
+       <input id="book-details__title" type="text" ng-model="book.title">
+       <hr>
+
+       <button ng-click="save()">Save</button>
+    </script>
+
+    <script type="text/ng-template" id="book-details.html">
+        <h2>{{ book.title }}</h2>
+        <img ng-click="openDetails();" src="/static/img/edit.png" alt="edit-icon"
+             class="col-md-1 book-edit-icon">
+        <div class="book-data__notes-list">
+            <book-note note="note" ng-repeat="note in book.notes"></book-note>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="books-list.html">
+       <h1>Books</h1>
+        <!-- Book list -->
+        <ul class="book-list">
+            <book-single book="book" ng-click="testClick()" ng-repeat="book in books"></book-single>
+        </ul>
+    </script>
+
+</body>

@@ -1,0 +1,24 @@
+{
+  "name": "mrlokans.com",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrLokans/portfoliosite.git"
+  },
+  "author": "MrLokans",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MrLokans/portfoliosite/issues"
+  },
+  "homepage": "https://github.com/MrLokans/portfoliosite#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.13",
+    "gulp-minify": "0.0.14"
+  }
+}
