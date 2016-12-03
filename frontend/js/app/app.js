@@ -1,7 +1,8 @@
 (function(){
     'use strict';
 
-    angular.module('andersblog', ['andersblog.auth',
+    angular.module('andersblog', ['andersblog.constants',
+                                  'andersblog.auth',
                                   'andersblog.posts',
                                   'andersblog.books',
                                   'andersblog.about_me',
@@ -10,6 +11,7 @@
                                   'andersblog.routes',
                                   'angulartics',
                                   'angulartics.google.analytics']);
+    angular.module('andersblog.constants', []);
     angular.module('andersblog.config', []);
     angular.module('andersblog.routes', ['ngRoute']);
     angular.module('andersblog.filters', []);
