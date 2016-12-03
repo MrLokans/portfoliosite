@@ -4,7 +4,9 @@ var concat = require('gulp-concat');
 var rename = require('gulp-rename');
 var watch = require('gulp-watch');
 var cleanCSS = require('gulp-clean-css');
+var inject = require('gulp-inject');
 var ngConstant = require('gulp-ng-constant');
+var bowerFiles = require('main-bower-files');
  
 
 gulp.task('concat-angular', function(){
@@ -25,6 +27,12 @@ gulp.task('config:dev', function(){
             }))
         .pipe(rename('app.constants.js'))
         .pipe(gulp.dest('./js/app/'));
+});
+
+gulp.task('inject-bower', function(){
+    gulp.src('./index.html')
+        .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+        .pipe(gulp.dest('./build'));
 });
 
 gulp.task('default', function(){

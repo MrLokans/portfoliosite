@@ -20,9 +20,11 @@
     "gulp": "^3.9.1",
     "gulp-clean-css": "^2.0.13",
     "gulp-concat": "^2.6.1",
+    "gulp-inject": "^4.1.0",
     "gulp-minify": "0.0.14",
     "gulp-ng-constant": "2.0.0-2",
     "gulp-rename": "^1.2.2",
-    "gulp-watch": "^4.3.11"
+    "gulp-watch": "^4.3.11",
+    "main-bower-files": "^2.13.1"
   }
 }
