@@ -4,7 +4,7 @@
            .controller('SingleBookController', SingleBookController)
            .controller('BookDetailController', BookDetailController);
 
-           SingleBookController.$inject = ['$scope', '$http', 'Books'];
+           SingleBookController.$inject = ['$scope', '$http', 'Books', 'ENDPOINT'];
            BookDetailController.$inject = ['$scope', '$http', '$routeParams', 'ngDialog', 'Books'];
 
 
@@ -12,7 +12,7 @@
                 $scope.save = function(){
                     var book = $scope.book;
                     var id = book.id;
-                    return $http.put('/api/books/' + id + '/', {
+                    return $http.put(ENDPOINT.API_URL + '/api/books/' + id + '/', {
                         'title': book.title,
                         'percentage': book.percentage,
                         'notes': book.notes,
