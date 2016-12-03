@@ -16,4 +16,4 @@ class Post(models.Model):
     content = MarkdownxField()
     # Deal withmany to many fields
     created = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
