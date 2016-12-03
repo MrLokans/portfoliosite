@@ -1,9 +1,14 @@
 from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import (
+    AllowAny,
+    IsAdminUser,
+    IsAuthenticated,
+)
 
-from blog.models import Post
 from blog.api.serializers import PostListSerializer
+from blog.api.permissions import IsAdminOrReadOnly
+from blog.models import Post
 
 
 class PostListAPIView(generics.ListAPIView):
@@ -22,9 +27,13 @@ class PostListAPIView(generics.ListAPIView):
 
 class PostDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAdminOrReadOnly, )
     serializer_class = PostListSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        """
+        API endpoint for post removal.
+        Allowed only for staff users
+        """
+        return super().destroy(request, *args, **kwargs)
 
-class PostDeleteAPIView(generics.DestroyAPIView):
-    model = Post

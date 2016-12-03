@@ -1,9 +1,13 @@
+from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
 
 from rest_framework.test import APIClient
 
 from blog.models import Post
+
+
+User = get_user_model()
 
 
 class BaseCase(TestCase):
@@ -76,6 +80,23 @@ class BlogAPITests(BaseCase):
         detail_url = reverse('blog-api:detail',
                              kwargs={'pk': p1.id})
         response = self.api_client.delete(detail_url, format='json')
-        print(response)
+
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Post.objects.count(), posts_count)
+
+    def test_admin_is_able_to_delete_blog_post(self):
+        p1 = Post.objects.create(author='SomeAuthor',
+                                 title='Some Post',
+                                 content='Some Content')
+        posts_count = Post.objects.count()
+
+        User.objects.create_superuser('admin', 'admin@ad.com',
+                                      password='123123')
+        self.api_client.login(username='admin', password='123123')
+
+        detail_url = reverse('blog-api:detail',
+                             kwargs={'pk': p1.id})
+        response = self.api_client.delete(detail_url, format='json')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Post.objects.count(), posts_count - 1)
