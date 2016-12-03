@@ -13,3 +13,13 @@ class PostListSerializer(serializers.ModelSerializer):
             'content',
             'created',
         ]
+
+
+class PostCreateSerializer(serializers.ModelSerializer):
+
+    created = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = ('id', 'created', 'author', 'title', 'content')
+        read_only_fields = ('id', )

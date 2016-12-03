@@ -1,28 +1,38 @@
 from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import (
-    AllowAny,
-    IsAdminUser,
-    IsAuthenticated,
-)
 
-from blog.api.serializers import PostListSerializer
+from blog.api.serializers import (
+    PostCreateSerializer,
+    PostListSerializer,
+)
 from blog.api.permissions import IsAdminOrReadOnly
 from blog.models import Post
 
 
-class PostListAPIView(generics.ListAPIView):
-    serializer_class = PostListSerializer
+class PostListAPIView(generics.ListCreateAPIView):
     filter_backends = [SearchFilter, OrderingFilter]
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAdminOrReadOnly, )
     ordering = 'title'
-    # TODO: search by book's notes content
     search_fields = ['title', ]
-    # pagination_class = BookPageNumberPagination
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return PostListSerializer
+        elif self.request.method == 'POST':
+            return PostCreateSerializer
+        else:
+            raise ValueError("Unknown request method: {}"
+                             .format(self.request.method))
 
     def get_queryset(self):
         qs = Post.objects.all()
         return qs
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create blog post
+        """
+        return super().create(request, *args, **kwargs)
 
 
 class PostDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
@@ -36,4 +46,3 @@ class PostDetailsAPIView(generics.RetrieveUpdateDestroyAPIView):
         Allowed only for staff users
         """
         return super().destroy(request, *args, **kwargs)
-

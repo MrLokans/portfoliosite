@@ -14,6 +14,7 @@ class BaseCase(TestCase):
 
     def setUp(self):
         self.api_client = APIClient()
+        self.api_client.logout()
         super().setUp()
 
     def assertKeysEqual(self, dict_like, keys_list):
@@ -100,3 +101,40 @@ class BlogAPITests(BaseCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Post.objects.count(), posts_count - 1)
+
+    def test_it_is_possible_to_create_post_for_admin_user(self):
+        posts_count = Post.objects.count()
+        posts_url = reverse('blog-api:list')
+
+        User.objects.create_superuser('admin', 'admin@ad.com',
+                                      password='123123')
+        self.api_client.login(username='admin', password='123123')
+
+        payload = {
+            'author': 'Some Unique Author',
+            'title': 'New Title',
+            'content': 'Some **markdown** content'
+        }
+
+        response = self.api_client.post(posts_url, payload)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Post.objects.count(), posts_count + 1)
+        post_id = response.data['id']
+        post = Post.objects.get(id=post_id)
+        self.assertEqual(post.content, 'Some **markdown** content')
+        self.assertEqual(post.title, 'New Title')
+        self.assertEqual(post.author, 'Some Unique Author')
+
+    def test_it_is_impossible_to_create_post_for_anon(self):
+        posts_count = Post.objects.count()
+        posts_url = reverse('blog-api:list')
+
+        payload = {
+            'author': 'Some Unique Author',
+            'title': 'New Title',
+            'content': 'Some **markdown** content'
+        }
+
+        response = self.api_client.post(posts_url, payload)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Post.objects.count(), posts_count)
