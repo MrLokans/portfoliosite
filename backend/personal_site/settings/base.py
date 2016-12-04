@@ -26,7 +26,6 @@ INSTALLED_APPS = (
     'rest_framework',
     'markdownx',
     'crispy_forms',
-    'djangobower',
 
     # Custom apps
     'siteauth',
