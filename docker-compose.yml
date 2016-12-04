@@ -17,6 +17,17 @@ services:
       - ./backend/:/app/
     working_dir: /app/
 
+  frontend:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    entrypoint: /entrypoint.sh
+    volumes:
+      - ./frontend/:/static/
+    ports:
+      - "8090:8090"
+
 volumes:
   frontend-data:
   database-data:
