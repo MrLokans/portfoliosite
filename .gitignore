@@ -4,6 +4,8 @@
 **/__pycache__
 **/*.pyc
 **/creds
+**/staticfiles
 personal_site/logs/*
 personal_site/daemons/*
-
+bower_components
+node_modules
