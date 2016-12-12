@@ -6,7 +6,7 @@
            .controller('PostDetailController', PostDetailController);
 
     PostListController.$inject = ['$scope', '$http', 'Subscription'];
-    PostListController.$inject = ['$scope', '$http', '$routeParams', 'Posts'];
+    PostDetailController.$inject = ['$scope', '$http', '$routeParams', 'Posts'];
     
 
     function PostListController($scope, $http, Subscription){
