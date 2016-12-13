@@ -28,6 +28,18 @@ services:
     ports:
       - "8090:8090"
 
+  nginx:
+    restart: always
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes_from:
+      - frontend
+    depends_on:
+      - frontend
+
 volumes:
   frontend-data:
   database-data:
