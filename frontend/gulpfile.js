@@ -68,14 +68,14 @@ gulp.task('inject:bower', function(){
 });
 
 gulp.task('build-dev', function(){
-    gulp.run('copy:bower-components');
     gulp.run('config:dev');
     gulp.run('concat:angular');
     gulp.run('inject:bower');
 });
-
 gulp.task('default', function(){
     // gulp.run('clean:build');
+    gulp.run('copy:bower-components');
+
     gulp.run('build-dev')
     gulp.run('webserver');
     gulp.watch('js/**', function(event){
