@@ -96,7 +96,6 @@ STATIC_ROOT = os.environ.get('STATIC_DIR',
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

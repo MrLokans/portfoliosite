@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e
-cd /static/
+cd /frontend/
 gulp
 exec "$@"

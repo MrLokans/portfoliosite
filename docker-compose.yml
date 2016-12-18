@@ -15,6 +15,10 @@ services:
       - "8000:8000"
     volumes:
       - ./backend/:/app/
+      - ./static/:/app/personal_site/staticfiles
+    # Enables PDB debugging
+    stdin_open: true
+    tty: true
     working_dir: /app/
 
   frontend:
@@ -24,7 +28,7 @@ services:
       dockerfile: Dockerfile
     entrypoint: /entrypoint.sh
     volumes:
-      - ./frontend/:/static/
+      - ./frontend/:/frontend/
     ports:
       - "8090:8090"
 
@@ -35,10 +39,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:80"
+    volumes:
+      - ./static/:/static/
     volumes_from:
       - frontend
     depends_on:
+      - backend
       - frontend
+    links:
+      - backend
 
 volumes:
   frontend-data:
