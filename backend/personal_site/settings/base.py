@@ -27,7 +27,6 @@ INSTALLED_APPS = (
     'markdownx',
 
     # Custom apps
-    'siteauth',
     'blog',
     'books',
     'about_me',
