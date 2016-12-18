@@ -6,7 +6,6 @@ from rest_framework_jwt.views import (
     verify_jwt_token
 )
 
-from siteauth.views import LoginView, LogoutView, SignUpView
 from blog.feed import LatestPostsFeed
 from personal_site.api.views import CreateUserView
 
@@ -14,17 +13,15 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('books.urls')),
     url(r'^markdownx/', include('markdownx.urls')),
-    # url(r'^$', HomeView.as_view(), name="home"),
-    url(r'^login$', LoginView.as_view(), name="login"),
-    url(r'^logout$', LogoutView.as_view(), name="logout"),
-    url(r'^signup$', SignUpView.as_view(), name="signup"),
-
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(r'^api-auth/', include('rest_framework.urls',
+                               namespace='rest_framework')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
 
-    url(r'^api/technologies/', include('about_me.urls_technologies', namespace='tech-api')),
-    url(r'^api/projects/', include('about_me.urls_projects', namespace='projects-api')),
+    url(r'^api/technologies/', include('about_me.urls_technologies',
+                                       namespace='tech-api')),
+    url(r'^api/projects/', include('about_me.urls_projects',
+                                   namespace='projects-api')),
 
     url(r'^api/register', CreateUserView.as_view(), name='api-register'),
 
