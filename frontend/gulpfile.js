@@ -13,7 +13,7 @@ var bowerFiles = require('main-bower-files');
 
 
 gulp.task('clean:build', function(){
-    return gulp.src('./build/', {read: false}).pipe(clean());
+    return gulp.src('./build/**/*.*', {read: false}).pipe(clean());
 });
  
 
@@ -99,6 +99,7 @@ gulp.task('copy:assets', ['copy:bower-components',
 gulp.task('default', ['clean:build'], function(){
     gulp.run('copy:assets');
     gulp.run('build-dev');
+    gulp.run('webserver');
     gulp.watch('js/**', function(event){
         gulp.run('build-dev');
     });
