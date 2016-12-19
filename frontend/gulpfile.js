@@ -13,7 +13,6 @@ var bowerFiles = require('main-bower-files');
 
 
 gulp.task('clean:build', function(){
-    // TODO: this causes errors due to async removal
     return gulp.src('./build/', {read: false}).pipe(clean());
 });
  
@@ -58,7 +57,25 @@ gulp.task('copy:angular', function(){
     // Copies angular js scripts
     gulp.src(['./js/app/**/*'])
         .pipe(gulp.dest('./build/js/app/'));
-})
+});
+
+gulp.task('copy:js', function(){
+    // Copies custom javascript
+    gulp.src(['./js/*.js'])
+        .pipe(gulp.dest('./build/js/'));
+});
+
+gulp.task('copy:styles', function(){
+    gulp.src(['./css/*.css'])
+        .pipe(gulp.dest('./build/css'));
+});
+
+gulp.task('copy:images', function(){
+    gulp.src(['./img/**/*.png',
+              './img/**/*/jpg',
+              './img/**/*.svg'])
+        .pipe(gulp.dest('./build/img'));
+});
 
 gulp.task('inject:bower', function(){
     // Inject bower dependencies
@@ -72,13 +89,17 @@ gulp.task('build-dev', function(){
     gulp.run('concat:angular');
     gulp.run('inject:bower');
 });
-gulp.task('default', function(){
-    // gulp.run('clean:build');
-    gulp.run('copy:bower-components');
 
-    gulp.run('build-dev')
-    gulp.run('webserver');
+gulp.task('copy:assets', ['copy:bower-components',
+                          'copy:js', 'copy:styles',
+                          'copy:images'], function(){
+
+});
+
+gulp.task('default', ['clean:build'], function(){
+    gulp.run('copy:assets');
+    gulp.run('build-dev');
     gulp.watch('js/**', function(event){
-        gulp.run('build-dev')
+        gulp.run('build-dev');
     });
 });
