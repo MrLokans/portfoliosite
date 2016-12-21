@@ -65,6 +65,16 @@ gulp.task('copy:js', function(){
         .pipe(gulp.dest('./build/js/'));
 });
 
+gulp.task('copy:vendor-css', function(){
+    gulp.src(['./js/vendor/**/*.css'])
+        .pipe(gulp.dest('./build/js/vendor/'));
+});
+
+gulp.task('copy:vendor-js', function(){
+    gulp.src(['./js/vendor/**/*.js'])
+        .pipe(gulp.dest('./build/js/vendor/'));
+});
+
 gulp.task('copy:styles', function(){
     gulp.src(['./css/*.css'])
         .pipe(gulp.dest('./build/css'));
@@ -91,7 +101,8 @@ gulp.task('build-dev', function(){
 });
 
 gulp.task('copy:assets', ['copy:bower-components',
-                          'copy:js', 'copy:styles',
+                          'copy:js', 'copy:vendor-js', 'copy:vendor-css', 
+                          'copy:styles',
                           'copy:images'], function(){
 
 });
