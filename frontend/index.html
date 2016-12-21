@@ -184,7 +184,18 @@
         </div>
     </script>
 
+    <script type="text/ng-template" id="post-create.form">
+        <div class="post-creation">
+            <textarea name="" id="post-creation-textarea" cols="30" rows="10" ng-model="currentPost.body">
+            </textarea>
+            <button ng-click="createPost()">Submit</button>
+        </div>    
+    </script>
+
     <script type="text/ng-template" id="post-list.html">
+        <button class="open-post-create-modal"
+                ng-click="openPostModal()">Create new post</button>
+
         <div class="post-container" ng-repeat="post in posts">
             <div class="post-title-container">
                 <div></div>
