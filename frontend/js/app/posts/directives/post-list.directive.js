@@ -5,9 +5,7 @@
        .directive('postList', ['Posts', function(Posts){
             return {
                 restrict: 'E',
-                controller: ['$scope', 'Posts', function($scope, Posts){
-                    $scope.posts = Posts.query();
-                }],
+                controller: 'PostsController',
                 templateUrl: 'post-list.html'
             };
        }]);

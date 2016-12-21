@@ -192,10 +192,14 @@
                     <a href="#/blog/{{ post.id }}">MrLokans</a>
                 </div>
                 <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
-                <div></div>
             </div> 
             <div class="post-content">
                 {{ post.content }}
+            </div>
+            <div class="post-close-block">
+                <a ng-click="removePost(post.id)">
+                    <img src="img/post-delete.png"></a>
+                </a>
             </div>
         </div>
     </script>
