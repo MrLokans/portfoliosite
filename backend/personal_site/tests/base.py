@@ -20,6 +20,11 @@ class BaseCase(TestCase):
                                               password=password)
         return admin
 
+    def _create_user(self, username, email, password):
+        return User.objects.create(username=username,
+                                   email=email,
+                                   password=password)
+
     @classmethod
     def setUpClass(cls):
         cls.ADMIN_USERNAME = 'superadmin'
