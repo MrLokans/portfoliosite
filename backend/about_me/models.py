@@ -4,6 +4,9 @@ from django.db import models
 class Technology(models.Model):
     """Model, representing single technology or skill"""
 
+    class Meta:
+        verbose_name_plural = 'technologies'
+
     NOVICE = 1
     INTERMEDIATE = 2
     ADVANCED = 3
