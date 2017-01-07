@@ -27,9 +27,10 @@ INSTALLED_APPS = (
     'markdownx',
 
     # Custom apps
+    'about_me',
+    'favorites',
     'blog',
     'books',
-    'about_me',
 )
 
 MIDDLEWARE_CLASSES = (
