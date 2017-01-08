@@ -117,3 +117,9 @@ ul.nav li.menu-item a:hover{
     display: inline-block;
     padding-left: 6px;
 }
+
+.favorite-link-container {
+    border: 1px solid #F5F5F5;
+    padding: 10px;
+    margin-bottom: 5px;
+}

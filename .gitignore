@@ -11,3 +11,6 @@ bower_components
 node_modules
 .tox
 .cache
+mydatabase
+static
+pgdata

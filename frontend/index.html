@@ -52,6 +52,7 @@
                     <li class="menu-item"><a href="#blog">Blog</a></li>
                     <li class="menu-item"><a href="#projects">Projects list</a></li>
                     <li class="menu-item"><a href="#books">Book quotes</a></li>
+                    <li class="menu-item"><a href="#favorites">Favorites</a></li>
 
                     {% if user.is_authenticated %}
                         <li class="menu-item"><a href="{% url 'logout' %}">Log Out</a></li>
@@ -287,5 +288,20 @@
             <book-single book="book" ng-click="testClick()" ng-repeat="book in books"></book-single>
         </ul>
     </script>
+
+    <script type="text/ng-template" id="favorites.html">
+        <favorites-list></favorites-list>
+    </script>
+
+    <script type="text/ng-template" id="favorites-list.html">
+       <h2 class="favorites-list-header">Favorites</h2>
+       <div class="favorites-list">
+            <div class="favorite-link-container" ng-repeat="link in $ctrl.favorites" ng-controller="FavoriteDetailController">
+                <a class="favorite-link-url" href="{{ link.url }}">{{ link.name || link.url }}</a>
+            </div>
+       </div>
+    </script>
+
+    <script type="text/ng-template" id="favorite-link.html"></script>
 
 </body>

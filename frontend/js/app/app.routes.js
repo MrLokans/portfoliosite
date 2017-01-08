@@ -33,9 +33,12 @@
                 controller: "AboutController",
                 controllerAs: "vm"
             })
+            .when('/favorites', {
+                templateUrl: 'favorites.html',
+            })
             .when('/', {
                 redirectTo: '/about_me'
             }).
-            otherwise('/');
+            otherwise('/about_me');
     }
 })();

@@ -6,6 +6,7 @@
                                   'andersblog.posts',
                                   'andersblog.books',
                                   'andersblog.about_me',
+                                  'andersblog.favorites',
                                   'andersblog.config',
                                   'andersblog.filters',
                                   'andersblog.routes',
