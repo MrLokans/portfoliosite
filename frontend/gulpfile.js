@@ -111,7 +111,8 @@ gulp.task('default', ['clean:build'], function(){
     gulp.run('copy:assets');
     gulp.run('build-dev');
     gulp.run('webserver');
-    gulp.watch(['js/**', 'index.html'], function(event){
+    gulp.watch(['js/**', 'index.html', 'css/**'], function(event){
+        gulp.run('copy:assets');
         gulp.run('build-dev');
     });
 });
