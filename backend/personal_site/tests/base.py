@@ -15,12 +15,18 @@ class BaseCase(TestCase):
     def _create_admin(self, username,
                       password,
                       email):
+        """
+        Creates superuser with provided credentials
+        """
         admin = User.objects.create_superuser(username=username,
                                               email=email,
                                               password=password)
         return admin
 
     def _create_user(self, username, email, password):
+        """
+        Creates non-superuser with provided credentials
+        """
         return User.objects.create(username=username,
                                    email=email,
                                    password=password)
