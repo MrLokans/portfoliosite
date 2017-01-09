@@ -28,6 +28,9 @@ class Contribution(object):
     def __eq__(self, other):
         return self.date == other.date and self.count == other.count
 
+    def __hash__(self):
+        return hash((self.date, self.count))
+
 
 class UserDoesNotExist(Exception):
     pass
@@ -35,13 +38,18 @@ class UserDoesNotExist(Exception):
 
 class ContributionObtainer(object):
 
+    DATE_FORMAT = '%Y-%m-%d'
+
     def _contributions_url_for_user(self, user):
         return 'https://github.com/users/{}/contributions'.format(user)
 
     def _contribution_from_soup_element(self, el: Tag) -> Contribution:
-        date = el.attrs['data-date']
+        date = self._date_from_str(el.attrs['data-date'])
         count = int(el.attrs['data-count'])
         return Contribution(date=date, count=count)
+
+    def _date_from_str(self, date_str):
+        return datetime.datetime.strptime(date_str, self.DATE_FORMAT).date()
 
     def _extract_contributions_from_page(self, url) -> Sequence[Contribution]:
         """
