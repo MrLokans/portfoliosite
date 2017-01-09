@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'favorites',
     'blog',
     'books',
+    'contributions',
 )
 
 MIDDLEWARE_CLASSES = (
