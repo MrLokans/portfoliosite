@@ -1,6 +1,6 @@
 *{
     /*border: 1px solid red;*/
-    color: #1A1C00;
+    /*color: #1A1C00;*/
 }
 
 .scroll-to-top {
@@ -101,13 +101,22 @@ ul.nav li.menu-item a:hover{
 .skill-container {
     display: inline-block;
     max-width: 150px;
-    border: 1px solid #E0E0E0;
-    padding: 10px;
+    border: 3px solid #202020;
+    padding: 6px 10px 6px 10px;
     margin-bottom: 10px;
     margin-right: 10px;
 }
 
 .skill-title {
+    color: #0e0e0e;
+    font-size: 13px;
+    text-align: center;
+    word-break: keep-all;
+}
+
+.skill-mastery {
+    color: #525252;
+    font-size: 11px;
     text-align: center;
 }
 
