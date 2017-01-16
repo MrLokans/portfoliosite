@@ -31,9 +31,20 @@ class Project(models.Model):
     with a list of technologies used and appropriate
     links
     """
+    OPEN_SOURCE = 1
+    VOLUNTEER = 2
+    ENTERPRISE = 3
+
+    PROJECT_TYPE_CHOICES = (
+        (OPEN_SOURCE, 'open_source'),
+        (VOLUNTEER, 'volunteer'),
+        (ENTERPRISE, 'enterprise')
+    )
+
     title = models.CharField(max_length=200)
     description = models.TextField()
-
+    type = models.PositiveIntegerField(choices=PROJECT_TYPE_CHOICES,
+                                       blank=True, null=True)
     technologies = models.ManyToManyField(Technology)
 
     def __str__(self):
