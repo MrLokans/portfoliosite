@@ -26,7 +26,7 @@
     <div class="container">
         <div class="row" id="header">
             <div class="col-md-6 col-xs-6 portfolio-logo">
-                <a href="/">
+                <a href="#/about_me">
                     <img src="img/logo.png" alt="logo" class="title-logo ing-responsive">
                 </a>
             </div>
@@ -100,8 +100,7 @@
 
     <script type="text/ng-template" id="about_me.html">
         <h3>About me</h3>
-        <p>I am a great linux lover and python language fan. I love good music, well-directed movies, and delicious food.</p>
-
+        <p>My name is Andrew, I am a software engineer from Minsk, Belarus. I am a great linux lover and python language fan who enjoys good music, well-directed movies, and delicious food.</p>
         <skill-list></skill-list>  
 
         <h3>Working time:</h3>
@@ -139,11 +138,14 @@
         <div class="social-network" id="github-social">
             <a href="https://github.com/MrLokans">Github</a>
         </div>
-
+        <div class="social-network" id="lastfm-social">
+            <a href="http://www.last.fm/ru/user/MrLokans">Lastfm ;)</a>
+        </div>
+        <a href="mailto:mrlokans@gmail.com">E-mail</a> 
     </script>    
 
     <script type="text/ng-template" id="skill-list.html">
-        <hr>
+        <h3>Skills</h3>
         <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
         <div class="skills-wrapper">
             <skill-single skill="skill" ng-repeat="skill in skills"></skill-single>
