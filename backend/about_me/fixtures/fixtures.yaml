@@ -9,7 +9,7 @@
 - model: about_me.technology
   pk: 3
   fields: {name: Docker, general_description: "Docker is the world\u2019s leading
-      software containerization platform", mastery_level: 2}
+      software containerization platform", mastery_level: 3}
 - model: about_me.technology
   pk: 4
   fields: {name: Golang, general_description: Go programming language, mastery_level: 1}
@@ -23,7 +23,7 @@
 - model: about_me.technology
   pk: 7
   fields: {name: Django, general_description: Web-framework for perfectionists with
-      deadlines ;), mastery_level: 2}
+      deadlines ;), mastery_level: 3}
 - model: about_me.technology
   pk: 8
   fields: {name: RabbitMQ, general_description: Message-broker, mastery_level: 1}
@@ -36,7 +36,7 @@
     mastery_level: 1}
 - model: about_me.technology
   pk: 11
-  fields: {name: Flask, general_description: Python microframework, mastery_level: 1}
+  fields: {name: Flask, general_description: Python microframework, mastery_level: 2}
 - model: about_me.technology
   pk: 12
   fields: {name: SQLAlchemy, general_description: Python ORM, mastery_level: 2}
@@ -46,7 +46,7 @@
       layout, mastery_level: 2}
 - model: about_me.technology
   pk: 14
-  fields: {name: docker-compose, general_description: Docker ochestration tool, mastery_level: 2}
+  fields: {name: docker-compose, general_description: Docker ochestration tool, mastery_level: 3}
 - model: about_me.technology
   pk: 15
   fields: {name: pytest, general_description: Advanced python testing framework.,
@@ -62,6 +62,12 @@
 - model: about_me.technology
   pk: 18
   fields: {name: Vagrant, general_description: CLI for virtualization tools., mastery_level: 2}
+- model: about_me.technology
+  pk: 19
+  fields: {name: Nameko, general_description: Microservices building framework., mastery_level: 2}
+- model: about_me.technology
+  pk: 20
+  fields: {name: PyQT, general_description: Cross-platform desktop GUI framework., mastery_level: 1}
 - model: about_me.project
   pk: 1
   fields:
