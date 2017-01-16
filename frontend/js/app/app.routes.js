@@ -17,6 +17,9 @@
             .when('/blog', {
                 templateUrl: 'blog.html',
             })
+            .when('/contacts', {
+                templateUrl: 'contacts.html',
+            })
             .when('/blog/:post_id', {
                 templateUrl: 'post-details.html',
                 controller: "PostDetailController",
