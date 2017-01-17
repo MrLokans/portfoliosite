@@ -25,16 +25,14 @@ urlpatterns = [
                                        namespace='tech-api')),
     url(r'^api/projects/', include('about_me.urls_projects',
                                    namespace='projects-api')),
-
     url(r'^api/register', CreateUserView.as_view(), name='api-register'),
-
-    url(r'^api/token-auth', obtain_jwt_token),
-    url(r'^api/token-refresh', refresh_jwt_token),
-    url(r'^api/token-verify', verify_jwt_token),
     url(r'^feed/latest/', LatestPostsFeed()),
 ]
 
 if settings.DEBUG:
     urlpatterns += [
-        url('^api/docs/$', schema_view)
+        url(r'^api/token-auth', obtain_jwt_token),
+        url(r'^api/token-refresh', refresh_jwt_token),
+        url(r'^api/token-verify', verify_jwt_token),
+        url(r'^api/docs/$', schema_view)
     ]
