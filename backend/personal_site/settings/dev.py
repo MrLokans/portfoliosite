@@ -12,3 +12,5 @@ DATABASES = {
         'NAME': 'mydatabase',
     }
 }
+
+INSTALLED_APPS += ('rest_framework_swagger', )

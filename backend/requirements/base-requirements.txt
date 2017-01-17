@@ -5,6 +5,7 @@ django-filter==1.0.1
 django-markdownx==1.6.3
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
+django-rest-swagger==2.1.1
 dropbox==6.2
 gevent==1.1.1
 greenlet==0.4.10

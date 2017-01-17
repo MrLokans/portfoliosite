@@ -7,12 +7,12 @@ server {
     server_name _;
     charset utf-8;
 
-    location / {
-        root /frontend/build;
-    }
-
     location /static {
         alias /static;
+    }
+
+    location / {
+        root /frontend/build;
     }
 
     location /admin {

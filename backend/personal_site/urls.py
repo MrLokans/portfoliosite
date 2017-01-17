@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from rest_framework_jwt.views import (
@@ -7,6 +8,7 @@ from rest_framework_jwt.views import (
 )
 
 from blog.feed import LatestPostsFeed
+from personal_site.views import schema_view
 from personal_site.api.views import CreateUserView
 
 urlpatterns = [
@@ -31,3 +33,8 @@ urlpatterns = [
     url(r'^api/token-verify', verify_jwt_token),
     url(r'^feed/latest/', LatestPostsFeed()),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        url('^api/docs/$', schema_view)
+    ]
