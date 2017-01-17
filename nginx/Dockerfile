@@ -1,3 +1,3 @@
-FROM tutum/nginx
-RUN rm /etc/nginx/sites-available/default; rm /etc/nginx/sites-enabled/default
-ADD sites-enabled/ /etc/nginx/sites-enabled
+FROM nginx:1.10-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+ADD sites-enabled/personalsite /etc/nginx/conf.d/mrlokans.conf
