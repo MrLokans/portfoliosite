@@ -44,6 +44,11 @@ def checkout_repository():
                 run('git pull')
 
 
+def fix_premissions():
+    with cd(REMOTE_BACKEND_DIR):
+        sudo('chmod +x entrypoint.sh')
+
+
 def launch_docker():
     with settings(warn_only=True):
         logger.info("Checking docker daemon is running.")
@@ -78,7 +83,7 @@ def launch_containers():
         logger.info("Building new containers")
         sudo('docker-compose build')
         logger.info('Launching new containers')
-        sudo('docker-compose up -d')
+        sudo('docker-compose up -d backend')
 
 
 def restart_nginx():
@@ -91,5 +96,6 @@ def deploy():
     create_directories()
     checkout_repository()
     stop_previous_containers()
+    fix_premissions()
     launch_containers()
     restart_nginx()
