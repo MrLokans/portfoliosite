@@ -7,7 +7,8 @@ from fabric.api import (
     local,
     lcd,
     run,
-    settings
+    settings,
+    sudo
 )
 from fabric.state import env
 
@@ -16,11 +17,21 @@ logger = logging.getLogger("fabric")
 
 BACKEND_DIR = os.path.abspath('backend')
 FRONTEND_DIR = os.path.abspath('fronted')
+REPOSITORY_URL = 'https://github.com/MrLokans/portfoliosite'
+REPOSITORY_PATH = '/opt/personalsite'
+
+env.hosts = []
 
 is_local = not env.hosts
 if is_local:
     run = local
     cd = lcd
+
+
+def create_directories():
+    sudo('mkdir -p {}'.format(REPOSITORY_PATH))
+    sudo('chown -R {user}:{user} {dir}'.format(user=env.user,
+                                               dir=REPOSITORY_PATH))
 
 
 def launch_docker():
@@ -45,6 +56,20 @@ def run_tests():
                 abort("Tests failed.")
 
 
+def stop_previous_containers():
+    logger.info("Stopping any previously "
+                "running containers.")
+    run('docker-compose stop')
+
+
+def launch_containers():
+    logger.info("Launching new containers")
+    run('docker-compose up --build -d')
+
+
 def deploy():
-    launch_docker()
     run_tests()
+    launch_docker()
+    create_directories()
+    stop_previous_containers()
+    launch_containers()
