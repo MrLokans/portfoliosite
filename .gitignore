@@ -14,3 +14,4 @@ node_modules
 mydatabase
 static
 pgdata
+secret.key
