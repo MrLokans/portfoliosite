@@ -21,6 +21,7 @@
     "gulp-clean": "^0.3.2",
     "gulp-clean-css": "^2.0.13",
     "gulp-concat": "^2.6.1",
+    "gulp-debug": "^3.0.0",
     "gulp-inject": "^4.1.0",
     "gulp-minify": "0.0.14",
     "gulp-ng-constant": "2.0.0-2",

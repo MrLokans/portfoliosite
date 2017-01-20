@@ -31,7 +31,6 @@ gulp.task('webserver', function() {
 
 gulp.task('concat:angular', function(){
     gulp.src(['js/app/app.js', 'build/app.constants.js', 'js/app/*.js', 'js/app/**/*.js'])
-        .pipe(debug())
         .pipe(concat('angular.app.js'))
         .pipe(gulp.dest('build/'));
 });
