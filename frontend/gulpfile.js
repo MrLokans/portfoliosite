@@ -48,6 +48,19 @@ gulp.task('config:dev', function(){
         .pipe(gulp.dest('./build/'));
 });
 
+gulp.task('config:prod', function(){
+    gulp.src('js/configs/prod.json')
+        .pipe(ngConstant({
+              "name": "andersblog.constants",
+              "deps": [],
+              "wrap": false,
+              "wrapHeader": "(function(){",
+              "wrapFooter": "});"
+            }))
+        .pipe(rename('app.constants.js'))
+        .pipe(gulp.dest('./build/'));
+});
+
 gulp.task('copy:bower-components', function(){
     gulp.src(['./bower_components/**/*'])
         .pipe(gulp.dest('./build/bower_components/'));
@@ -100,6 +113,12 @@ gulp.task('build-dev', function(){
     gulp.run('inject:bower');
 });
 
+gulp.task('build-prod', function(){
+    gulp.run('config:prod');
+    gulp.run('concat:angular');
+    gulp.run('inject:bower');
+});
+
 gulp.task('copy:assets', ['copy:bower-components',
                           'copy:js', 'copy:vendor-js', 'copy:vendor-css', 
                           'copy:styles',
@@ -115,4 +134,9 @@ gulp.task('default', ['clean:build'], function(){
         gulp.run('copy:assets');
         gulp.run('build-dev');
     });
+});
+
+gulp.task('prod', ['clean:build'], function(){
+    gulp.run('copy:assets');
+    gulp.run('build-prod');
 });
