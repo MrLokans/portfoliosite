@@ -4,7 +4,6 @@ services:
   
   # Django back-end
   backend:
-    restart: always
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -22,18 +21,16 @@ services:
     working_dir: /app/
 
   frontend:
-    restart: always
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    entrypoint: /entrypoint.sh
+    entrypoint: ./entrypoint.sh
     volumes:
       - ./frontend/:/frontend/
     ports:
       - "8090:8090"
 
   nginx:
-    restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile

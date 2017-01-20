@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  
+  # Django back-end
+  backend:
+    restart: always
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    entrypoint: /entrypoint.sh
+    environment:
+      - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/:/app/
+      - ./static/:/app/personal_site/staticfiles
+    working_dir: /app/
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: ./entrypoint-prod.sh
+    volumes:
+      - ./frontend/:/frontend/
