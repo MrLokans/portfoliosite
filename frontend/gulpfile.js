@@ -8,17 +8,18 @@ var ngConstant = require('gulp-ng-constant');
 var rename = require('gulp-rename');
 var watch = require('gulp-watch');
 var webserver = require('gulp-webserver');
+var debug = require('gulp-debug');
 
 var bowerFiles = require('main-bower-files');
 
 
 gulp.task('clean:build', function(){
-    return gulp.src('./build/**/*.*', {read: false}).pipe(clean());
+    return gulp.src('build/**/*.*', {read: false}).pipe(clean());
 });
  
 
 gulp.task('webserver', function() {
-  gulp.src('./build/')
+  gulp.src('build/')
     .pipe(webserver({
       port: 8090,
       livereload: true,
@@ -29,92 +30,91 @@ gulp.task('webserver', function() {
 
 
 gulp.task('concat:angular', function(){
-    gulp.src(['./js/app/app.js', './build/app.constants.js', './js/app/*.js', './js/app/**/*.js'])
+    gulp.src(['js/app/app.js', 'build/app.constants.js', 'js/app/*.js', 'js/app/**/*.js'])
+        .pipe(debug())
         .pipe(concat('angular.app.js'))
-        .pipe(gulp.dest('./build/'));
+        .pipe(gulp.dest('build/'));
 });
 
 
 gulp.task('config:dev', function(){
-    gulp.src('js/configs/dev.json')
-        .pipe(ngConstant({
-              "name": "andersblog.constants",
-              "deps": [],
-              "wrap": false,
-              "wrapHeader": "(function(){",
-              "wrapFooter": "});"
-            }))
-        .pipe(rename('app.constants.js'))
-        .pipe(gulp.dest('./build/'));
+    return gulp.src('js/configs/dev.json')
+          .pipe(ngConstant({
+                "name": "andersblog.constants",
+                "deps": [],
+                "wrap": false,
+                "wrapHeader": "(function(){",
+                "wrapFooter": "});"
+              }))
+          .pipe(rename('app.constants.js'))
+          .pipe(gulp.dest('build/'));
 });
 
 gulp.task('config:prod', function(){
-    gulp.src('js/configs/prod.json')
-        .pipe(ngConstant({
-              "name": "andersblog.constants",
-              "deps": [],
-              "wrap": false,
-              "wrapHeader": "(function(){",
-              "wrapFooter": "});"
-            }))
-        .pipe(rename('app.constants.js'))
-        .pipe(gulp.dest('./build/'));
+    return gulp.src('js/configs/prod.json')
+          .pipe(ngConstant({
+                "name": "andersblog.constants",
+                "deps": [],
+                "wrap": false,
+                "wrapHeader": "(function(){",
+                "wrapFooter": "});"
+              }))
+          .pipe(rename('app.constants.js'))
+          .pipe(gulp.dest('build/'))
 });
 
 gulp.task('copy:bower-components', function(){
     gulp.src(['./bower_components/**/*'])
-        .pipe(gulp.dest('./build/bower_components/'));
+        .pipe(gulp.dest('build/bower_components/'));
 });
 
 gulp.task('copy:angular', function(){
     // Copies angular js scripts
-    gulp.src(['./js/app/**/*'])
-        .pipe(gulp.dest('./build/js/app/'));
+    gulp.src(['js/app/**/*'])
+        .pipe(gulp.dest('build/js/app/'));
 });
 
 gulp.task('copy:js', function(){
     // Copies custom javascript
-    gulp.src(['./js/*.js'])
-        .pipe(gulp.dest('./build/js/'));
+    gulp.src(['js/*.js'])
+        .pipe(gulp.dest('build/js/'));
 });
 
 gulp.task('copy:vendor-css', function(){
-    gulp.src(['./js/vendor/**/*.css'])
-        .pipe(gulp.dest('./build/js/vendor/'));
+    gulp.src(['js/vendor/**/*.css'])
+        .pipe(gulp.dest('build/js/vendor/'));
 });
 
 gulp.task('copy:vendor-js', function(){
-    gulp.src(['./js/vendor/**/*.js'])
-        .pipe(gulp.dest('./build/js/vendor/'));
+    gulp.src(['js/vendor/**/*.js'])
+        .pipe(gulp.dest('build/js/vendor/'));
 });
 
 gulp.task('copy:styles', function(){
     gulp.src(['./css/*.css'])
-        .pipe(gulp.dest('./build/css'));
+        .pipe(gulp.dest('build/css'));
 });
 
 gulp.task('copy:images', function(){
     gulp.src(['./img/**/*.png',
               './img/**/*/jpg',
               './img/**/*.svg'])
-        .pipe(gulp.dest('./build/img'));
+        .pipe(gulp.dest('build/img'));
 });
 
 gulp.task('inject:bower', function(){
     // Inject bower dependencies
     gulp.src('./index.html')
         .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
-        .pipe(gulp.dest('./build'));
+        .pipe(gulp.dest('build'));
 });
 
-gulp.task('build-dev', function(){
-    gulp.run('config:dev');
+gulp.task('build-dev', ['config:dev'], function(){
     gulp.run('concat:angular');
     gulp.run('inject:bower');
 });
 
-gulp.task('build-prod', function(){
-    gulp.run('config:prod');
+gulp.task('build-prod', ['config:prod'], function(){
     gulp.run('concat:angular');
     gulp.run('inject:bower');
 });
