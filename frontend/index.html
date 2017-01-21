@@ -114,7 +114,8 @@
                         <a href="{{ project.url }}">{{ project.title }}</a>
                     </h4>
                     <div class="project-description">
-                        {{ project.description }}
+                        <div class="project-text" ng-bind-html="project.description | trust">
+                        </div>
                         <div class="project-technolgies-list">
                             <div class="project-technology" ng-repeat="skill in project.technologies">
                                 {{ skill.name }}
