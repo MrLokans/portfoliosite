@@ -29,9 +29,21 @@ gulp.task('webserver', function() {
 });
 
 
-gulp.task('concat:angular', function(){
-    gulp.src(['js/app/app.js', 'build/app.constants.js', 'js/app/*.js', 'js/app/**/*.js'])
+gulp.task('concat:angular-dev', ['config:dev'], function(){
+    return gulp.src(['js/app/app.js', 'build/app.constants.js', 'js/app/*.js', 'js/app/**/*.js'])
         .pipe(concat('angular.app.js'))
+        .pipe(gulp.dest('build/'));
+});
+
+gulp.task('concat:angular-prod', ['config:prod'], function(){
+    return gulp.src(['js/app/app.js', 'build/app.constants.js', 'js/app/*.js', 'js/app/**/*.js'])
+        .pipe(concat('angular.app.js'))
+        .pipe(minify({
+            ext:{
+              source: '.js',
+              min: '.min.js'
+            }
+          }))
         .pipe(gulp.dest('build/'));
 });
 
@@ -101,22 +113,29 @@ gulp.task('copy:images', function(){
         .pipe(gulp.dest('build/img'));
 });
 
-gulp.task('inject:bower', function(){
+gulp.task('inject:dev', ['concat:angular-dev'], function(){
     // Inject bower dependencies
-    gulp.src('./index.html')
+    return gulp.src('./index.html')
+        .pipe(inject(gulp.src(('build/angular.app.js'), {read: false}), {name: 'app'}))
         .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
         .pipe(gulp.dest('build'));
 });
 
-gulp.task('build-dev', ['config:dev'], function(){
-    gulp.run('concat:angular');
-    gulp.run('inject:bower');
+gulp.task('inject:prod', ['concat:angular-prod'], function(){
+    // Inject bower dependencies
+    return gulp.src('./index.html')
+        .pipe(inject(gulp.src(('build/angular.app.min.js'), {read: false}), {name: 'app'}))
+        .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+        .pipe(gulp.dest('build'));
 });
 
-gulp.task('build-prod', ['config:prod'], function(){
-    gulp.run('concat:angular');
-    gulp.run('inject:bower');
-});
+gulp.task('build-dev',
+          ['config:dev', 'concat:angular-dev', 'inject:dev'],
+          function(){});
+
+gulp.task('build-prod',
+          ['config:prod', 'concat:angular-prod', 'inject:prod'],
+          function(){});
 
 gulp.task('copy:assets', ['copy:bower-components',
                           'copy:js', 'copy:vendor-js', 'copy:vendor-css', 
