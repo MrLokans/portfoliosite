@@ -30,6 +30,10 @@ NGINX_CONFIG_REMOTE_PATH = os.path.join('/etc/nginx/sites-available',
                                         NGINX_CONFIG_NAME)
 NGINX_SYMLINK_REMOTE_PATH = os.path.join('/etc/nginx/sites-enabled',
                                          NGINX_CONFIG_NAME)
+SYSTEMD_UNIT_NAME = 'personalsite-backend.service'
+SYSTEMD_UNIT_LOCAL_PATH = os.path.abspath(SYSTEMD_UNIT_NAME)
+SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
+                                        SYSTEMD_UNIT_NAME)
 
 env.hosts = []
 
@@ -56,6 +60,7 @@ def checkout_repository():
 def fix_premissions():
     with cd(REMOTE_BACKEND_DIR):
         sudo('chmod +x entrypoint.sh')
+        sudo('chmod +x entrypoint-prod.sh')
     with cd(REMOTE_FRONTEND_DIR):
         sudo('chmod +x entrypoint-prod.sh')
 
@@ -81,12 +86,11 @@ def launch_docker():
 
 
 def run_tests():
-    with settings(warn_only=True):
-        with cd(LOCAL_BACKEND_DIR):
-            logger.info("Running local tests.")
-            result = local('tox', capture=True)
-            if result.failed:
-                abort("Tests failed.")
+    with lcd(LOCAL_BACKEND_DIR):
+        logger.info("Running local tests.")
+        result = local('tox')
+        if result.failed:
+            abort("Tests failed.")
 
 
 def stop_previous_containers():
@@ -142,15 +146,41 @@ def setup_nginx():
     restart_nginx()
 
 
+def copy_systemd_unit():
+    """
+    Copy service file to the
+    remote directory
+    """
+    logger.info("Copying systemd service file.")
+    put(SYSTEMD_UNIT_LOCAL_PATH, SYSTEMD_UNIT_REMOTE_PATH,
+        use_sudo=True)
+
+
+def enable_systemd_unit():
+    """
+    Mark unit as enabled to
+    make sure container is started at the reboot
+    time
+    """
+    logger.info("Enabling systemd unit.")
+    sudo("systemctl enable {unit}".format(unit=SYSTEMD_UNIT_NAME))
+
+
+def setup_autostart():
+    copy_systemd_unit()
+    enable_systemd_unit()
+
+
 def deploy():
-    # run_tests()
+    run_tests()
     launch_docker()
     create_directories()
     checkout_repository()
     stop_previous_containers()
     fix_premissions()
     prepare_frontend()
-    launch_containers()
     set_secret_key()
+    launch_containers()
     setup_nginx()
     restart_nginx()
+    setup_autostart()
