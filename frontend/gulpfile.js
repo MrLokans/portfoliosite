@@ -151,13 +151,15 @@ gulp.task('inject:prod',
           ['minify:3rdparty', 'concat:angular-prod'],
           function(){
     // Inject bower dependencies
-    gulp.src(['build/3rdparty/**/*.min.js', 'build/3rdparty/**/*.min.css'])
-      .pipe(debug());
+    thirdpartySrc = gulp.src(['build/3rdparty/**/*.min.css',
+                               'build/3rdparty/**/*.min.js'],
+                               {read: false});
+    appPath = gulp.src(['build/angular.app.min.js'], {read: false})
+
     return gulp.src('./index.html')
-        .pipe(inject(gulp.src(['build/3rdparty/**/*.min.js', 'build/3rdparty/**/*.min.css'], {read: false}, {name: 'bower'})))
-        .pipe(inject(gulp.src(('build/angular.app.min.js'), {read: false}), {name: 'app'}))
-        // .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
-        .pipe(gulp.dest('build'));
+      .pipe(inject(thirdpartySrc, {name: 'bower'}))
+      .pipe(inject(appPath, {name: 'app'}))
+      .pipe(gulp.dest('build'));
 });
 
 gulp.task('build-dev',
@@ -189,8 +191,8 @@ gulp.task('minify:3rdparty', function(){
             }
           }))
         .pipe(filterMinified)
-        .pipe(debug())
-        .pipe(gulp.dest('build/3rdparty'));
+        .pipe(debug({title: 'Minify'}))
+        .pipe(gulp.dest(PATHS.THIRDPARTY));
 });
 
 gulp.task('default',
