@@ -9,9 +9,9 @@
                                   'andersblog.favorites',
                                   'andersblog.config',
                                   'andersblog.filters',
-                                  'andersblog.routes',
-                                  'angulartics',
-                                  'angulartics.google.analytics']);
+                                  // 'angulartics.google.analytics',
+                                  // 'angulartics',
+                                  'andersblog.routes']);
     angular.module('andersblog.constants', []);
     angular.module('andersblog.config', []);
     angular.module('andersblog.routes', ['ngRoute']);
