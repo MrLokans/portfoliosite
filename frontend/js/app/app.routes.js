@@ -3,11 +3,11 @@
 
     angular.module('andersblog.routes')
            .config(config);
-    config.$inject = ['$routeProvider', '$locationProvider'];
+    config.$inject = ['$routeProvider'];
 
 
 
-    function config($routeProvider, $locationProvider){
+    function config($routeProvider){
         // $locationProvider.html5Mode(true);
         $routeProvider
             .when('/projects', {
