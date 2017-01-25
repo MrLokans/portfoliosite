@@ -25,5 +25,13 @@
     "angular-route": "1.5.8",
     "angulartics-google-analytics": "0.3.0",
     "ng-dialog": "0.6.4"
+  },
+   "overrides":{
+    "bootstrap" : {
+         "main": [
+            "dist/css/bootstrap.css",
+            "dist/js/bootstrap.js"
+          ]
+    }
   }
 }
