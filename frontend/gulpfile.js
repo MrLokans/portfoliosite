@@ -93,8 +93,8 @@ gulp.task('config:prod', function(){
 
 // --------------- FILE COPYING -----------------
 gulp.task('copy:bower-components', function(){
-    return gulp.src(['./bower_components/**/*'])
-        .pipe(gulp.dest('build/bower_components/'));
+    // return gulp.src(['./bower_components/**/*'])
+    //     .pipe(gulp.dest('build/bower_components/'));
 });
 
 gulp.task('copy:angular', function(){
@@ -137,47 +137,106 @@ gulp.task('copy:assets',
           function(){});
 
 
+gulp.task('copy:3rdparty-dev', function(){
+  return gulp.src(bowerFiles())
+    .pipe(debug({title: 'copy:3rdparty'}))
+    .pipe(gulp.dest('build/3rdparty'));
+});
+
+gulp.task('clean:3rdparty-dev', ['rename-analytics-script:dev', 'less:3rdparty'], function(){
+  var filter = ['build/3rdparty/**/*.*',
+                '!build/3rdparty/**/*.js',
+                '!build/3rdparty/**/*.css',
+                'build/3rdparty/angulartics-ga.js']
+  return del.sync(filter)
+});
+
 // --------------- FILE INJECTION ---------------
-gulp.task('inject:dev', ['concat:angular-dev'], function(){
+gulp.task('inject:dev', ['concat:angular-dev', 'clean:3rdparty-dev'], function(){
     // Inject bower dependencies
     return gulp.src('./index.html')
+        // We need specific order for jquery, bootstrap and angular
+        .pipe(inject(gulp.src(['build/3rdparty/jquery.js',
+                               'build/3rdparty/bootstrap.js',
+                               'build/3rdparty/angular.js'], {read: false}),
+                     {name: 'bower-first'}))
+        // Bower components
+        .pipe(inject(gulp.src(['build/3rdparty/*.*',
+                               '!build/3rdparty/**/jquery.js',
+                               '!build/3rdparty/**/bootstrap.js',
+                               '!build/3rdparty/**/angular.js'], {read: false}),
+                      {name: 'bower'}))
         .pipe(inject(gulp.src('build/angular.app.js', {read: false}), {name: 'app'}))
-        .pipe(debug())
-        .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+        .pipe(debug({title: 'inject:dev'}))
         .pipe(gulp.dest('build'));
 });
 
 gulp.task('inject:prod',
-          ['minify:3rdparty', 'concat:angular-prod'],
+          ['clean:3rdparty', 'concat:angular-prod'],
           function(){
+    // First level dependencies
+    firstLevel = gulp.src(['build/3rdparty/**/jquery.min.js',
+                           'build/3rdparty/**/bootstrap.min.js',
+                           'build/3rdparty/**/angular.min.js'], {read: false})
     // Inject bower dependencies
     thirdpartySrc = gulp.src(['build/3rdparty/**/*.min.css',
-                               'build/3rdparty/**/*.min.js'],
+                              'build/3rdparty/**/*.min.js',
+                              '!build/3rdparty/**/jquery.min.js',
+                              '!build/3rdparty/**/bootstrap.min.js',
+                              '!build/3rdparty/**/angular.min.js'],
                                {read: false});
     appPath = gulp.src(['build/angular.app.min.js'], {read: false})
 
     return gulp.src('./index.html')
+      .pipe(inject(firstLevel, {name: 'bower-first'}))
       .pipe(inject(thirdpartySrc, {name: 'bower'}))
       .pipe(inject(appPath, {name: 'app'}))
       .pipe(gulp.dest('build'));
 });
 
-gulp.task('build-dev',
-          ['config:dev', 'inject:dev']);
-
-gulp.task('build-prod',
-          ['config:prod', 'inject:prod'],
-          function(){});
 
 
-gulp.task('minify:3rdparty', function(){
-    var filterLESS = gulpFilter('**/*.less', { restore: true });
-    var filterMinified = gulpFilter(['**/*.min.css', '**/*.min.js', '!**/*.min.min.*']);
+gulp.task('copy:3rdparty', function(){
     return gulp.src('./bower.json')
         .pipe(mainBowerFiles())
-        .pipe(filterLESS)
-        .pipe(less())
-        .pipe(filterLESS.restore)
+        .pipe(gulp.dest(PATHS.THIRDPARTY));
+})
+
+
+gulp.task('less:3rdparty', ['copy:3rdparty'], function(){
+  return gulp.src(['build/3rdparty/**/*.less'])
+    .pipe(less())
+    .pipe(debug({title: 'LESS'}))
+    .pipe(gulp.dest(PATHS.THIRDPARTY))
+})
+
+// We need to rename analytics script in order for it
+// not to be blocked by ublock
+gulp.task('rename-analytics-script:prod', ['copy:3rdparty'], function(){
+  return gulp
+    .src('build/3rdparty/**/angulartics-ga.js')
+    .pipe(rename(function(path){
+      path.basename = 'my-analysis-script'
+    }))
+    .pipe(gulp.dest(PATHS.THIRDPARTY))
+});
+
+// We need to rename analytics script in order for it
+// not to be blocked by ublock
+gulp.task('rename-analytics-script:dev', ['copy:3rdparty-dev'], function(){
+  return gulp
+    .src('build/3rdparty/**/angulartics-ga.js')
+    .pipe(rename(function(path){
+      path.basename = 'my-analysis-script'
+    }))
+    .pipe(gulp.dest(PATHS.THIRDPARTY))
+});
+
+gulp.task('minify:3rdparty', ['rename-analytics-script:prod'], function(){
+    var filesToMinify = ['build/3rdparty/**/*.js', 'build/3rdparty/**/*.css',
+                         '!build/3rdparty/**/*.min.js', '!build/3rdparty/**/*.min.css']
+    var filterMinified = gulpFilter(['**/*.min.css', '**/*.min.js', '!**/*.min.min.*']);
+    return gulp.src(filesToMinify)
         .pipe(minify({
             ext:{
               source: '.js',
@@ -195,8 +254,27 @@ gulp.task('minify:3rdparty', function(){
         .pipe(gulp.dest(PATHS.THIRDPARTY));
 });
 
+// Cleans up non-minified files
+// and renamed files
+gulp.task('clean:3rdparty', ['minify:3rdparty'], function(){
+  removedPaths = [
+    'build/3rdparty/**/*.*',
+    '!build/3rdparty/**/*.min.js',
+    '!build/3rdparty/**/*.min.css',
+    'build/3rdparty/**/angulartics-ga.min.js'
+  ]
+  del.sync(removedPaths);
+})
+
+gulp.task('build-dev',
+          ['config:dev', 'inject:dev']);
+
+gulp.task('build-prod',
+          ['config:prod', 'inject:prod'],
+          function(){});
+
 gulp.task('default',
-          ['clean:build', 'build-dev', 'webserver'],
+          ['clean:build', 'build-dev'],
           function(){
     gulp.watch(['js/**', 'index.html', 'css/**'], function(event){
         gulp.run('copy:assets');
