@@ -232,10 +232,10 @@ gulp.task('rename-analytics-script:dev', ['copy:3rdparty-dev'], function(){
     .pipe(gulp.dest(PATHS.THIRDPARTY))
 });
 
-gulp.task('minify:3rdparty', ['rename-analytics-script:prod'], function(){
-    var filesToMinify = ['build/3rdparty/**/*.js', 'build/3rdparty/**/*.css',
-                         '!build/3rdparty/**/*.min.js', '!build/3rdparty/**/*.min.css']
-    var filterMinified = gulpFilter(['**/*.min.css', '**/*.min.js', '!**/*.min.min.*']);
+gulp.task('minify:3rdparty-js', ['rename-analytics-script:prod'], function(){
+    var filesToMinify = ['build/3rdparty/**/*.js',
+                         '!build/3rdparty/**/*.min.js']
+    var filterMinified = gulpFilter(['**/*.min.js', '!**/*.min.min.*']);
     return gulp.src(filesToMinify)
         .pipe(minify({
             ext:{
@@ -243,20 +243,25 @@ gulp.task('minify:3rdparty', ['rename-analytics-script:prod'], function(){
               min: '.min.js'
             }
           }))
-        .pipe(minify({
-            ext: {
-              source: '.css',
-              min: '.min.css'
-            }
-          }))
         .pipe(filterMinified)
         .pipe(debug({title: 'Minify'}))
         .pipe(gulp.dest(PATHS.THIRDPARTY));
 });
 
+gulp.task('minify:3rdparty-css', ['copy:3rdparty'], function(){
+    var filesToMinify = ['build/3rdparty/**/*.css',
+                         '!build/3rdparty/**/*.min.css']
+    var filterMinified = gulpFilter(['**/*.min.css', '!**/*.min.min.*']);
+    return gulp.src(filesToMinify)
+        .pipe(cleanCSS())
+        .pipe(filterMinified)
+        .pipe(debug({title: 'Minify CSS'}))
+        .pipe(gulp.dest(PATHS.THIRDPARTY));
+});
+
 // Cleans up non-minified files
 // and renamed files
-gulp.task('clean:3rdparty', ['minify:3rdparty'], function(){
+gulp.task('clean:3rdparty', ['minify:3rdparty-js', 'minify:3rdparty-css'], function(){
   removedPaths = [
     'build/3rdparty/**/*.*',
     '!build/3rdparty/**/*.min.js',
