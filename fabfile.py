@@ -146,6 +146,18 @@ def setup_nginx():
     restart_nginx()
 
 
+def setup_seo():
+    '''
+    Copies robots.txt and sitemap.xml files
+    to nginx root
+    '''
+    logger.info("Copying robots.txt and sitemap.xml")
+    put('robots.txt', '/opt/personalsite/frontend/build',
+        use_sudo=True)
+    put('sitemap.xml', '/opt/personalsite/frontend/build',
+        use_sudo=True)
+
+
 def copy_systemd_unit():
     """
     Copy service file to the
@@ -182,5 +194,6 @@ def deploy():
     set_secret_key()
     launch_containers()
     setup_nginx()
+    setup_seo()
     restart_nginx()
     setup_autostart()
