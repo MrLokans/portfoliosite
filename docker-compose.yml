@@ -7,12 +7,17 @@ services:
       file: docker-compose.base.yml
       service: rabbitmq
 
+  redis:
+    extends:
+      file: docker-compose.base.yml
+      service: redis
+
   # Django back-end
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: ./entrypoint.sh
+    command: bash ./entrypoint.sh
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
     ports:
@@ -24,6 +29,9 @@ services:
     stdin_open: true
     tty: true
     working_dir: /app/
+    links:
+      - messagebus
+      - redis
 
   frontend:
     build:
