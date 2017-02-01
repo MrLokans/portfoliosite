@@ -20,6 +20,8 @@ services:
     command: bash ./entrypoint.sh
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
+    env_file:
+      - bus.env
     ports:
       - "8000:8000"
     volumes:
@@ -38,10 +40,20 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     entrypoint: ./entrypoint.sh
+    env_file:
+      - bus.env
     volumes:
       - ./frontend/:/frontend/
     ports:
       - "8090:8090"
+
+  celery-worker:
+    extends:
+      file: docker-compose.base.yml
+      service: celery-worker
+    links:
+      - redis
+      - messagebus
 
   nginx:
     build:

@@ -1,6 +1,8 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+from kombu import Exchange, Queue
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -136,3 +138,65 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
 }
+
+
+# Celery related settings
+REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
+REDIS_DB = int(os.environ.get('REDIS_DB', 0))
+REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
+
+RABBIT_HOSTNAME = os.environ.get('RABBIT_HOST', 'messagebus')
+
+if RABBIT_HOSTNAME.startswith('tcp://'):
+    RABBIT_HOSTNAME = RABBIT_HOSTNAME.split('//')[1]
+
+
+BROKER_URL = os.environ.get('BROKER_URL', '')
+if not BROKER_URL:
+    BROKER_URL = 'amqp://{user}:{password}@{hostname}/{vhost}/'.format(
+        user=os.environ.get('RABBITMQ_DEFAULT_USER', 'guest'),
+        password=os.environ.get('RABBITMQ_DEFAULT_PASS', 'guest'),
+        hostname=RABBIT_HOSTNAME,
+        vhost=os.environ.get('RABBIT_ENV_VHOST', ''))
+
+# We don't want to have dead connections stored on rabbitmq,
+# so we have to negotiate using heartbeats
+BROKER_HEARTBEAT = '?heartbeat=30'
+if not BROKER_URL.endswith(BROKER_HEARTBEAT):
+    BROKER_URL += BROKER_HEARTBEAT
+
+BROKER_POOL_LIMIT = 1
+BROKER_CONNECTION_TIMEOUT = 10
+
+# Celery configuration
+
+# configure queues, currently we have only one
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_QUEUES = (
+    Queue('default', Exchange('default'), routing_key='default'),
+)
+
+# Tasks are sent to the queue
+CELERY_ALWAYS_EAGER = False
+# the task messages will be acknowledged after
+# the task has been executed, not just before, which is the default behavior.
+CELERY_ACKS_LATE = True
+# Retry if connection is lost
+CELERY_TASK_PUBLISH_RETRY = True
+CELERY_DISABLE_RATE_LIMITS = False
+
+CELERY_IGNORE_RESULT = False
+CELERY_SEND_TASK_ERROR_EMAILS = False
+CELERY_TASK_RESULT_EXPIRES = 600
+
+# Set redis as celery result backend
+CELERY_RESULT_BACKEND = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, REDIS_DB)
+CELERY_REDIS_MAX_CONNECTIONS = 1
+
+# Don't use pickle as serializer, json is much safer
+CELERY_TASK_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ['application/json']
+
+CELERYD_HIJACK_ROOT_LOGGER = False
+CELERYD_PREFETCH_MULTIPLIER = 1
+CELERYD_MAX_TASKS_PER_CHILD = 1000

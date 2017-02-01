@@ -19,3 +19,15 @@ services:
     image: redis:3.0.7-alpine
     ports:
       - "6379:6379"
+
+
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/:/app/
+    command: bash ./run_celery.sh
+    working_dir: /app/
+    env_file:
+      - bus.env
