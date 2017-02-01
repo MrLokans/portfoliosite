@@ -1,0 +1,16 @@
+# NOTE: links, volumes_from, and depends_on are never shared between services using extends. 
+
+version: '2'
+
+services:
+
+  # We use rabbit as a message broker for celery
+  rabbitmq:
+    image: rabbitmq:3.6.6-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbit-data/:/var/lib/rabbitmq
+    env_file:
+      - bus.env

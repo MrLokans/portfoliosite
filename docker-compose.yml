@@ -1,13 +1,18 @@
-version: '2'
+version: '2.0'
 
 services:
   
+  messagebus:
+    extends:
+      file: docker-compose.base.yml
+      service: rabbitmq
+
   # Django back-end
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    entrypoint: /entrypoint.sh
+    command: ./entrypoint.sh
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
     ports:
