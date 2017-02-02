@@ -1,9 +1,11 @@
 import os
+import time
 import logging
 
 from fabric.api import (
     abort,
     cd,
+    get,
     local,
     lcd,
     put,
@@ -141,6 +143,29 @@ def restart_nginx():
     sudo('systemctl restart nginx')
 
 
+def backup_database():
+    """
+    Dumps active database, archives it,
+    and downloads for local usage
+    """
+
+    def generate_backup_name():
+        date = time.strftime('%Y-%m-%d_%H-%M-%S')
+        name = "database-backup-{}.tar.gz".format(date)
+        return name
+
+    local('mkdir -p backups')
+    backup_name = generate_backup_name()
+    with cd(REPOSITORY_PATH), settings(warn_only=True):
+        sudo('ls -la')
+        sudo('tar -zcvf {archive} {postgres_dir}'
+             .format(archive=backup_name,
+                     postgres_dir='backend/mydatabase',
+                     ))
+        get(remote_path=backup_name,
+            local_path=os.path.join('backups', backup_name))
+
+
 def setup_nginx():
     copy_nginx_config()
     restart_nginx()
@@ -185,6 +210,7 @@ def setup_autostart():
 
 def deploy():
     run_tests()
+    backup_database()
     launch_docker()
     create_directories()
     checkout_repository()
