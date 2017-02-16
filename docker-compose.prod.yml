@@ -28,7 +28,7 @@ services:
       - ./static/:/app/personal_site/staticfiles
     working_dir: /app/
     links:
-      - rabbitmq
+      - messagebus
       - redis
 
   celery-worker:
@@ -48,3 +48,18 @@ services:
     command: ./entrypoint-prod.sh
     volumes:
       - ./frontend/:/frontend/
+
+
+  # ====== Sentry services ======
+  sentry_postgres:
+    image: postgres:9.5-alpine
+    volumes_from:
+    - sentry_postgres_data
+    env_file:
+      - sentry.env
+
+  sentry_postgres_data:
+    image: alpine
+    command: echo
+    volumes:
+      - ./pgdata_sentry:/var/lib/postgresql/data
