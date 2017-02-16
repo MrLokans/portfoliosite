@@ -27,6 +27,8 @@ INSTALLED_APPS = (
     # Third party
     'rest_framework',
     'markdownx',
+    # Sentry error reporting
+    'raven.contrib.django.raven_compat',
 
     # Custom apps
     'about_me',
