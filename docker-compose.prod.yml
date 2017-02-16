@@ -19,6 +19,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: bash entrypoint.sh --prod
+    env_file: backend.env
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
     ports:
@@ -30,6 +31,7 @@ services:
     links:
       - messagebus
       - redis
+      - sentry_server
 
   celery-worker:
     extends:
