@@ -14,7 +14,6 @@ from personal_site.api.views import CreateUserView
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('books.urls')),
-    url(r'^markdownx/', include('markdownx.urls')),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),

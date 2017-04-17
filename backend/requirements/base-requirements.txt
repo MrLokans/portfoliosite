@@ -3,7 +3,6 @@ bs4==0.0.1
 celery==4.0.2
 Django==1.10.2
 django-filter==1.0.1
-django-markdownx==1.6.3
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
 django-rest-swagger==2.1.1
@@ -36,3 +35,6 @@ PyYAML==3.12
 
 # For error reporting
 raven==5.32.0
+
+# Markdown editor in the admin page
+django-pagedown==0.1.3
