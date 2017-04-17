@@ -1,6 +1,6 @@
 # NOTE: links, volumes_from, and depends_on are never shared between services using extends. 
 
-version: '2'
+version: '2.1'
 
 services:
 
@@ -20,7 +20,6 @@ services:
     ports:
       - "6379:6379"
 
-
   celery-worker:
     build:
       context: ./backend
@@ -31,3 +30,5 @@ services:
     working_dir: /app/
     env_file:
       - bus.env
+
+

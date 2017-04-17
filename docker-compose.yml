@@ -1,7 +1,9 @@
-version: '2.0'
+version: '2.1'
 
 networks:
   sentry_network:
+    driver: bridge
+  backend_network:
     driver: bridge
 
 services:
@@ -10,11 +12,15 @@ services:
     extends:
       file: docker-compose.base.yml
       service: rabbitmq
+    networks:
+      - backend_network
 
   redis:
     extends:
       file: docker-compose.base.yml
       service: redis
+    networks:
+      - backend_network
 
   # Django back-end
   backend:
@@ -41,6 +47,8 @@ services:
       - redis
     networks:
       - sentry_network
+      - backend_network
+    restart: always
 
   frontend:
     build:
@@ -61,6 +69,9 @@ services:
     links:
       - redis
       - messagebus
+    networks:
+      - backend_network
+    restart: always
 
   nginx:
     build:
@@ -73,10 +84,12 @@ services:
     volumes_from:
       - frontend
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
     links:
       - backend
+    networks:
+      - backend_network
 
 volumes:
   frontend-data:
