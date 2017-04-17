@@ -16,7 +16,7 @@ ALLOWED_HOSTS = []
 APPEND_SLASH = True
 # Application definition
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -26,9 +26,7 @@ INSTALLED_APPS = (
 
     # Third party
     'rest_framework',
-    'markdownx',
-    # Sentry error reporting
-    'raven.contrib.django.raven_compat',
+    'pagedown',
 
     # Custom apps
     'about_me',
@@ -36,7 +34,7 @@ INSTALLED_APPS = (
     'blog',
     'books',
     'contributions',
-)
+]
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -107,28 +105,6 @@ STATICFILES_FINDERS = [
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_REDIRECT_URL = '/'
-
-# Markdownify
-MARKDOWNX_MARKDOWNIFY_FUNCTION = 'markdownx.utils.markdownify'
-
-MARKDOWNX_URLS_PATH = '/markdownx/markdownify/'
-MARKDOWNX_UPLOAD_URLS_PATH = '/markdownx/upload/'
-# URL that accepts file uploads, returns markdown notation of the image.
-
-# Media path
-MARKDOWNX_MEDIA_PATH = 'markdownx/'
-# Path, where images will be stored in MEDIA_ROOT folder
-
-# Image
-MARKDOWNX_UPLOAD_MAX_SIZE = 52428800
-# 50MB - maximum file size
-MARKDOWNX_UPLOAD_CONTENT_TYPES = ['image/jpeg', 'image/png']
-# Acceptable file content types
-MARKDOWNX_IMAGE_MAX_SIZE = {'size': (500, 500), 'quality': 90}
-
-# Editor
-MARKDOWNX_EDITOR_RESIZABLE = True
-# Update editor's height to inner content height while typing
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (

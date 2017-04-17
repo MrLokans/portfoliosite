@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from markdownx.admin import MarkdownxModelAdmin
-
+from blog.forms import PostForm
 from blog.models import Post
 
 
-admin.site.register(Post, MarkdownxModelAdmin)
+@admin.register(Post)
+class FooModelAdmin(admin.ModelAdmin):
+    form = PostForm
