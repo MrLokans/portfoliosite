@@ -68,3 +68,6 @@ class BookNote(models.Model):
 
     book = models.ForeignKey('Book', related_name='notes')
     text = models.TextField()
+
+    def __str__(self):
+        return 'BookNote(book={})'.format(self.book.title)
