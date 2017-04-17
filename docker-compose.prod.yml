@@ -1,5 +1,10 @@
 version: '2'
 
+networks:
+  sentry_network:
+    driver: bridge
+
+
 services:
 
   messagebus:
@@ -31,7 +36,8 @@ services:
     links:
       - messagebus
       - redis
-      - sentry_server
+    networks:
+      - sentry_network
 
   celery-worker:
     extends:
@@ -50,49 +56,3 @@ services:
     command: ./entrypoint-prod.sh
     volumes:
       - ./frontend/:/frontend/
-
-
-  # ====== Sentry services ======
-  sentry_postgres:
-    image: postgres:9.5-alpine
-    volumes_from:
-    - sentry_postgres_data
-    env_file:
-      - sentry.env
-
-  sentry_postgres_data:
-    image: alpine
-    command: echo
-    volumes:
-      - ./pgdata_sentry:/var/lib/postgresql/data
-
-  sentry_server:
-    # TODO: Add entrypoint script with initial data migration
-    image: sentry:8.12.0
-    volumes:
-      - ./sentry-files:/var/lib/sentry/files
-    links:
-      - sentry_postgres
-      - redis
-    ports:
-      - "19000:9000"
-    env_file:
-      - sentry.env
-
-  sentry_celery_beat:
-    image: sentry:8.12.0
-    links:
-      - sentry_postgres
-      - redis
-    env_file:
-      - sentry.env
-    command: "sentry run cron"
-
-  sentry_worker:
-    image: sentry:8.12.0
-    links:
-      - sentry_postgres
-      - redis
-    env_file:
-      - sentry.env
-    command: "sentry run worker"
