@@ -115,6 +115,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'personal_site.paginators.CustomPagination',
+    'PAGE_SIZE': 25,
 }
 
 
