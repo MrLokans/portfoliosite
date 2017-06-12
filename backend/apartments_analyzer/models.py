@@ -75,3 +75,11 @@ class Apartment(TimeTrackable):
     def __str__(self):
         return ('Apartment(bullettin_url={}, price={})'
                 .format(self.bullettin_url, self.price))
+
+
+class ApartmentImage(models.Model):
+    image_url = models.URLField()
+
+    apartment = models.ForeignKey(Apartment,
+                                  related_name='images',
+                                  on_delete=models.CASCADE)
