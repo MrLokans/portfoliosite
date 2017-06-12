@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Iterable
 
@@ -25,23 +26,29 @@ class ApartmentManager(models.Manager):
             .filter(status=BullettingStatusEnum.INACTIVE.value)
         )
 
-    def mark_active(self, urls: Iterable[str]):
+    def mark_active(self, urls: Iterable[str],
+                    current_time: datetime.datetime=None):
         """
         Marks bulletings with given URLs
         as active
         """
+        current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
         (qs.filter(bullettin_url__in=urls)
-         .update(status=BullettingStatusEnum.ACTIVE.value))
+         .update(status=BullettingStatusEnum.ACTIVE.value,
+                 updated_at=current_time))
 
-    def mark_inactive(self, urls: Iterable[str]):
+    def mark_inactive(self, urls: Iterable[str],
+                      current_time: datetime.datetime=None):
         """
         Marks bulletings with given URLs
         as active
         """
+        current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
         (qs.filter(bullettin_url__in=urls)
-         .update(status=BullettingStatusEnum.INACTIVE.value))
+         .update(status=BullettingStatusEnum.INACTIVE.value,
+                 updated_at=current_time))
 
 
 class Apartment(TimeTrackable):
