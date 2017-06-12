@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^', include('books.urls')),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
+    url(r'^api/apartments/', include('apartments_analyzer.urls',
+                                   namespace='apartments-api')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
     url(r'^api/favorites/', include('favorites.api.urls',
