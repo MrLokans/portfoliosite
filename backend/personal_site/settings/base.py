@@ -30,6 +30,7 @@ INSTALLED_APPS = [
 
     # Custom apps
     'about_me',
+    'apartments_analyzer',
     'favorites',
     'blog',
     'books',
