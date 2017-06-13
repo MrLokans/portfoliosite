@@ -83,3 +83,6 @@ class ApartmentImage(models.Model):
     apartment = models.ForeignKey(Apartment,
                                   related_name='images',
                                   on_delete=models.CASCADE)
+
+    def __str__(self):
+        return ('ApartmentImage(image_url={})'.format(self.image_url))
