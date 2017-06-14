@@ -12,12 +12,14 @@ from personal_site.views import schema_view, HealthCheckView
 from personal_site.api.views import CreateUserView
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include('admin_honeypot.urls',
+                            namespace='admin_honeypot')),
+    url(r'^_internal-portal_/', include(admin.site.urls)),
     url(r'^', include('books.urls')),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     url(r'^api/apartments/', include('apartments_analyzer.urls',
-                                   namespace='apartments-api')),
+                                     namespace='apartments-api')),
     url(r'^api/books/', include('books.api.urls', namespace='books-api')),
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
     url(r'^api/favorites/', include('favorites.api.urls',

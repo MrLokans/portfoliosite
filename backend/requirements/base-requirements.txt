@@ -39,4 +39,6 @@ raven==5.32.0
 # Markdown editor in the admin page
 django-pagedown==0.1.3
 
+django-admin-honeypot==1.0.0
+
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.3.1#egg=agent_spider
