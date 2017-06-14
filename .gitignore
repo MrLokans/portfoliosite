@@ -13,6 +13,13 @@ node_modules
 .cache
 mydatabase
 static
-pgdata
 secret.key
 frontend/js/vendor
+isp_coverage
+backups
+# Docker dirs
+worker
+sentry-files
+rabbit-data
+pgdata
+pgdata_sentry
