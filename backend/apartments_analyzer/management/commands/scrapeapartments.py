@@ -1,21 +1,33 @@
 import logging
+import os
 
-from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction, IntegrityError
-
-import agent_spider
-
+from apartments_analyzer.apartment_importer import ApartmentDataImporter
+from apartments_analyzer.management.commands import _base
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-class Command(BaseCommand):
-    help = """Parse latest apartments data from onliner
-    website and load it into the database"""
+class Command(_base.BaseParserCommand):
+    help = """
+    Runs the apartments data spider, collects
+    the data into the file and syncs it
+    with the actual database.
+    """
 
-    def add_arguments(self, parser):
-        super().add_arguments(parser)
+    def _sync_changes_to_database(self, filename):
+        """
+        Read aparatments data from the output file
+        and sync it with the latest database state.
+        """
+        importer = ApartmentDataImporter()
+        importer.load_from_json(filename)
 
     def handle(self, *args, **kwargs):
-        logger.info('Starting onliner apartments parsing.')
+        filename = kwargs['filename'] or self._generate_filename()
+        self._validate_filename(filename)
+        if os.path.exists(filename):
+            logger.warning(f'File "{filename}" exists, attempting to remove.')
+            os.unlink(filename)
+        self._launch_spider(filename)
+        self._sync_changes_to_database(filename)
