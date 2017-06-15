@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third party
+    'admin_honeypot',
     'rest_framework',
     'pagedown',
 
@@ -120,6 +121,22 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25,
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        }
+    }
+}
 
 # Celery related settings
 REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
