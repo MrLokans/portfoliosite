@@ -3,6 +3,12 @@ set -e
 
 BACKEND_USER=bloguser
 
+
+echo "Launching cron"
+
+[ "$(ls -A /etc/cron.d)" ] && cp -f /etc/cron.d/* /var/spool/cron/crontabs/$BACKEND_USER || true
+crond -s /var/spool/cron/crontabs -f -L /var/log/cron/cron.log &
+
 echo "Applying migrations"
 su "$BACKEND_USER" -c "python manage.py makemigrations"
 su "$BACKEND_USER" -c "python manage.py migrate --run-syncdb"
