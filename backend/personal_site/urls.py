@@ -8,7 +8,7 @@ from rest_framework_jwt.views import (
 )
 
 from blog.feed import LatestPostsFeed
-from personal_site.views import schema_view, HealthCheckView
+from personal_site.views import schema_view
 from personal_site.api.views import CreateUserView
 
 urlpatterns = [
@@ -24,11 +24,11 @@ urlpatterns = [
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
     url(r'^api/favorites/', include('favorites.api.urls',
                                     namespace='favorites-api')),
+    url(r'^api/health/$', include('health_check.urls')),
     url(r'^api/technologies/', include('about_me.urls_technologies',
                                        namespace='tech-api')),
     url(r'^api/projects/', include('about_me.urls_projects',
                                    namespace='projects-api')),
-    url(r'^api/healthcheck/', HealthCheckView.as_view(), name='healthcheck'),
     url(r'^api/register', CreateUserView.as_view(), name='api-register'),
     url(r'^feed/latest/', LatestPostsFeed()),
 ]

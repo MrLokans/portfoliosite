@@ -26,6 +26,9 @@ INSTALLED_APPS = [
 
     # Third party
     'admin_honeypot',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
     'rest_framework',
     'pagedown',
 
