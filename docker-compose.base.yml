@@ -13,7 +13,7 @@ services:
     volumes:
       - ./rabbit-data/:/var/lib/rabbitmq
     env_file:
-      - bus.env
+      - ./environment/bus.env
 
   redis:
     image: redis:3.0.7-alpine
@@ -29,6 +29,6 @@ services:
     command: bash ./run_celery.sh
     working_dir: /app/
     env_file:
-      - bus.env
+      - ./environment/bus.env
 
 

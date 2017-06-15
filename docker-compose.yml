@@ -31,8 +31,8 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
     env_file:
-      - bus.env
-      - backend.env
+      - ./environment/bus.env
+      - ./environment/backend.env
     ports:
       - "8000:8000"
     volumes:
@@ -56,7 +56,7 @@ services:
       dockerfile: Dockerfile
     entrypoint: ./entrypoint.sh
     env_file:
-      - bus.env
+      - ./environment/bus.env
     volumes:
       - ./frontend/:/frontend/
     ports:

@@ -11,7 +11,7 @@ services:
     volumes_from:
     - sentry_postgres_data
     env_file:
-      - sentry.env
+      - ./environment/sentry.env
 
   sentry_postgres_data:
     image: alpine
@@ -30,7 +30,7 @@ services:
     ports:
       - "9000:9000"
     env_file:
-      - sentry.env
+      - ./environment/sentry.env
     networks:
       - sentry_network
 
@@ -40,7 +40,7 @@ services:
       - sentry_postgres
       - redis
     env_file:
-      - sentry.env
+      - ./environment/sentry.env
     command: "sentry run cron"
     networks:
       - sentry_network
@@ -51,7 +51,7 @@ services:
       - sentry_postgres
       - redis
     env_file:
-      - sentry.env
+      - ./environment/sentry.env
     command: "sentry run worker"
     networks:
       - sentry_network
