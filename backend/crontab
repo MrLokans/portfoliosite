@@ -1,1 +1,2 @@
-* * * * * echo "Hello World!\n" >> /some-file
+# Every 2 hours
+0 */2 * * * cd /app && python manage.py scrapeapartments
