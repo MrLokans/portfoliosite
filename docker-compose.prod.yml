@@ -3,6 +3,8 @@ version: '2.1'
 networks:
   sentry_network:
     driver: bridge
+  production_network:
+    driver: bridge
 
 
 services:
@@ -11,12 +13,16 @@ services:
     extends:
       file: docker-compose.base.yml
       service: database
+    networks:
+      - production_network
 
 
   messagebus:
     extends:
       file: docker-compose.base.yml
       service: rabbitmq
+    networks:
+      - production_network
 
   redis:
     extends:
@@ -35,17 +41,16 @@ services:
       - ./environment/db.env
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
+      - DATABASE_HOST=database
     ports:
       - "8000:8000"
     volumes:
       - ./backend/:/app/
       - ./static/:/app/personal_site/staticfiles
     working_dir: /app/
-    links:
-      - messagebus
-      - redis
     networks:
       - sentry_network
+      - production_network
     depends_on:
       database:
         condition: service_healthy
