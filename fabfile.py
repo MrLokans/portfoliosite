@@ -36,8 +36,9 @@ SYSTEMD_UNIT_NAME = 'personalsite-backend.service'
 SYSTEMD_UNIT_LOCAL_PATH = os.path.abspath(SYSTEMD_UNIT_NAME)
 SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
                                         SYSTEMD_UNIT_NAME)
+CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
 
-env.hosts = []
+env.hosts = ['mrlokans@mrlokans.com']
 
 
 def create_directories():
@@ -62,7 +63,6 @@ def checkout_repository():
 def fix_premissions():
     with cd(REMOTE_BACKEND_DIR):
         sudo('chmod +x entrypoint.sh')
-        sudo('chmod +x entrypoint-prod.sh')
     with cd(REMOTE_FRONTEND_DIR):
         sudo('chmod +x entrypoint-prod.sh')
 
@@ -128,6 +128,13 @@ def set_secret_key():
          .format(key=secret_key, path=REPOSITORY_PATH))
 
 
+def copy_local_environment_settings():
+    """
+    Copies local environment settings files
+    """
+    put('environment', REPOSITORY_PATH)
+
+
 def copy_nginx_config():
     logger.info("Copying nginx config.")
     put(NGINX_CONFIG_LOCAL_PATH, NGINX_CONFIG_REMOTE_PATH,
@@ -157,7 +164,6 @@ def backup_database():
     local('mkdir -p backups')
     backup_name = generate_backup_name()
     with cd(REPOSITORY_PATH), settings(warn_only=True):
-        sudo('ls -la')
         sudo('tar -zcvf {archive} {postgres_dir}'
              .format(archive=backup_name,
                      postgres_dir='backend/mydatabase',
@@ -218,6 +224,7 @@ def deploy():
     fix_premissions()
     prepare_frontend()
     set_secret_key()
+    copy_local_environment_settings()
     launch_containers()
     setup_nginx()
     setup_seo()
