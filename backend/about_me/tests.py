@@ -14,8 +14,13 @@ class ProjectsAPITestCase(TestCase):
         cls.projects_url = reverse('projects-api:projects-list')
         cls.technology_url = reverse('tech-api:technology-list')
 
-    def test_technology_list_is_displayed(self):
+    def _get_technologies_count(self):
+        return Technology.objects.count()
 
+    def _get_projects_count(self):
+        return Project.objects.count()
+
+    def test_technology_list_is_displayed(self):
         d1 = dict(name='unittest',
                   general_description='Python unit-testing framework',
                   mastery_level=Technology.INTERMEDIATE)
@@ -28,10 +33,10 @@ class ProjectsAPITestCase(TestCase):
         Technology.objects.create(**d2)
 
         resp = self.client.get(self.technology_url)
-
-        self.assertEqual(len(resp.data), 2)
-        self.assertEqual(resp.data[0], d1)
-        self.assertEqual(resp.data[1], d2)
+        self.assertEqual(len(resp.data['results']),
+                         self._get_technologies_count())
+        self.assertEqual(resp.data['results'][0], d1)
+        self.assertEqual(resp.data['results'][1], d2)
 
     def test_project_list_is_displayed(self):
 
@@ -51,9 +56,9 @@ class ProjectsAPITestCase(TestCase):
         p.save()
         resp = self.client.get(self.projects_url)
 
-        self.assertEqual(len(resp.data), 1)
+        self.assertEqual(len(resp.data['results']), 1)
 
-        project = resp.data[0]
+        project = resp.data['results'][0]
         self.assertEqual(project['title'], 'MySuperProject')
         self.assertEqual(project['description'], 'TBD')
         self.assertIn("technologies", project)

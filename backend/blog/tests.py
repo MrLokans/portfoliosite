@@ -38,8 +38,9 @@ class BlogAPITests(BaseCase):
         response = self.api_client.get(posts_url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
-        sorted_posts = sorted(response.data, key=lambda x: x['id'])
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+        sorted_posts = sorted(results, key=lambda x: x['id'])
 
         post_0 = sorted_posts[0]
 
