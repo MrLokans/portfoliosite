@@ -7,6 +7,12 @@ networks:
 
 services:
 
+  database:
+    extends:
+      file: docker-compose.base.yml
+      service: database
+
+
   messagebus:
     extends:
       file: docker-compose.base.yml
@@ -24,7 +30,9 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     command: bash entrypoint.sh --prod
-    env_file: ./environment/backend.env
+    env_file:
+      - ./environment/backend.env
+      - ./environment/db.env
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
     ports:
@@ -38,6 +46,9 @@ services:
       - redis
     networks:
       - sentry_network
+    depends_on:
+      database:
+        condition: service_healthy
 
   celery-worker:
     extends:

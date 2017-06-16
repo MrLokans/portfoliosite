@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^api/blog/', include('blog.api.urls', namespace='blog-api')),
     url(r'^api/favorites/', include('favorites.api.urls',
                                     namespace='favorites-api')),
-    url(r'^api/health/$', include('health_check.urls')),
+    url(r'^api/health/', include('health_check.urls')),
     url(r'^api/technologies/', include('about_me.urls_technologies',
                                        namespace='tech-api')),
     url(r'^api/projects/', include('about_me.urls_projects',

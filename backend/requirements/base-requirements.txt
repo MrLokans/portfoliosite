@@ -33,6 +33,8 @@ dropbox==6.2
 moonreader_tools
 PyYAML==3.12
 
+psycopg2==2.7.1
+
 # For error reporting
 raven==5.32.0
 

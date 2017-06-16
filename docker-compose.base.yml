@@ -4,6 +4,13 @@ version: '2.1'
 
 services:
 
+  database:
+    image: robbyoconnor/postgres-alpine-healthcheck:latest
+    volumes:
+      - ./pgdata-prod/:/var/lib/postgresql/data
+    env_file:
+      - ./environment/db.env
+
   # We use rabbit as a message broker for celery
   rabbitmq:
     image: rabbitmq:3.6.6-management-alpine
