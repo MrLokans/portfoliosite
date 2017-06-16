@@ -5,11 +5,18 @@
            .controller('PostsController', PostsController)
            .controller('PostDetailController', PostDetailController);
 
-    PostsController.$inject = ['$scope', '$log', '$http', 'ngDialog', 'Posts'];
-    PostDetailController.$inject = ['$scope', '$http', '$routeParams', 'Posts'];
+    PostsController.$inject = ['$scope', '$log', '$http', '$sce', 'ngDialog', 'Posts', 'marked', 'lodash'];
+    PostDetailController.$inject = ['$scope', '$http', '$sce', '$routeParams', 'Posts', 'marked'];
     
 
-    function PostsController($scope, $log, $http, ngDialog, Posts){
+    function PostsController($scope, $log, $http, $sce, ngDialog, Posts, marked, lodash){
+
+        $scope.pagination = {
+            totalItems: 0,
+            currentPage: 0,
+            itemsPerPage: 25
+        };
+
         $scope.currentPost = {
             author: 'MrLokans',
             body: ""
@@ -24,7 +31,12 @@
         };
 
         $scope.getPosts = function(){
-            $scope.posts = Posts.query();
+            Posts.query(function(posts){
+                $scope.posts = posts;
+                lodash.each(posts, function(value){
+                    value.markdown = $sce.trustAsHtml(marked(value.content));
+                });
+            });
         };
 
         $scope.removePost = function(postId){
@@ -39,11 +51,14 @@
             newPost.$save();
             $scope.getPosts();
         };
-        $scope.posts = Posts.query();
+        $scope.getPosts();
     }
 
-    function PostDetailController($scope, $http, $routeParams, Posts){
-        $scope.post = Posts.get({id: $routeParams.post_id});
+    function PostDetailController($scope, $http, $sce, $routeParams, Posts, marked){
+        Posts.get({id: $routeParams.post_id}, function(post){
+            $scope.post = post;
+            $scope.post.markdown = $sce.trustAsHtml(marked($scope.post.content));
+        });
     }
 
 })();

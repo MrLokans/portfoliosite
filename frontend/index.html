@@ -48,7 +48,7 @@
 
                 <ul class="nav nav-pills nav-stacked">
                     <li class="menu-item"><a href="#about_me">About me</a></li>
-                    <!-- <li class="menu-item"><a href="#blog">Blog</a></li> -->
+                    <li class="menu-item"><a href="#blog">Blog</a></li>
                     <li class="menu-item"><a href="#projects">Projects list</a></li>
                     <li class="menu-item"><a href="#contacts">Contacts</a></li>
                     <!-- <li class="menu-item"><a href="#books">Book quotes</a></li> -->
@@ -186,9 +186,7 @@
                 </div>
                 <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
             </div> 
-            <div class="post-content">
-                {{ post.content }}
-            </div>
+            <div class="post-content" ng-bind-html="post.markdown"></div>
             <div class="post-close-block">
                 <a ng-click="removePost(post.id)">
                     <img src="img/post-delete.png"></a>
@@ -210,8 +208,7 @@
             <div>{{ post.created | date:"HH:mm - dd.MM.yyyy" }}</div>
             <div></div>
         </div> 
-        <div class="post-content">
-            {{ post.content }}
+        <div class="post-content" ng-bind-html="post.markdown">
         </div>
     </script>
 

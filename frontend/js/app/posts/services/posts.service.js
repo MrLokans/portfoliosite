@@ -7,6 +7,16 @@
     Posts.$inject = ['$http', '$resource', 'ENDPOINT'];
 
     function Posts($http, $resource, ENDPOINT){
-        return $resource(ENDPOINT.API_URL + '/api/blog/:id', {id: '@_id'});
+        return $resource(ENDPOINT.API_URL + '/api/blog/:id', {id: '@_id'},
+        {
+            'query': {
+                method: 'GET', 
+                isArray: true,
+                transformResponse: function(data, headers){
+                    var booksData = JSON.parse(data);
+                    return booksData.results;
+                }
+            }
+        });
     }
 })();

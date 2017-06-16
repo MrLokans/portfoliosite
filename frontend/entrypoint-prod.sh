@@ -1,3 +1,4 @@
 #!/bin/bash
 set -e
-cd /frontend/; gulp prod
+cd /frontend/
+gulp prod

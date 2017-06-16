@@ -2,11 +2,11 @@
     'use strict';
 
     angular.module('andersblog', [
-                                  // 'hc.marked',
-                                  // 'ngLodash',
+                                  'hc.marked',
+                                  'ngLodash',
                                   'andersblog.constants',
                                   'andersblog.common',
-                                  // 'andersblog.auth',
+                                  'andersblog.auth',
                                   'andersblog.posts',
                                   'andersblog.books',
                                   'andersblog.about_me',

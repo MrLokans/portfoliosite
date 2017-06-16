@@ -4,10 +4,10 @@
     angular.module('andersblog.books.services')
            .factory('Books', Books);
 
-    Books.$inject = ['$http', '$resource', 'ENDPOINT'];
+    Books.$inject = ['$http', '$resource', 'ENDPOINT', 'urlConstants'];
 
-    function Books($http, $resource){
-        return $resource(ENDPOINT.API_URL + '/api/books/:id?format=json', 
+    function Books($http, $resource, ENDPOINT, urlConstants){
+        return $resource(ENDPOINT.API_URL + urlConstants.BOOKS_LIST_URL, 
             {id: '@_id'},
             {
                 'query': {

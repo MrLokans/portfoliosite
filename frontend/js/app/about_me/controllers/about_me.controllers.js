@@ -14,7 +14,7 @@
                 Skills.getSkills().then(getSkillsSuccessFn, getSkillsErrFn);
 
                 function getSkillsSuccessFn(data, status, headers, config){
-                    $scope.skills = data.data;
+                    $scope.skills = data.data.results;
                     $log.debug($scope.skills);
                 }
                 function getSkillsErrFn(data, status, headers, config){
@@ -24,10 +24,18 @@
 
             function ProjectsController($http, $scope, $log, Projects){
 
+                $scope.pagination = {
+                    totalItems: 0,
+                    currentPage: 0,
+                    itemsPerPage: 25
+                };
+
                 Projects.getProjects().then(getProjectsSuccessFn, getProjectsErrFn);
 
                 function getProjectsSuccessFn(data, status, headers, config){
-                    $scope.projects = data.data;
+                    $scope.projects = data.data.results;
+
+                    $scope.pagination.totalItems = data.data.count;
                     $log.debug($scope.projects);
                 }
                 function getProjectsErrFn(data, status, headers, config){

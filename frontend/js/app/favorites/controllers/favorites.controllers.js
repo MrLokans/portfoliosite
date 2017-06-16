@@ -15,7 +15,7 @@
 
     function FavoritesListController($scope, $log, $http, $routeParams, Favorites){
         var self = this;
-        this.$onInit = function(){
+        self.$onInit = function(){
             $log.debug('Loading list of favorites on controller init.');
 
             Favorites.getAllFavorites()
@@ -23,7 +23,7 @@
 
             function successFn(response){
                 $log.debug("Favorites list loaded.");
-                self.favorites = response.data;
+                self.favorites = response.data.results;
             }
             function errorFn(error){
                 $log.error("Error getting favorites list: " + error.message);
