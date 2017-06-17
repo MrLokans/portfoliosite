@@ -1,3 +1,6 @@
+import warnings
+
+from django.conf import settings
 from django.contrib import admin
 from django.db.models import Count
 from django.utils.html import format_html_join
@@ -26,6 +29,20 @@ class ApartmentAdmin(admin.ModelAdmin):
     search_fields = ('address', 'price')
     exclude = ('created_at',)
     inlines = [ApartmentImageInline]
+
+    class Media:
+        key_set = hasattr(settings, 'GOOGLE_MAPS_API_KEY') and settings.GOOGLE_MAPS_API_KEY
+        if not key_set:
+            warnings.warn('GOOGLE_MAPS_API_KEY setting is not set. '
+                          'Google Map will not be displayed in the admin site.')
+        else:
+            css = {
+                'all': ('css/admin/location_picker.css',),
+            }
+            js = (
+                'https://maps.googleapis.com/maps/api/js?key={}'.format(settings.GOOGLE_MAPS_API_KEY),
+                'js/admin/location_picker.js',
+            )
 
     def bulletin_images(self, obj):
         return format_html_join(
