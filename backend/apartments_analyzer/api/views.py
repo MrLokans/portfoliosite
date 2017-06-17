@@ -38,6 +38,7 @@ class AgentCheckView(APIView):
         apartment_urls = Apartment.objects\
             .filter(author_url=user_url)\
             .values_list('bullettin_url', flat=True)
+        apartment_urls = set(apartment_urls)
         if len(apartment_urls) <= AGENT_COUNT_THRESHOLD:
             is_agent_probability = 0
         else:
