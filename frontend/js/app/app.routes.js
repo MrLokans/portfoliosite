@@ -14,9 +14,9 @@
                 templateUrl: 'projects.html',
                 controller: "ProjectsController"
             })
-            .when('/blog', {
-                templateUrl: 'blog.html',
-            })
+            // .when('/blog', {
+            //     templateUrl: 'blog.html',
+            // })
             .when('/contacts', {
                 templateUrl: 'contacts.html',
             })

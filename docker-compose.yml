@@ -62,16 +62,16 @@ services:
     ports:
       - "8090:8090"
 
-  celery-worker:
-    extends:
-      file: docker-compose.base.yml
-      service: celery-worker
-    links:
-      - redis
-      - messagebus
-    networks:
-      - backend_network
-    restart: always
+  # celery-worker:
+  #   extends:
+  #     file: docker-compose.base.yml
+  #     service: celery-worker
+  #   links:
+  #     - redis
+  #     - messagebus
+  #   networks:
+  #     - backend_network
+  #   restart: always
 
   nginx:
     build:

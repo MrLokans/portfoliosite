@@ -55,13 +55,13 @@ services:
       database:
         condition: service_healthy
 
-  celery-worker:
-    extends:
-      file: docker-compose.base.yml
-      service: celery-worker
-    links:
-      - redis
-      - messagebus
+  # celery-worker:
+  #   extends:
+  #     file: docker-compose.base.yml
+  #     service: celery-worker
+  #   links:
+  #     - redis
+  #     - messagebus
 
   frontend:
     build:
