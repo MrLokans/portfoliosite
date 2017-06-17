@@ -1,5 +1,5 @@
 FROM python:3.6.1-alpine
-HEALTHCHECK --interval=1m CMD curl --fail http://localhost:8000/api/health || exit 1
+HEALTHCHECK --interval=1m CMD curl --fail http://localhost:8000/api/health/ || exit 1
 ENV PYTHONBUFFERED 1
 RUN adduser -D -g '' bloguser
 RUN apk update \
