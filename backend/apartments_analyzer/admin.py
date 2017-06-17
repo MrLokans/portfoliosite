@@ -23,6 +23,7 @@ class ApartmentAdmin(admin.ModelAdmin):
     list_display = ('bullettin_url', 'address', 'price',
                     'latitude', 'longitude', 'status',
                     'created_at', 'updated_at', 'images_count')
+    search_fields = ('address', 'price')
     exclude = ('created_at',)
     inlines = [ApartmentImageInline]
 
