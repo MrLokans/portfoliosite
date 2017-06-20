@@ -21,7 +21,7 @@ class ApartmentSerializer(serializers.ModelSerializer):
     longitude = serializers.DecimalField(max_digits=None, decimal_places=None)
     latitude = serializers.DecimalField(max_digits=None, decimal_places=None)
 
-    description = serializers.SerializerMethodField()
+    description = serializers.CharField()
     images = ApartmentImageSerializer(many=True,
                                       queryset=Apartment.objects.all())
 

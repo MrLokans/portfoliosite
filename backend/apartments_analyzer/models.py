@@ -70,6 +70,7 @@ class Apartment(TimeTrackable):
     # Author profile URL
     author_url = models.URLField()
     # Original url of the apartment
+    # TODO: find a way to deduplicate items (unique=True?)
     bullettin_url = models.URLField()
 
     status = models.SmallIntegerField(choices=[(x.value, x.name)
