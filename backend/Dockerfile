@@ -10,12 +10,13 @@ RUN apk update \
     && touch /var/log/cron/cron.log \
     && mkdir -m 0644 -p /etc/cron.d
 COPY requirements/base-requirements.txt /app/requirements.txt
-RUN apk add --no-cache bash curl \
+RUN apk add --no-cache bash curl libffi \
+    && apk add --virtual build-dependencies --no-cache \
         git gcc linux-headers \
-        musl-dev libffi libxslt libxml2-dev \
+        musl-dev  libxslt libxml2-dev \
         jpeg-dev zlib-dev libxslt-dev \
         libffi-dev openssl-dev \
         postgresql-dev \
     && LIBRARY_PATH=/lib:/usr/lib pip install -r /app/requirements.txt \
-    && apk del git gcc linux-headers musl-dev libxml2-dev jpeg-dev zlib-dev libxslt-dev libffi-dev openssl-dev
+    && apk del build-dependencies
 COPY crontab /etc/cron.d/bloguser
