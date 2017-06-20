@@ -1,11 +1,16 @@
+import datetime
 import json
+import logging
 import os
 from typing import Dict, List, Set
 
-from django.db import transaction
+from django.db import transaction, IntegrityError
 
-from apartments_analyzer.models import Apartment
+from apartments_analyzer.models import Apartment, ApartmentScrapingResults
 from apartments_analyzer.api.serializers import ApartmentSerializer
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 class ApartmentDataImporter(object):
@@ -25,17 +30,59 @@ class ApartmentDataImporter(object):
         )
         return set(existing_apartments)
 
+    def _clean_up_description(self, text: List[str]) -> str:
+        joined_text = " ".join(text).replace('\n', ' ')
+        placed_pos = joined_text.find('Размещено')
+        if placed_pos != -1:
+            joined_text = joined_text[:placed_pos]
+        return joined_text
+
+    def _handle_database_sync(self,
+                              new_apartments,
+                              inactive_urls: Set[str],
+                              new_urls: Set[str],
+                              stats: Dict) -> Dict:
+        """
+        :raises IntegrityError:
+        """
+        with transaction.atomic():
+            stats['total_inactive'] = Apartment.objects.mark_inactive(inactive_urls)
+            for item in new_apartments:
+                item['description'] = self._clean_up_description(item['description'])
+                ser = ApartmentSerializer(data=item)
+                if ser.is_valid():
+                    ser.save()
+                    stats['total_saved'] += 1
+                else:
+                    logger.error('Error saving apartment data: ', ser.errors)
+                    stats['total_errors'] += 1
+            stats['total_active'] = Apartment.objects.mark_active(new_urls)
+
     def save_apartments_data(self,
                              new_apartments,
                              inactive_urls: Set[str],
                              new_urls: Set[str]):
-        with transaction.atomic():
-            Apartment.objects.mark_inactive(inactive_urls)
-            for item in new_apartments:
-                ser = ApartmentSerializer(data=item)
-                ser.is_valid()
-                ser.save()
-            Apartment.objects.mark_active(new_urls)
+        scrape_stats = {
+            'total_errors': 0,
+            'total_active': 0,
+            'total_inactive': 0,
+            'total_saved': 0,
+            'error_message': "",
+            'succeeded': True,
+            'time_started': datetime.datetime.utcnow(),
+            'time_finished': None,
+        }
+        try:
+            self._handle_database_sync(new_apartments, inactive_urls, new_urls,
+                                       scrape_stats)
+        except IntegrityError as exc:
+            logger.exception('Error saving changes to the database.')
+            scrape_stats['succeeded'] = False
+            scrape_stats['error_message'] = str(exc)
+        finally:
+            scrape_stats['time_finished'] = datetime.datetime.utcnow()
+            stats = ApartmentScrapingResults(**scrape_stats)
+            stats.save()
 
     def load_from_json(self, filename: str):
         """

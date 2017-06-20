@@ -27,28 +27,32 @@ class ApartmentManager(models.Manager):
         )
 
     def mark_active(self, urls: Iterable[str],
-                    current_time: datetime.datetime=None):
+                    current_time: datetime.datetime=None) -> int:
         """
         Marks bulletings with given URLs
         as active
         """
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
-        (qs.filter(bullettin_url__in=urls)
-         .update(status=BullettingStatusEnum.ACTIVE.value,
-                 updated_at=current_time))
+        number_updated = (
+            qs.filter(bullettin_url__in=urls)
+            .update(status=BullettingStatusEnum.ACTIVE.value,
+                    updated_at=current_time))
+        return number_updated
 
     def mark_inactive(self, urls: Iterable[str],
-                      current_time: datetime.datetime=None):
+                      current_time: datetime.datetime=None) -> int:
         """
         Marks bulletings with given URLs
         as active
         """
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
-        (qs.filter(bullettin_url__in=urls)
-         .update(status=BullettingStatusEnum.INACTIVE.value,
-                 updated_at=current_time))
+        number_updated = (
+            qs.filter(bullettin_url__in=urls)
+            .update(status=BullettingStatusEnum.INACTIVE.value,
+                    updated_at=current_time))
+        return number_updated
 
 
 class Apartment(TimeTrackable):
@@ -86,3 +90,19 @@ class ApartmentImage(models.Model):
 
     def __str__(self):
         return ('ApartmentImage(image_url={})'.format(self.image_url))
+
+
+class ApartmentScrapingResults(models.Model):
+    """
+    This model is used to store scraping statistics
+    after the crawler has been run.
+    """
+    time_started = models.DateTimeField()
+    time_finished = models.DateTimeField(auto_now_add=True)
+    succeeded = models.BooleanField()
+    # If any errors
+    error_message = models.TextField()
+    total_errors = models.PositiveIntegerField()
+    total_saved = models.PositiveIntegerField()
+    total_active = models.PositiveIntegerField()
+    total_inactive = models.PositiveIntegerField()

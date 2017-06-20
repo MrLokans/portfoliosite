@@ -6,7 +6,11 @@ from django.db.models import Count
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
-from apartments_analyzer.models import Apartment, ApartmentImage
+from apartments_analyzer.models import (
+    Apartment,
+    ApartmentImage,
+    ApartmentScrapingResults
+)
 
 
 IMAGE_TEMPLATE = """
@@ -65,5 +69,10 @@ class ApartmentImageAdmin(admin.ModelAdmin):
     pass
 
 
+class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Apartment, ApartmentAdmin)
 admin.site.register(ApartmentImage, ApartmentImageAdmin)
+admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)
