@@ -107,3 +107,14 @@ class ApartmentScrapingResults(models.Model):
     total_saved = models.PositiveIntegerField()
     total_active = models.PositiveIntegerField()
     total_inactive = models.PositiveIntegerField()
+
+    @property
+    def time_taken(self):
+        return self.time_finished - self.time_started
+
+    def __repr__(self):
+        return ('ApartmentScrapingResults('
+                'time_finished={0}, succeeded={1})'
+                .format(self.time_finished, self.succeeded))
+
+    __str__ = __repr__

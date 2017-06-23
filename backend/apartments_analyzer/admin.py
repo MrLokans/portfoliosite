@@ -70,7 +70,20 @@ class ApartmentImageAdmin(admin.ModelAdmin):
 
 
 class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
-    pass
+    fields = ('time_started',
+              'time_finished',
+              'succeeded',
+              'error_message',
+              'total_errors',
+              'total_saved',
+              'total_active',
+              'total_inactive',
+              'time_taken',
+              )
+    readonly_fields = fields
+    list_display = ('time_started', 'time_finished', 'succeeded',
+                    'total_saved', 'total_errors',
+                    'time_taken')
 
 
 admin.site.register(Apartment, ApartmentAdmin)
