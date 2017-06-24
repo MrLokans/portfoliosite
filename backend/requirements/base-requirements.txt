@@ -46,6 +46,6 @@ django-admin-honeypot==1.0.0
 django-health-check==2.3.0
 
 # Track model changes
-django_simple_history-1.9.0
+django_simple_history==1.9.0
 
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.3.2#egg=agent_spider
