@@ -35,10 +35,11 @@ class ApartmentDataImporter(object):
         placed_pos = joined_text.find('Размещено')
         if placed_pos != -1:
             joined_text = joined_text[:placed_pos]
-        return joined_text
+        return joined_text or ''
 
     def _handle_database_sync(self,
                               new_apartments,
+                              apartments_to_update,
                               inactive_urls: Set[str],
                               new_urls: Set[str],
                               stats: Dict) -> Dict:
@@ -54,12 +55,24 @@ class ApartmentDataImporter(object):
                     ser.save()
                     stats['total_saved'] += 1
                 else:
-                    logger.error('Error saving apartment data: ', ser.errors)
+                    logger.error('Error saving apartment data: %s', ser.errors)
+                    stats['total_errors'] += 1
+            # TODO: refactor and remove code duplication
+            for item in apartments_to_update:
+                item['description'] = self._clean_up_description(item['description'])
+                ap = Apartment.objects.get(bullettin_url=item['origin_url'])
+                ser = ApartmentSerializer(instance=ap, data=item)
+                if ser.is_valid():
+                    ser.save()
+                    stats['total_saved'] += 1
+                else:
+                    logger.error('Error saving apartment data: %s', ser.errors)
                     stats['total_errors'] += 1
             stats['total_active'] = Apartment.objects.mark_active(new_urls)
 
     def save_apartments_data(self,
                              new_apartments,
+                             apartments_to_update,
                              inactive_urls: Set[str],
                              new_urls: Set[str]):
         scrape_stats = {
@@ -73,9 +86,11 @@ class ApartmentDataImporter(object):
             'time_finished': None,
         }
         try:
-            self._handle_database_sync(new_apartments, inactive_urls, new_urls,
+            self._handle_database_sync(new_apartments,
+                                       apartments_to_update,
+                                       inactive_urls, new_urls,
                                        scrape_stats)
-        except IntegrityError as exc:
+        except Exception as exc:
             logger.exception('Error saving changes to the database.')
             scrape_stats['succeeded'] = False
             scrape_stats['error_message'] = str(exc)
@@ -99,12 +114,15 @@ class ApartmentDataImporter(object):
         existing_urls = self._get_existing_apartment_urls()
         loaded_urls = set(i['origin_url']
                           for i in items)
-
         inactive_urls = existing_urls - loaded_urls
         new_urls = loaded_urls - existing_urls
+        updated_urls = loaded_urls - new_urls
         new_apartments = (i for i in items
                           if i['origin_url'] in new_urls)
+        apartments_to_update = (i for i in items
+                                if i['origin_url'] in updated_urls)
 
         self.save_apartments_data(new_apartments,
+                                  apartments_to_update,
                                   inactive_urls,
                                   new_urls)
