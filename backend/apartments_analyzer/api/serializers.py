@@ -21,7 +21,7 @@ class ApartmentSerializer(serializers.ModelSerializer):
     longitude = serializers.DecimalField(max_digits=None, decimal_places=None)
     latitude = serializers.DecimalField(max_digits=None, decimal_places=None)
 
-    description = serializers.CharField()
+    description = serializers.CharField(allow_blank=True)
     images = ApartmentImageSerializer(many=True,
                                       queryset=Apartment.objects.all())
 
@@ -36,6 +36,28 @@ class ApartmentSerializer(serializers.ModelSerializer):
             ApartmentImage.objects.create(apartment=apartment,
                                           image_url=image_url)
         return apartment
+
+    def update(self, instance, validated_data):
+        images_data = set(validated_data.pop('images'))
+        existing_images = set(ApartmentImage.objects\
+            .filter(apartment=instance)\
+            .values_list('image_url', flat=True))
+        new_images = images_data - existing_images
+        removed_images = existing_images - images_data
+
+        # If photos added to the apartment page
+        # we create it in the database
+        ApartmentImage.objects.bulk_create([
+            ApartmentImage(**{'image_url': image_url,
+                              'apartment': instance})
+            for image_url in new_images
+        ])
+        # If removed - delete it accordingly
+        ApartmentImage.objects\
+            .filter(apartment=instance,
+                    image_url__in=removed_images)\
+            .delete()
+        return instance
 
     class Meta:
         model = Apartment
