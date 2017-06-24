@@ -6,6 +6,8 @@ from django.db.models import Count
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
+from simple_history.admin import SimpleHistoryAdmin
+
 from apartments_analyzer.models import (
     Apartment,
     ApartmentImage,
@@ -24,7 +26,7 @@ class ApartmentImageInline(admin.TabularInline):
     model = ApartmentImage
 
 
-class ApartmentAdmin(admin.ModelAdmin):
+class ApartmentAdmin(SimpleHistoryAdmin):
     readonly_fields = ('bulletin_images',)
 
     list_display = ('bullettin_url', 'address', 'price',

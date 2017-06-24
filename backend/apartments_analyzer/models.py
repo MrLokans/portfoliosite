@@ -3,6 +3,7 @@ import logging
 from typing import Iterable
 
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from personal_site.models_common import TimeTrackable
 from apartments_analyzer.enums import BullettingStatusEnum
@@ -72,6 +73,8 @@ class Apartment(TimeTrackable):
     status = models.SmallIntegerField(choices=[(x.value, x.name)
                                                for x in BullettingStatusEnum],
                                       default=BullettingStatusEnum.INACTIVE.value)
+
+    history = HistoricalRecords()
 
     objects = ApartmentManager()
 

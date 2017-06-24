@@ -29,8 +29,9 @@ INSTALLED_APPS = [
     'health_check',
     'health_check.db',
     'health_check.cache',
-    'rest_framework',
     'pagedown',
+    'rest_framework',
+    'simple_history',
 
     # Custom apps
     'about_me',
