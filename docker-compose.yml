@@ -7,7 +7,16 @@ networks:
     driver: bridge
 
 services:
-  
+
+  database:
+    extends:
+      file: docker-compose.base.yml
+      service: database
+    networks:
+      - backend_network
+    ports:
+      - "15432:5432"
+
   messagebus:
     extends:
       file: docker-compose.base.yml
@@ -27,12 +36,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    restart: always
     command: bash ./entrypoint.sh
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
+      - DATABASE_HOST=database
     env_file:
       - ./environment/bus.env
       - ./environment/backend.env
+      - ./environment/db.env
     ports:
       - "8000:8000"
     volumes:
@@ -49,6 +61,9 @@ services:
       - sentry_network
       - backend_network
     restart: always
+    depends_on:
+      database:
+        condition: service_healthy
 
   frontend:
     build:
@@ -74,6 +89,7 @@ services:
   #   restart: always
 
   nginx:
+    restart: always
     build:
       context: ./nginx
       dockerfile: Dockerfile
@@ -83,11 +99,6 @@ services:
       - ./static/:/static/
     volumes_from:
       - frontend
-    depends_on:
-      backend:
-        condition: service_healthy
-    links:
-      - backend
     networks:
       - backend_network
 
