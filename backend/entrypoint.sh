@@ -10,7 +10,6 @@ echo "Launching cron"
 crond -s /var/spool/cron/crontabs -f -L /var/log/cron/cron.log &
 
 echo "Applying migrations"
-su "$BACKEND_USER" -c "python manage.py makemigrations"
 su "$BACKEND_USER" -c "python manage.py migrate --run-syncdb"
 echo "Loading initial fixtures"
 su "$BACKEND_USER" -c "python manage.py loaddata about_me/fixtures/fixtures.yaml"
