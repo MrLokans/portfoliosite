@@ -1,3 +1,5 @@
+import time
+import warnings
 from .base import *
 
 import raven
@@ -24,13 +26,27 @@ LOGGING = {
         }
     }
 }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
+if os.environ.get('POSTGRES_DB'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['POSTGRES_DB'],
+            'USER': os.environ['POSTGRES_USER'],
+            'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+            'HOST': os.environ['DATABASE_HOST'],
+            'PORT': os.environ['POSTGRES_PORT'],
+        }
     }
-}
+else:
+    warnings.warn('Using SQLite database back-end '
+                  'as no PostgreSQL settings are '
+                  'present in the environment.')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase',
+        }
+    }
 
 DSN = os.environ.get('DEV_SENTRY_DSN_KEY')
 SENTRY_PROJECT = os.environ.get('DEV_SENTRY_PROJECT')
