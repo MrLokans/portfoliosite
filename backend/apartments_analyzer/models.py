@@ -56,26 +56,24 @@ class ApartmentManager(models.Manager):
 
 
 class Apartment(TimeTrackable):
-
-    objects = ApartmentManager()
+    # Original url of the apartment
+    bullettin_url = models.URLField(primary_key=True)
 
     address = models.TextField()
     price = models.IntegerField()
 
-    description = models.TextField(default='')
+    description = models.TextField()
 
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
 
     # Author profile URL
     author_url = models.URLField()
-    # Original url of the apartment
-    # TODO: find a way to deduplicate items (unique=True?)
-    bullettin_url = models.URLField()
-
     status = models.SmallIntegerField(choices=[(x.value, x.name)
                                                for x in BullettingStatusEnum],
                                       default=BullettingStatusEnum.INACTIVE.value)
+
+    objects = ApartmentManager()
 
     def __str__(self):
         return ('Apartment(bullettin_url={}, price={})'
