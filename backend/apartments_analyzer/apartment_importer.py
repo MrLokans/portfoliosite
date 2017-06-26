@@ -37,6 +37,32 @@ class ApartmentDataImporter(object):
             joined_text = joined_text[:placed_pos]
         return joined_text or ''
 
+    def _attempt_saving_item(self,
+                             item_data: dict,
+                             stats: dict,
+                             update=False,
+                             instance=None):
+
+        item_data['description'] = self\
+            ._clean_up_description(item_data['description'])
+        serializer_args = {'data': item_data}
+        if update:
+            serializer_args.update({'instance': instance})
+        ser = ApartmentSerializer(**serializer_args)
+        if ser.is_valid():
+            try:
+                with transaction.atomic():
+                    ser.save()
+                    stats['total_saved'] += 1
+            except IntegrityError as e:
+                logger.error("Error saving data %s: %s",
+                             ser.validated_data, str(e))
+                transaction.rollback()
+                stats['total_errors'] += 1
+        else:
+            logger.error('Error saving apartment data: %s', ser.errors)
+            stats['total_errors'] += 1
+
     def _handle_database_sync(self,
                               new_apartments,
                               apartments_to_update,
@@ -47,28 +73,16 @@ class ApartmentDataImporter(object):
         :raises IntegrityError:
         """
         with transaction.atomic():
-            stats['total_inactive'] = Apartment.objects.mark_inactive(inactive_urls)
+            stats['total_inactive'] = Apartment.objects\
+                .mark_inactive(inactive_urls)
             for item in new_apartments:
-                item['description'] = self._clean_up_description(item['description'])
-                ser = ApartmentSerializer(data=item)
-                if ser.is_valid():
-                    ser.save()
-                    stats['total_saved'] += 1
-                else:
-                    logger.error('Error saving apartment data: %s', ser.errors)
-                    stats['total_errors'] += 1
-            # TODO: refactor and remove code duplication
+                self._attempt_saving_item(item, stats)
             for item in apartments_to_update:
-                item['description'] = self._clean_up_description(item['description'])
                 ap = Apartment.objects.get(bullettin_url=item['origin_url'])
-                ser = ApartmentSerializer(instance=ap, data=item)
-                if ser.is_valid():
-                    ser.save()
-                    stats['total_saved'] += 1
-                else:
-                    logger.error('Error saving apartment data: %s', ser.errors)
-                    stats['total_errors'] += 1
-            stats['total_active'] = Apartment.objects.mark_active(new_urls)
+                self._attempt_saving_item(item, stats,
+                                          update=True, instance=ap)
+            stats['total_active'] = Apartment.objects\
+                .mark_active(new_urls)
 
     def save_apartments_data(self,
                              new_apartments,
