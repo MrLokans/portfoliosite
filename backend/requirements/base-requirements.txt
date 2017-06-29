@@ -48,4 +48,7 @@ django-health-check==2.3.0
 # Track model changes
 django_simple_history==1.9.0
 
+# Exporting data from the admin
+django-import-export==0.5.1
+
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.3.2#egg=agent_spider

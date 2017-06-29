@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'health_check',
     'health_check.db',
     'health_check.cache',
+    'import_export',
     'pagedown',
     'rest_framework',
     'simple_history',

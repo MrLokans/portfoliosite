@@ -6,6 +6,9 @@ from django.db.models import Count
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
+
 from simple_history.admin import SimpleHistoryAdmin
 
 from apartments_analyzer.models import (
@@ -13,6 +16,12 @@ from apartments_analyzer.models import (
     ApartmentImage,
     ApartmentScrapingResults
 )
+
+
+class ApartmentsResource(resources.ModelResource):
+
+    class Meta:
+        model = Apartment
 
 
 IMAGE_TEMPLATE = """
@@ -26,7 +35,7 @@ class ApartmentImageInline(admin.TabularInline):
     model = ApartmentImage
 
 
-class ApartmentAdmin(SimpleHistoryAdmin):
+class ApartmentAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
     readonly_fields = ('bulletin_images',)
 
     list_display = ('bullettin_url', 'address', 'price',
@@ -35,6 +44,7 @@ class ApartmentAdmin(SimpleHistoryAdmin):
     search_fields = ('address', 'price')
     exclude = ('created_at',)
     inlines = [ApartmentImageInline]
+    resource_class = ApartmentsResource
 
     class Media:
         key_set = hasattr(settings, 'GOOGLE_MAPS_API_KEY') and settings.GOOGLE_MAPS_API_KEY
