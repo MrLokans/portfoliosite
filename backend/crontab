@@ -1,2 +1,2 @@
-# Every 2 hours
-0 */2 * * * cd /app && python manage.py scrapeapartments
+# Every hour at 10 minutes
+10 * * * * cd /app && python manage.py scrapeapartments
