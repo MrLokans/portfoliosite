@@ -1,16 +1,10 @@
 beautifulsoup4==4.4.1
 bs4==0.0.1
-celery==4.0.2
 Django==1.10.2
 django-filter==1.0.1
 djangorestframework==3.5.3
 djangorestframework-jwt==1.9.0
 django-rest-swagger==2.1.1
-gevent==1.1.1
-greenlet==0.4.10
-grequests==0.3.0
-gunicorn==19.6.0
-lxml==3.6.0
 Markdown==2.6.7
 Pillow==3.2.0
 PyJWT==1.4.2
@@ -18,7 +12,11 @@ redis==2.10.5
 requests==2.10.0
 six==1.10.0
 
-urllib3==1.15.1
+# Running workerized django
+gunicorn==19.6.0
+
+# Async tasks
+celery==4.1.0
 
 # Progress-bar for books downloading progress
 tqdm==4.8.4
@@ -27,10 +25,10 @@ tqdm==4.8.4
 django-dbbackup==3.1.3
 
 # Dropbox client to obtain book-notes
-dropbox==6.2
+dropbox==8.5.1
 
 # Own libraries
-moonreader_tools
+moonreader_tools==0.9.4
 PyYAML==3.12
 
 psycopg2==2.7.1
@@ -50,5 +48,8 @@ django_simple_history==1.9.0
 
 # Exporting data from the admin
 django-import-export==0.5.1
+
+# Output logging messages in structured format
+json-logging-py==0.2
 
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.3.2#egg=agent_spider
