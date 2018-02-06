@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa
 
 import os
 
@@ -12,7 +12,6 @@ INSTALLED_APPS += [
     'raven.contrib.django.raven_compat',
 ]
 
-SECRET_KEY = 'ASDt32rqcajh12h523joh23#%!#%!#@%!Rasdd1r124135'
 DEBUG = False
 ALLOWED_HOSTS = ['.mrlokans.com', ]
 

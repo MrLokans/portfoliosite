@@ -1,11 +1,9 @@
-import time
 import warnings
-from .base import *
+from .base import *  # noqa
 
 import raven
 
 
-SECRET_KEY = 'test'
 DEBUG = True
 
 ALLOWED_HOSTS = ("*",)

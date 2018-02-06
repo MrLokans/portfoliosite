@@ -40,3 +40,8 @@ if settings.DEBUG:
         url(r'^api/token-verify', verify_jwt_token),
         url(r'^api/docs/$', schema_view)
     ]
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+    # ... the rest of your URLconf goes here ...
+
+    urlpatterns += staticfiles_urlpatterns()

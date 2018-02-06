@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'blog',
     'books',
     'contributions',
+    'statistics',
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -100,9 +101,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.environ.get('STATIC_DIR',
-                             os.path.join(BASE_DIR,
-                                          'staticfiles'))
+
+STATICFILES_DIRS = [
+    os.environ.get('DJANGO_STATIC_DIR', os.path.join(BASE_DIR, 'staticfiles')),
+]
+
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
