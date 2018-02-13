@@ -1,8 +1,9 @@
-from django.conf.urls import url
-
 from books.api.views import BookListAPIView, BookDetailAPIView
+from django.urls import path
+
+app_name = 'books'
 
 urlpatterns = [
-    url(r'^(?P<pk>[0-9]+)/', BookDetailAPIView.as_view(), name="list"),
-    url(r'^$', BookListAPIView.as_view(), name="detail"),
+    path('<int:pk>/', BookDetailAPIView.as_view(), name='book-list'),
+    path('', BookListAPIView.as_view(), name='book-details'),
 ]

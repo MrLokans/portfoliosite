@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from about_me.models import Project, ProjectLink, Technology
+from .models import Project, ProjectLink, Technology
 
 
 class TechnologyAdmin(admin.ModelAdmin):

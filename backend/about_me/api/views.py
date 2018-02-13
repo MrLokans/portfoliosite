@@ -2,8 +2,8 @@ from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import AllowAny
 
-from about_me.api.serializers import TechnologySerializer, ProjectSerializer
-from about_me.models import Project, Technology
+from .serializers import TechnologySerializer, ProjectSerializer
+from ..models import Project, Technology
 
 
 class TechnologyListAPIView(ListAPIView):

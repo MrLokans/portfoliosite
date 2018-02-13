@@ -1,12 +1,12 @@
 from rest_framework import generics
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from blog.api.serializers import (
+from .serializers import (
     PostCreateSerializer,
     PostListSerializer,
 )
-from blog.api.permissions import IsAdminOrReadOnly
-from blog.models import Post
+from .permissions import IsAdminOrReadOnly
+from ..models import Post
 
 
 class PostListAPIView(generics.ListCreateAPIView):

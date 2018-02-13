@@ -33,7 +33,7 @@ class BlogAPITests(BaseCase):
         p2 = Post.objects.create(author='AnotherAuthor',
                                  title='Other Post',
                                  content='Content')
-        posts_url = reverse('blog-api:list')
+        posts_url = reverse('blog:list')
 
         response = self.api_client.get(posts_url)
 
@@ -59,7 +59,7 @@ class BlogAPITests(BaseCase):
                                  title='Some Post',
                                  content='Some Content')
 
-        detail_url = reverse('blog-api:detail',
+        detail_url = reverse('blog:detail',
                              kwargs={'pk': p1.id})
         response = self.api_client.get(detail_url)
 
@@ -79,7 +79,7 @@ class BlogAPITests(BaseCase):
 
         posts_count = Post.objects.count()
 
-        detail_url = reverse('blog-api:detail',
+        detail_url = reverse('blog:detail',
                              kwargs={'pk': p1.id})
         response = self.api_client.delete(detail_url, format='json')
 
@@ -96,7 +96,7 @@ class BlogAPITests(BaseCase):
                                       password='123123')
         self.api_client.login(username='admin', password='123123')
 
-        detail_url = reverse('blog-api:detail',
+        detail_url = reverse('blog:detail',
                              kwargs={'pk': p1.id})
         response = self.api_client.delete(detail_url, format='json')
 
@@ -105,7 +105,7 @@ class BlogAPITests(BaseCase):
 
     def test_it_is_possible_to_create_post_for_admin_user(self):
         posts_count = Post.objects.count()
-        posts_url = reverse('blog-api:list')
+        posts_url = reverse('blog:list')
 
         User.objects.create_superuser('admin', 'admin@ad.com',
                                       password='123123')
@@ -128,7 +128,7 @@ class BlogAPITests(BaseCase):
 
     def test_it_is_impossible_to_create_post_for_anon(self):
         posts_count = Post.objects.count()
-        posts_url = reverse('blog-api:list')
+        posts_url = reverse('blog:list')
 
         payload = {
             'author': 'Some Unique Author',
