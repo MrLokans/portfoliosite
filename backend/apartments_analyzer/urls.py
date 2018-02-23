@@ -1,13 +1,14 @@
-from django.conf.urls import url
+from django.urls import path
 
-from apartments_analyzer.api.views import (
+from .api.views import (
     AgentCheckView,
     ApartmentsListAPIView,
 )
 
+
+app_name = 'apartments_analyzer'
+
 urlpatterns = [
-    url(r'^agents/(?P<user_id>\d+)/$',
-        AgentCheckView.as_view(),
-        name="agent-check"),
-    url(r'^$', ApartmentsListAPIView.as_view(), name="projects-list"),
+    path('agents/<int:user_id>/', AgentCheckView.as_view(), name="agent-check"),
+    path('', ApartmentsListAPIView.as_view(), name="apartments-list"),
 ]

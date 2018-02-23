@@ -1,25 +1,22 @@
 beautifulsoup4==4.4.1
 bs4==0.0.1
-Django==1.10.2
+Django==2.0.2
 django-filter==1.0.1
-djangorestframework==3.5.3
-djangorestframework-jwt==1.9.0
-django-rest-swagger==2.1.1
+# API building
+djangorestframework==3.7.7
+# Documentaton rendering
+django-rest-swagger==2.1.2
 Markdown==2.6.7
-Pillow==3.2.0
+Pillow==5.0.0
 PyJWT==1.4.2
 redis==2.10.5
-requests==2.10.0
 six==1.10.0
 
 # Running workerized django
 gunicorn==19.6.0
 
-# Async tasks
-celery==4.1.0
-
 # Progress-bar for books downloading progress
-tqdm==4.8.4
+tqdm==4.19.5
 
 # Database backups
 django-dbbackup==3.1.3
@@ -31,23 +28,27 @@ dropbox==8.5.1
 moonreader_tools==0.9.4
 PyYAML==3.12
 
-psycopg2==2.7.1
+psycopg2==2.7.3.2
 
 # For error reporting
-raven==5.32.0
+raven==6.5.0
 
 # Markdown editor in the admin page
 django-pagedown==0.1.3
 
-django-admin-honeypot==1.0.0
+django-environ==0.4.4
 
-django-health-check==2.3.0
+# Temporary workaround, as current version does not support Django 2.0
+# and we're cool guys that use latest lib versions
+-e git://github.com/mrlokans/django-admin-honeypot.git@2241626fe6c678396ae1ff53dd9122a59d173a6c#egg=django_admin_honeypot
 
-# Track model changes
-django_simple_history==1.9.0
+django-health-check==3.4.2
 
 # Exporting data from the admin
-django-import-export==0.5.1
+django-import-export==0.7.0
+
+# Manage.py extra commands
+django-extensions==1.9.9
 
 # Output logging messages in structured format
 json-logging-py==0.2

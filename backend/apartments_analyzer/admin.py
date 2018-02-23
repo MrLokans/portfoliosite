@@ -9,9 +9,7 @@ from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from simple_history.admin import SimpleHistoryAdmin
-
-from apartments_analyzer.models import (
+from .models import (
     Apartment,
     ApartmentImage,
     ApartmentScrapingResults
@@ -35,7 +33,7 @@ class ApartmentImageInline(admin.TabularInline):
     model = ApartmentImage
 
 
-class ApartmentAdmin(ImportExportModelAdmin, SimpleHistoryAdmin):
+class ApartmentAdmin(ImportExportModelAdmin):
     readonly_fields = ('bulletin_images',)
 
     list_display = ('bullettin_url', 'address', 'price',

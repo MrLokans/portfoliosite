@@ -13,7 +13,7 @@
     - openssl
 
 - name: Install required dependencies
-  command: "{{ project_venv }}/bin/pip install -r {{ project_root }}/requirements/base-requirements.txt"  
+  command: "{{ project_venv }}/bin/pip install -r {{ project_root }}/requirements/base.txt"
   args:
     chdir: "{{ project_root }}/personal_site"
   become: yes
@@ -52,7 +52,7 @@
   environment:
     PERSONAL_SITE_SECRET_KEY: "{{ project_secret_key }}"
     DJANGO_SETTINGS_MODULE: "{{ project_settings_module }}"
-    STATIC_DIR: "{{ project_static_dir }}"
+  STATIC_DIR: "{{ project_static_dir }}"
 
 - name: Copy supervisord config
   template: src=personalsite-supervisord.conf.j2

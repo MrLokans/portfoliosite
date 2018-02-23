@@ -1,8 +1,6 @@
-version: '2.1'
+version: '3.2'
 
 networks:
-  sentry_network:
-    driver: bridge
   production_network:
     driver: bridge
 
@@ -10,24 +8,24 @@ networks:
 services:
 
   database:
-    extends:
-      file: docker-compose.base.yml
-      service: database
-    networks:
-      - production_network
-
+    image: postgres:10.2-alpine
+    volumes:
+      - ./pgdata-prod/:/var/lib/postgresql/data
 
   messagebus:
-    extends:
-      file: docker-compose.base.yml
-      service: rabbitmq
+    image: rabbitmq:3.6.6-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbit-data/:/var/lib/rabbitmq
     networks:
       - production_network
 
   redis:
-    extends:
-      file: docker-compose.base.yml
-      service: redis
+    image: redis:3.0.7-alpine
+    ports:
+      - "6379:6379"
 
   # Django back-end
   backend:
@@ -35,7 +33,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: bash entrypoint.sh --prod
+    command: --prod
     env_file:
       - ./environment/backend.env
       - ./environment/db.env
@@ -49,19 +47,10 @@ services:
       - ./static/:/app/personal_site/staticfiles
     working_dir: /app/
     networks:
-      - sentry_network
       - production_network
     depends_on:
       database:
         condition: service_healthy
-
-  # celery-worker:
-  #   extends:
-  #     file: docker-compose.base.yml
-  #     service: celery-worker
-  #   links:
-  #     - redis
-  #     - messagebus
 
   frontend:
     build:

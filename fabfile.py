@@ -37,6 +37,7 @@ SYSTEMD_UNIT_LOCAL_PATH = os.path.abspath(SYSTEMD_UNIT_NAME)
 SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
                                         SYSTEMD_UNIT_NAME)
 CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
+ENV_VARS_FILE = '.env'
 
 env.hosts = ['mrlokans@mrlokans.com']
 
@@ -57,6 +58,7 @@ def checkout_repository():
                             "Checkout will be attempted "
                             "together with pulling.")
                 run('git reset --hard HEAD')
+                run('git checkout')
                 run('git pull')
 
 
@@ -132,7 +134,7 @@ def copy_local_environment_settings():
     """
     Copies local environment settings files
     """
-    put('environment', REPOSITORY_PATH)
+    put('.deployment-env', os.path.join(REPOSITORY_PATH, ENV_VARS_FILE))
 
 
 def copy_nginx_config():

@@ -23,3 +23,8 @@ sentry-files
 rabbit-data
 pgdata
 pgdata_sentry
+.scrapy
+htmlcov
+pgdata*
+frontend/build
+.vagrant

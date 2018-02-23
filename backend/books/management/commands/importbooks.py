@@ -7,7 +7,8 @@ from django.db import transaction, IntegrityError
 
 from books.models import Book, BookNote
 
-from dropbox.rest import ErrorResponse
+from dropbox import Client
+from dropbox.exceptions import DropboxException
 
 from moonreader_tools.handlers import DropboxDownloader
 
@@ -33,8 +34,8 @@ class Command(BaseCommand):
         if not token:
             raise CommandError("No dropbox token specified.")
         try:
-            downloader = DropboxDownloader(token)
-        except ErrorResponse as e:
+            downloader = DropboxDownloader(Client(token))
+        except DropboxException as e:
             msg = "Incorrect dropbox token: {}"
             raise CommandError(msg.format(str(e)))
 

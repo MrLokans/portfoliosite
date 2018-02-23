@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 
-from personal_site.api.serializers import UserSerializer
+from .serializers import UserSerializer
 
 User = get_user_model()
 

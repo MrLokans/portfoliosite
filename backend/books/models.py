@@ -66,7 +66,7 @@ class Book(models.Model):
 
 class BookNote(models.Model):
 
-    book = models.ForeignKey('Book', related_name='notes')
+    book = models.ForeignKey('Book', related_name='notes', on_delete=models.CASCADE)
     text = models.TextField()
 
     def __str__(self):

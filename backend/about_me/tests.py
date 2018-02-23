@@ -1,9 +1,7 @@
-import os
-
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 
-from about_me.models import Project, Technology
+from .models import Project, Technology
 
 
 class ProjectsAPITestCase(TestCase):
@@ -11,8 +9,8 @@ class ProjectsAPITestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.projects_url = reverse('projects-api:projects-list')
-        cls.technology_url = reverse('tech-api:technology-list')
+        cls.projects_url = reverse('about_me:projects-list')
+        cls.technology_url = reverse('about_me:technology-list')
 
     def _get_technologies_count(self):
         return Technology.objects.count()
@@ -52,7 +50,7 @@ class ProjectsAPITestCase(TestCase):
         t2 = Technology.objects.create(**d2)
         p = Project.objects.create(title='MySuperProject',
                                    description='TBD')
-        p.technologies = [t1, t2]
+        p.technologies.set([t1, t2])
         p.save()
         resp = self.client.get(self.projects_url)
 
