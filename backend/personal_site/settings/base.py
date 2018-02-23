@@ -1,11 +1,13 @@
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+import environ
+
+env = environ.Env(
+        DEBUG=(bool, False),
+)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -72,12 +74,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'personal_site.wsgi.application'
 
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'mydatabase',
-    }
+    'default': env.db()
+}
+SECRET_KEY = env('DJANGO_SECRET_KEY')
+
+CACHES = {
+    'default': env.cache('REDIS_URL'),
 }
 
 # Internationalization
@@ -111,8 +114,6 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
 LOGIN_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
@@ -126,11 +127,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'personal_site.paginators.CustomPagination',
     'PAGE_SIZE': 25,
 }
-
-# Celery related settings
-REDIS_PORT = int(os.environ.get('REDIS_PORT', 6379))
-REDIS_DB = int(os.environ.get('REDIS_DB', 0))
-REDIS_HOST = os.environ.get('REDIS_HOST', 'redis')
-
 
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')

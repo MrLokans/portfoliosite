@@ -1,8 +1,6 @@
 FROM python:3.6.1-alpine AS builder
 COPY requirements/base.txt /app/requirements.txt
-
 RUN apk update && apk add --no-cache
-
 RUN apk update && apk add --no-cache libffi libxslt postgresql-dev \
     && apk add --virtual build-dependencies --no-cache \
         git gcc linux-headers \
@@ -20,7 +18,7 @@ COPY --from=builder /usr/local/bin/dumb-init /usr/local/bin/dumb-init
 RUN adduser -D -g '' bloguser
 RUN apk update \
     # Cron setup
-    && apk add dcron \
+    && apk add dcron postgresql-dev \
     && mkdir -p /var/log/cron \
     && mkdir -m 0644 -p /var/spool/cron/crontabs \
     && touch /var/log/cron/cron.log \

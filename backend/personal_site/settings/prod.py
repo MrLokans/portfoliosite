@@ -1,9 +1,5 @@
 from .base import *  # noqa
 
-import os
-
-import raven
-
 # https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 # Take a look at this article
 
@@ -19,20 +15,7 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 
-DSN = os.environ.get('PROD_SENTRY_DSN_KEY')
-SENTRY_PROJECT = os.environ.get('PROD_SENTRY_PROJECT')
+SENTRY_DSN = env('SENTRY_DSN')
 RAVEN_CONFIG = {
-    'dsn': ('http://{dsn}@sentry_server:9000/sentry/{sentry_project}'
-            .format(dsn=DSN, sentry_project=SENTRY_PROJECT)),
-}
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['POSTGRES_DB'],
-        'USER': os.environ['POSTGRES_USER'],
-        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
-        'HOST': os.environ['DATABASE_HOST'],
-        'PORT': os.environ['POSTGRES_PORT'],
-    }
+    'dsn': SENTRY_DSN,
 }

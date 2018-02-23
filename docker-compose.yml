@@ -1,33 +1,37 @@
-version: '2.1'
+# Only for the local development
+version: '3.2'
 
 networks:
-  sentry_network:
-    driver: bridge
   backend_network:
     driver: bridge
 
 services:
 
   database:
-    extends:
-      file: docker-compose.base.yml
-      service: database
+    image: postgres:10.2-alpine
+    env_file:
+      - ./.env
     networks:
       - backend_network
     ports:
       - "15432:5432"
+    volumes:
+      - ./.pgdata-dev/:/var/lib/postgresql/data
 
   messagebus:
-    extends:
-      file: docker-compose.base.yml
-      service: rabbitmq
+    image: rabbitmq:3.6.6-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ./rabbit-data/:/var/lib/rabbitmq
     networks:
       - backend_network
 
   redis:
-    extends:
-      file: docker-compose.base.yml
-      service: redis
+    image: redis:3.0.7-alpine
+    ports:
+      - "6379:6379"
     networks:
       - backend_network
 
@@ -36,15 +40,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: always
-    command: bash ./entrypoint.sh
-    environment:
-      - DJANGO_SETTINGS_MODULE=personal_site.settings.dev
-      - DATABASE_HOST=database
     env_file:
-      - ./environment/bus.env
-      - ./environment/backend.env
-      - ./environment/db.env
+      - ./.env
+    restart: always
     ports:
       - "8000:8000"
     volumes:
@@ -54,39 +52,21 @@ services:
     stdin_open: true
     tty: true
     working_dir: /app/
-    links:
-      - messagebus
-      - redis
     networks:
-      - sentry_network
       - backend_network
     restart: always
     depends_on:
-      database:
-        condition: service_healthy
+      - database
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     entrypoint: ./entrypoint.sh
-    env_file:
-      - ./environment/bus.env
     volumes:
       - ./frontend/:/frontend/
     ports:
       - "8090:8090"
-
-  # celery-worker:
-  #   extends:
-  #     file: docker-compose.base.yml
-  #     service: celery-worker
-  #   links:
-  #     - redis
-  #     - messagebus
-  #   networks:
-  #     - backend_network
-  #   restart: always
 
   nginx:
     restart: always
@@ -97,10 +77,10 @@ services:
       - "8080:80"
     volumes:
       - ./static/:/static/
-    volumes_from:
-      - frontend
     networks:
       - backend_network
+    env_file:
+      - ./.env
 
 volumes:
   frontend-data:

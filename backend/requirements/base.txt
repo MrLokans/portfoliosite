@@ -36,6 +36,8 @@ raven==6.5.0
 # Markdown editor in the admin page
 django-pagedown==0.1.3
 
+django-environ==0.4.4
+
 # Temporary workaround, as current version does not support Django 2.0
 # and we're cool guys that use latest lib versions
 -e git://github.com/mrlokans/django-admin-honeypot.git@2241626fe6c678396ae1ff53dd9122a59d173a6c#egg=django_admin_honeypot
