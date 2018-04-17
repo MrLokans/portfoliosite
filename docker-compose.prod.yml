@@ -21,6 +21,9 @@ services:
       - ./rabbit-data/:/var/lib/rabbitmq
     networks:
       - production_network
+    logging:
+      driver: none
+
 
   redis:
     image: redis:3.0.7-alpine
@@ -50,5 +53,4 @@ services:
     networks:
       - production_network
     depends_on:
-      database:
-        condition: service_healthy
+      - database
