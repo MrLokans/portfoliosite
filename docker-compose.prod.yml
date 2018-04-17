@@ -11,6 +11,8 @@ services:
     image: postgres:10.2-alpine
     volumes:
       - ./pgdata-prod/:/var/lib/postgresql/data
+    env_file:
+      - ./.env
 
   messagebus:
     image: rabbitmq:3.6.6-management-alpine
@@ -38,8 +40,7 @@ services:
       dockerfile: Dockerfile
     command: --prod
     env_file:
-      - ./environment/backend.env
-      - ./environment/db.env
+      - ./.env
     environment:
       - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
       - DATABASE_HOST=database
