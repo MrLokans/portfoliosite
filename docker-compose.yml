@@ -27,6 +27,8 @@ services:
       - ./rabbit-data/:/var/lib/rabbitmq
     networks:
       - backend_network
+    logging:
+      driver: none
 
   redis:
     image: redis:3.0.7-alpine
@@ -48,6 +50,7 @@ services:
     volumes:
       - ./backend/:/app/
       - ./static/:/app/personal_site/staticfiles
+      - ./cron-logs/:/var/log/cron/
     # Enables PDB debugging
     stdin_open: true
     tty: true
@@ -57,16 +60,6 @@ services:
     restart: always
     depends_on:
       - database
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    entrypoint: ./entrypoint.sh
-    volumes:
-      - ./frontend/:/frontend/
-    ports:
-      - "8090:8090"
 
   nginx:
     restart: always
@@ -83,5 +76,4 @@ services:
       - ./.env
 
 volumes:
-  frontend-data:
   database-data:

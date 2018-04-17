@@ -1,10 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h3>About me</h3>
+    <p>My name is Andrew, I am a software engineer from Minsk, Belarus. I am a great linux lover and python language fan who enjoys good music, well-directed movies, and delicious food.</p>
+
+        <h3>Skills</h3>
+        <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
+        <div class="skills-wrapper">
+            {% for skill in object_list %}
+                <div class="skill-container">
+                    <div class="skill-title"><strong>{{ skill.name }}</strong></div>
+                    <br>
+                    <div class="skill-mastery"><strong>{{ skill.mastery_description }}</strong></div>
+                </div>
+            {% endfor %}
+        </div>
+    <h3>Working time:</h3>
+    <div id="work-timeline"></div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="{% static 'js/work_timeline.js' %}"></script>
+{% endblock %}

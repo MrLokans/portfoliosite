@@ -20,11 +20,10 @@ logger = logging.getLogger("fabric")
 
 SECRET_KEY_FILE = os.path.abspath('secret.key')
 LOCAL_BACKEND_DIR = os.path.abspath('backend')
-LOCAL_FRONTEND_DIR = os.path.abspath('frontend')
 REPOSITORY_URL = 'https://github.com/MrLokans/portfoliosite'
 REPOSITORY_PATH = '/opt/personalsite'
 REMOTE_BACKEND_DIR = os.path.join(REPOSITORY_PATH, 'backend')
-REMOTE_FRONTEND_DIR = os.path.join(REPOSITORY_PATH, 'frontend')
+REMOTE_STATIC_DIR = os.path.join(REPOSITORY_PATH, 'static')
 NGINX_CONFIG_NAME = 'mrlokans.com.conf'
 NGINX_CONFIG_LOCAL_PATH = os.path.abspath(os.path.join('nginx',
                                                        NGINX_CONFIG_NAME))
@@ -65,15 +64,6 @@ def checkout_repository():
 def fix_premissions():
     with cd(REMOTE_BACKEND_DIR):
         sudo('chmod +x entrypoint.sh')
-    with cd(REMOTE_FRONTEND_DIR):
-        sudo('chmod +x entrypoint-prod.sh')
-
-
-def prepare_frontend():
-    with cd(REMOTE_FRONTEND_DIR):
-        run('npm install')
-        run('npm install gulp')
-        run('bower install')
 
 
 def launch_docker():
@@ -108,8 +98,6 @@ def launch_containers():
     with cd(REPOSITORY_PATH):
         logger.info("Building new containers")
         sudo('docker-compose -f docker-compose.prod.yml build')
-        logger.info("Building front-end")
-        sudo('docker-compose -f docker-compose.prod.yml up  frontend')
         logger.info('Launching backend container')
         sudo('docker-compose -f docker-compose.prod.yml up -d backend')
 
@@ -185,9 +173,9 @@ def setup_seo():
     to nginx root
     '''
     logger.info("Copying robots.txt and sitemap.xml")
-    put('robots.txt', '/opt/personalsite/frontend/build',
+    put('robots.txt', REMOTE_STATIC_DIR,
         use_sudo=True)
-    put('sitemap.xml', '/opt/personalsite/frontend/build',
+    put('sitemap.xml', REMOTE_STATIC_DIR,
         use_sudo=True)
 
 
@@ -224,7 +212,6 @@ def deploy():
     checkout_repository()
     stop_previous_containers()
     fix_premissions()
-    prepare_frontend()
     set_secret_key()
     copy_local_environment_settings()
     launch_containers()

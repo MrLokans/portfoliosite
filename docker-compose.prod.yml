@@ -45,19 +45,10 @@ services:
     volumes:
       - ./backend/:/app/
       - ./static/:/app/personal_site/staticfiles
+      - ./cron-logs/:/var/log/cron/
     working_dir: /app/
     networks:
       - production_network
     depends_on:
       database:
         condition: service_healthy
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    # Build frontend one time
-    # and reuse its static files
-    command: ./entrypoint-prod.sh
-    volumes:
-      - ./frontend/:/frontend/

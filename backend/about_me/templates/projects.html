@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="projects-list">
+    {% for project in object_list %}
+    <div class="project-block">
+        <h4 class="project-header">
+            <a href="{{ project.url }}">{{ project.title }}</a>
+        </h4>
+        <div class="project-description">
+            <div class="project-text">{{ project.description }}</div>
+            <div class="project-technolgies-list">
+                {% for skill in project.technologies.all %}
+                <div class="project-technology">
+                    {{ skill.name }}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="project-links">
+                {% for link in project.links.all %}
+                    <strong class="project-link-title">{{ link.name }}</strong>
+                    <a class="project-link" href="{{ link.link }}">{{ link.link }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+

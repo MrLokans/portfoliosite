@@ -1,7 +1,7 @@
 $(document).ready(function(){
+
   var container = document.getElementById('work-timeline');
 
-  // Create a DataSet (allows two way data-binding)
   var items = new vis.DataSet([
     {
       id: 1,
