@@ -9,14 +9,14 @@ env = environ.Env(
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# SECURITY WARNING: don't run with debug turned on in production!
 
 ALLOWED_HOSTS = []
 
 APPEND_SLASH = True
-# Application definition
+
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,9 +84,10 @@ DATABASES = {
 }
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
-CACHES = {
-    'default': env.cache('REDIS_URL'),
-}
+if os.environ.get('REDIS_URL'):
+    CACHES = {
+        'default': env.cache('REDIS_URL'),
+    }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -134,3 +135,5 @@ REST_FRAMEWORK = {
 }
 
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
+
+SITE_ID = 1

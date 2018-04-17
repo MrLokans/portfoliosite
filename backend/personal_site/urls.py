@@ -5,7 +5,6 @@ from django.urls import path
 from django.contrib import admin
 
 from blog.feed import LatestPostsFeed
-from personal_site.views import schema_view
 
 
 urlpatterns = [
@@ -22,9 +21,6 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += [
-        path('api/docs/', schema_view)
-    ]
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
     # ... the rest of your URLconf goes here ...
