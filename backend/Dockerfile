@@ -32,5 +32,4 @@ COPY crontab /etc/cron.d/bloguser
 ADD entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
-CMD ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "/docker-entrypoint.sh"]
