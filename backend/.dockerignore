@@ -90,3 +90,5 @@ venv/
 */*.swp
 */*/*.swp
 */*/*/*.swp
+
+.scrapy/

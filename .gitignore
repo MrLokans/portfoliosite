@@ -12,9 +12,7 @@ node_modules
 .tox
 .cache
 mydatabase
-static
 secret.key
-frontend/js/vendor
 isp_coverage
 backups
 # Docker dirs
@@ -26,5 +24,5 @@ pgdata_sentry
 .scrapy
 htmlcov
 pgdata*
-frontend/build
 .vagrant
+static
