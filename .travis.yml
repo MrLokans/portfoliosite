@@ -4,11 +4,15 @@ language: python
 services:
   - docker
 
-install:
-  - pip install tox
-
-deploy:
-  provider: script
-  script: bash docker_push
-  on:
-    branch: develop
+jobs:
+  include:
+    - stage: Run tests and static analysis
+      script: echo "Running tests"
+    - stage: Build and push docker image
+      script: 'bash docker_push.sh'
+      on:
+        branch: develop
+    - stage: Run the deployment
+      script: echo "Running the fabric deployment"
+      on:
+        branch: develop
