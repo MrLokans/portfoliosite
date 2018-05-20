@@ -3,15 +3,8 @@ import time
 import logging
 
 from fabric.api import (
-    abort,
-    cd,
-    get,
-    local,
-    lcd,
-    put,
-    run,
-    settings,
-    sudo
+    abort, cd, get, local, lcd,
+    put, run, settings, sudo
 )
 from fabric.context_managers import hide
 from fabric.state import env
@@ -22,9 +15,9 @@ logger = logging.getLogger("fabric")
 SECRET_KEY_FILE = os.path.abspath('secret.key')
 LOCAL_BACKEND_DIR = os.path.abspath('backend')
 REPOSITORY_URL = 'https://github.com/MrLokans/portfoliosite'
-REPOSITORY_PATH = '/opt/personalsite'
-REMOTE_BACKEND_DIR = os.path.join(REPOSITORY_PATH, 'backend')
-REMOTE_STATIC_DIR = os.path.join(REPOSITORY_PATH, 'static')
+DEPLOYMENT_DIR = '/opt/mrlokans.com'
+REMOTE_BACKEND_DIR = os.path.join(DEPLOYMENT_DIR, 'backend')
+REMOTE_STATIC_DIR = os.path.join(DEPLOYMENT_DIR, 'static')
 NGINX_CONFIG_NAME = 'mrlokans.com.conf'
 NGINX_CONFIG_LOCAL_PATH = os.path.abspath(os.path.join('nginx',
                                                        NGINX_CONFIG_NAME))
@@ -38,6 +31,15 @@ SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
                                         SYSTEMD_UNIT_NAME)
 CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
 ENV_VARS_FILE = '.env'
+
+
+DISABLED_MAINTENANCE_PAGE = os.path.join(
+    DEPLOYMENT_DIR, 'nginx', 'maintenance_off.html'
+)
+ENABLED_MAINTENANCE_PAGE_NAME = os.path.join(
+    DEPLOYMENT_DIR, 'nginx', 'maintenance_on.html'
+)
+
 
 env.hosts = ['mrlokans@mrlokans.com']
 env.revision = getattr(env, 'revision', 'develop')
@@ -55,24 +57,24 @@ def _exec_docker_command(container_id: str, command: str) -> str:
 
 
 def create_directories():
-    sudo('mkdir -p {}'.format(REPOSITORY_PATH))
+    sudo('mkdir -p {}'.format(DEPLOYMENT_DIR))
     sudo('chown -R {user}:{user} {dir}'.format(user=env.user,
-                                               dir=REPOSITORY_PATH))
+                                               dir=DEPLOYMENT_DIR))
 
 
 def checkout_repository():
-    with cd(REPOSITORY_PATH):
+    with cd(DEPLOYMENT_DIR):
         with settings(warn_only=True):
             result = run('git clone {url} {path}'.format(url=REPOSITORY_URL,
-                                                         path=REPOSITORY_PATH))
+                                                         path=DEPLOYMENT_DIR))
             if result.failed:
                 logger.info("Repository is already cloned. "
                             "Checkout will be attempted "
                             "together with pulling.")
                 run('git reset --hard HEAD')
-                run('git fetch --all')
-                run('git checkout %s' % env.revision)
-                run('git pull')
+            run('git fetch --all')
+            run('git checkout %s' % env.revision)
+            run('git pull')
 
 
 def fix_premissions():
@@ -102,20 +104,20 @@ def run_tests():
 
 
 def stop_previous_containers():
-    with cd(REPOSITORY_PATH):
+    with cd(DEPLOYMENT_DIR):
         logger.info("Stopping any previously "
                     "running containers.")
         sudo('docker-compose -f docker-compose.prod.yml stop')
 
 
 def build_containers():
-    with cd(REPOSITORY_PATH):
+    with cd(DEPLOYMENT_DIR):
         logger.info("Building new containers")
         sudo('docker-compose -f docker-compose.prod.yml build')
 
 
 def launch_containers():
-    with cd(REPOSITORY_PATH):
+    with cd(DEPLOYMENT_DIR):
         logger.info('Launching backend container')
         sudo('docker-compose -f docker-compose.prod.yml up -d backend')
 
@@ -132,14 +134,14 @@ def set_secret_key():
 
     logger.info("Writing new secret key.")
     sudo('sed -i \'s/.*SECRET_KEY.*/SECRET_KEY="{key}"/\' {path}/backend/personal_site/settings/prod.py'
-         .format(key=secret_key, path=REPOSITORY_PATH))
+         .format(key=secret_key, path=DEPLOYMENT_DIR))
 
 
 def copy_local_environment_settings():
     """
     Copies local environment settings files
     """
-    put('.deployment-env', os.path.join(REPOSITORY_PATH, ENV_VARS_FILE))
+    put('.deployment-env', os.path.join(DEPLOYMENT_DIR, ENV_VARS_FILE))
 
 
 def copy_nginx_config():
@@ -147,6 +149,7 @@ def copy_nginx_config():
     put(NGINX_CONFIG_LOCAL_PATH, NGINX_CONFIG_REMOTE_PATH,
         use_sudo=True)
     with settings(warn_only=True):
+        logger.info('Activating the nginx config.')
         sudo('ln -s {available} {enabled}'.
              format(available=NGINX_CONFIG_REMOTE_PATH,
                     enabled=NGINX_SYMLINK_REMOTE_PATH))
@@ -170,7 +173,7 @@ def backup_database():
 
     local('mkdir -p backups')
     backup_name = generate_backup_name()
-    with cd(REPOSITORY_PATH), settings(warn_only=True):
+    with cd(os.path.join(DEPLOYMENT_DIR)), settings(warn_only=True):
         sudo('tar -zcvf {archive} {postgres_dir}'
              .format(archive=backup_name,
                      postgres_dir='backend/mydatabase',
@@ -216,6 +219,27 @@ def enable_systemd_unit():
     sudo("systemctl enable {unit}".format(unit=SYSTEMD_UNIT_NAME))
 
 
+def enable_maintenance_page():
+    """
+    Tell nginx that site is unavailable and show
+    the maintenance page.
+
+    Check the nginx config for details.
+    """
+    sudo('mv {} {}'.format(DISABLED_MAINTENANCE_PAGE, ENABLED_MAINTENANCE_PAGE_NAME))
+
+
+def disable_maintenance_page():
+    """
+    Tell nginx that site is unavailable and show
+    the maintenance page.
+
+    Check the nginx config for details.
+    """
+    with settings(warn_only=True):
+        sudo('mv {} {}'.format(ENABLED_MAINTENANCE_PAGE_NAME, DISABLED_MAINTENANCE_PAGE))
+
+
 def setup_autostart():
     copy_systemd_unit()
     enable_systemd_unit()
@@ -235,14 +259,20 @@ def deploy():
     backup_database()
     launch_docker()
     create_directories()
-    copy_local_environment_settings()
+    backup_database()
     checkout_repository()
+    copy_local_environment_settings()
     fix_premissions()
     set_secret_key()
     build_containers()
+    maintenance_started = time.monotonic()
+    enable_maintenance_page()
     stop_previous_containers()
     launch_containers()
     setup_nginx()
     setup_seo()
+    disable_maintenance_page()
     restart_nginx()
+    maintenance_finished = time.monotonic()
+    logger.info('Site was unavailable for %d seconds', maintenance_finished - maintenance_started)
     setup_autostart()
