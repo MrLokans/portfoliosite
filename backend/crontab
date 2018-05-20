@@ -1,2 +1,2 @@
 # Every hour at 10 minutes
-10 * * * * cd /app && python manage.py scrapeapartments
+10 * * * * cd /app && python manage.py scrapeapartments >> /var/log/cron/apartments-scrapper.log 2>&1

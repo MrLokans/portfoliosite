@@ -9,8 +9,8 @@ class ProjectsAPITestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.projects_url = reverse('about_me:projects-list')
-        cls.technology_url = reverse('about_me:technology-list')
+        cls.projects_url = reverse('projects-list')
+        cls.technology_url = reverse('technology-list')
 
     def _get_technologies_count(self):
         return Technology.objects.count()

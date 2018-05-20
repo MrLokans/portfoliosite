@@ -13,6 +13,7 @@ from fabric.api import (
     settings,
     sudo
 )
+from fabric.context_managers import hide
 from fabric.state import env
 
 logging.basicConfig(level=logging.INFO)
@@ -39,6 +40,18 @@ CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
 ENV_VARS_FILE = '.env'
 
 env.hosts = ['mrlokans@mrlokans.com']
+env.revision = getattr(env, 'revision', 'develop')
+
+
+def _get_backend_container_id():
+    with settings(hide('running', 'commands', 'stdout')):
+        output = sudo("docker ps | grep backend | awk '{print $1}'", warn_only=True)
+        return output
+
+
+def _exec_docker_command(container_id: str, command: str) -> str:
+    exec_command = "docker exec -it {id} {command}".format(id=container_id, command=command)
+    return sudo(exec_command)
 
 
 def create_directories():
@@ -57,7 +70,8 @@ def checkout_repository():
                             "Checkout will be attempted "
                             "together with pulling.")
                 run('git reset --hard HEAD')
-                run('git checkout')
+                run('git fetch --all')
+                run('git checkout %s' % env.revision)
                 run('git pull')
 
 
@@ -94,10 +108,14 @@ def stop_previous_containers():
         sudo('docker-compose -f docker-compose.prod.yml stop')
 
 
-def launch_containers():
+def build_containers():
     with cd(REPOSITORY_PATH):
         logger.info("Building new containers")
         sudo('docker-compose -f docker-compose.prod.yml build')
+
+
+def launch_containers():
+    with cd(REPOSITORY_PATH):
         logger.info('Launching backend container')
         sudo('docker-compose -f docker-compose.prod.yml up -d backend')
 
@@ -107,7 +125,6 @@ def set_secret_key():
     It is strongly recommended to use
     environment variables instead.
     """
-    secret_key = ""
     logger.info("Reading secret key.")
     with open(SECRET_KEY_FILE, 'r') as f:
         secret_key = f.read()
@@ -204,16 +221,26 @@ def setup_autostart():
     enable_systemd_unit()
 
 
+def manage():
+    """
+    Runs remote django management command
+    """
+    command = input("Enter the management command > ")
+    container_id = _get_backend_container_id()
+    _exec_docker_command(container_id, command)
+
+
 def deploy():
     run_tests()
     backup_database()
     launch_docker()
     create_directories()
+    copy_local_environment_settings()
     checkout_repository()
-    stop_previous_containers()
     fix_premissions()
     set_secret_key()
-    copy_local_environment_settings()
+    build_containers()
+    stop_previous_containers()
     launch_containers()
     setup_nginx()
     setup_seo()

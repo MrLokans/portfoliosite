@@ -1,6 +1,5 @@
 FROM python:3.6.1-alpine AS builder
 COPY requirements/base.txt /app/requirements.txt
-RUN apk update && apk add --no-cache
 RUN apk update && apk add --no-cache libffi libxslt postgresql-dev \
     && apk add --virtual build-dependencies --no-cache \
         git gcc linux-headers \

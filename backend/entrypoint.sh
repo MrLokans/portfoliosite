@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -e
 
 BACKEND_USER=bloguser
@@ -6,9 +7,6 @@ GUNICORN_WORKERS=${GUNICORN_WORKERS:-4}
 GUNICORN_PORT=${GUNICORN_PORT:-8000}
 
 echo "Launching cron"
-
-
-
 [ "$(ls -A /etc/cron.d)" ] && cp -f /etc/cron.d/* /var/spool/cron/crontabs/$BACKEND_USER || true
 crond -s /var/spool/cron/crontabs -f -L /var/log/cron/cron.log &
 
