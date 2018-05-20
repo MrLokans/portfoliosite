@@ -35,9 +35,7 @@ services:
   # Django back-end
   backend:
     restart: always
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: registry.mrlokans.com:5000/personal_site:${BACKEND_VERSION:-latest}
     command: --prod
     env_file:
       - ./.env

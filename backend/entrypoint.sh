@@ -21,7 +21,7 @@ chown -R $BACKEND_USER:$BACKEND_USER $DJANGO_STATIC_DIR
 if [[ $@ == **prod** ]]
 then
     echo "Using prod configuration."
-    gunicorn --log-config gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application --access-logfile - --error-logfile -u $BACKEND_USER
+    gunicorn --log-config gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application -u $BACKEND_USER
 else
     echo "Using dev configuration"
     gunicorn --log-config gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application --reload -u $BACKEND_USER

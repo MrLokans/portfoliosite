@@ -31,6 +31,7 @@ SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
                                         SYSTEMD_UNIT_NAME)
 CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
 ENV_VARS_FILE = '.env'
+REGISTRY_URL = 'registry.mrlokans.com:5000'
 
 
 DISABLED_MAINTENANCE_PAGE = os.path.join(
@@ -43,6 +44,7 @@ ENABLED_MAINTENANCE_PAGE_NAME = os.path.join(
 
 env.hosts = ['mrlokans@mrlokans.com']
 env.revision = getattr(env, 'revision', 'develop')
+env.backend_container_version = getattr(env, 'backend_container_version', 'latest')
 
 
 def _get_backend_container_id():
@@ -110,16 +112,10 @@ def stop_previous_containers():
         sudo('docker-compose -f docker-compose.prod.yml stop')
 
 
-def build_containers():
-    with cd(DEPLOYMENT_DIR):
-        logger.info("Building new containers")
-        sudo('docker-compose -f docker-compose.prod.yml build')
-
-
 def launch_containers():
     with cd(DEPLOYMENT_DIR):
         logger.info('Launching backend container')
-        sudo('docker-compose -f docker-compose.prod.yml up -d backend')
+        sudo('docker-compose -f docker-compose.prod.yml up --build -d backend')
 
 
 def set_secret_key():
@@ -133,8 +129,9 @@ def set_secret_key():
     assert secret_key
 
     logger.info("Writing new secret key.")
-    sudo('sed -i \'s/.*SECRET_KEY.*/SECRET_KEY="{key}"/\' {path}/backend/personal_site/settings/prod.py'
-         .format(key=secret_key, path=DEPLOYMENT_DIR))
+    with hide('output'):
+        sudo('sed -i \'s/.*SECRET_KEY.*/SECRET_KEY="{key}"/\' {path}/backend/personal_site/settings/prod.py'
+             .format(key=secret_key, path=DEPLOYMENT_DIR))
 
 
 def copy_local_environment_settings():
@@ -199,6 +196,26 @@ def setup_seo():
         use_sudo=True)
 
 
+def pull_backend_image():
+    # Check credentials in environment
+    if 'DOCKER_USERNAME' not in env and 'DOCKER_PASSWORD' not in env:
+        raise ValueError(
+            '"DOCKER_USERNAME" or "DOCKER_PASSWORD" env var is missing.')
+    login_cmd = 'docker login -u {login} -p {password} {registry}'
+    with hide('output'):
+        sudo(login_cmd.format(
+            login=env.DOCKER_USERNAME,
+            password=env.DOCKER_PASSWORD,
+            registry=REGISTRY_URL
+        ))
+    pull_cmd = 'docker pull {registry}/{image}:{version}'
+    sudo(pull_cmd.format(
+        registry=REGISTRY_URL,
+        image='personal_site',
+        version=env.backend_container_version
+    ))
+
+
 def copy_systemd_unit():
     """
     Copy service file to the
@@ -256,15 +273,15 @@ def manage():
 
 def deploy():
     run_tests()
-    backup_database()
     launch_docker()
     create_directories()
     backup_database()
     checkout_repository()
+    pull_backend_image()
     copy_local_environment_settings()
     fix_premissions()
     set_secret_key()
-    build_containers()
+    pull_backend_image()
     maintenance_started = time.monotonic()
     enable_maintenance_page()
     stop_previous_containers()
