@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'import_export',
     'pagedown',
     'rest_framework',
+    # Sentry error reporting
+    'raven.contrib.django.raven_compat',
 
     # Custom apps
     'about_me',
@@ -137,3 +139,10 @@ REST_FRAMEWORK = {
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
 
 SITE_ID = 1
+
+# sentry configuration
+SENTRY_DSN = env('SENTRY_DSN', default='')
+if SENTRY_DSN:
+    RAVEN_CONFIG = {
+        'dsn': SENTRY_DSN,
+    }
