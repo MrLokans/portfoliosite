@@ -16,7 +16,6 @@ echo "Loading initial fixtures"
 su "$BACKEND_USER" -c "python manage.py loaddata about_me/fixtures/fixtures.yaml"
 echo "Collecting static (output dir: $DJANGO_STATIC_DIR)"
 python manage.py collectstatic --no-input
-chown -R $BACKEND_USER:$BACKEND_USER $DJANGO_STATIC_DIR
 
 if [[ $@ == **prod** ]]
 then
