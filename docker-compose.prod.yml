@@ -4,7 +4,6 @@ networks:
   production_network:
     driver: bridge
 
-
 services:
 
   database:
@@ -14,23 +13,8 @@ services:
     env_file:
       - ./.env
 
-  messagebus:
-    image: rabbitmq:3.6.6-management-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - ./rabbit-data/:/var/lib/rabbitmq
-    networks:
-      - production_network
-    logging:
-      driver: none
-
-
   redis:
     image: redis:3.0.7-alpine
-    ports:
-      - "6379:6379"
 
   # Django back-end
   backend:
@@ -40,7 +24,6 @@ services:
     env_file:
       - ./.env
     environment:
-      - DJANGO_SETTINGS_MODULE=personal_site.settings.prod
       - DATABASE_HOST=database
     ports:
       - "8000:8000"
@@ -53,3 +36,4 @@ services:
       - production_network
     depends_on:
       - database
+      - redis

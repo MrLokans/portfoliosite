@@ -118,22 +118,6 @@ def launch_containers():
         sudo('docker-compose -f docker-compose.prod.yml up --build -d backend')
 
 
-def set_secret_key():
-    """
-    It is strongly recommended to use
-    environment variables instead.
-    """
-    logger.info("Reading secret key.")
-    with open(SECRET_KEY_FILE, 'r') as f:
-        secret_key = f.read()
-    assert secret_key
-
-    logger.info("Writing new secret key.")
-    with hide('output'):
-        sudo('sed -i \'s/.*SECRET_KEY.*/SECRET_KEY="{key}"/\' {path}/backend/personal_site/settings/prod.py'
-             .format(key=secret_key, path=DEPLOYMENT_DIR))
-
-
 def copy_local_environment_settings():
     """
     Copies local environment settings files
@@ -280,7 +264,6 @@ def deploy():
     pull_backend_image()
     copy_local_environment_settings()
     fix_premissions()
-    set_secret_key()
     pull_backend_image()
     maintenance_started = time.monotonic()
     enable_maintenance_page()

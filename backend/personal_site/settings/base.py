@@ -4,7 +4,7 @@ import os
 import environ
 
 env = environ.Env(
-        DEBUG=(bool, False),
+    DEBUG=(bool, False),
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,8 +33,6 @@ INSTALLED_APPS = [
     'import_export',
     'pagedown',
     'rest_framework',
-    # Sentry error reporting
-    'raven.contrib.django.raven_compat',
 
     # Custom apps
     'about_me',
@@ -91,32 +89,15 @@ if os.environ.get('REDIS_URL'):
         'default': env.cache('REDIS_URL'),
     }
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.8/howto/static-files/
-
 STATIC_URL = '/static/'
-
-# STATICFILES_DIRS = [
-#     os.environ.get('DJANGO_STATIC_DIR', os.path.join(BASE_DIR, 'staticfiles')),
-# ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# print(os.path.exists(STATICFILES_DIRS[0]))
-# print(STATICFILES_DIRS)
-
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -139,10 +120,3 @@ REST_FRAMEWORK = {
 GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
 
 SITE_ID = 1
-
-# sentry configuration
-SENTRY_DSN = env('SENTRY_DSN', default='')
-if SENTRY_DSN:
-    RAVEN_CONFIG = {
-        'dsn': SENTRY_DSN,
-    }

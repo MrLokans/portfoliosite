@@ -16,10 +16,6 @@ PyYAML==3.12
 
 psycopg2==2.7.4
 
-
-# For error reporting
-raven==6.6.0
-
 # Markdown editor in the admin page
 django-pagedown==1.0.4
 
