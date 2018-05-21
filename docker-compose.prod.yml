@@ -12,9 +12,13 @@ services:
       - ./pgdata-prod/:/var/lib/postgresql/data
     env_file:
       - ./.env
+    networks:
+      - production_network
 
   redis:
     image: redis:3.0.7-alpine
+    networks:
+      - production_network
 
   # Django back-end
   backend:
