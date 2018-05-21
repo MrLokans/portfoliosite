@@ -29,10 +29,15 @@ echo "Image version: $IMAGE_VERSION"
 echo "Logging in into the docker registry."
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin $DOCKER_REGISTRY_URL
 
+echo "Pulling the latest image to make sure image cache is available."
+docker pull $LATEST_IMAGE_NAME
+
 echo "Build docker image."
 docker build $DOCKERFILE_DIR -t "$FULL_IMAGE_NAME"
+
 echo "Tagging the latest version."
 docker tag $FULL_IMAGE_NAME $LATEST_IMAGE_NAME
+
 echo "Pushing images to the registry."
 docker push $FULL_IMAGE_NAME
 docker push $LATEST_IMAGE_NAME
