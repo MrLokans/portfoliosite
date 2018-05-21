@@ -9,6 +9,8 @@ from fabric.api import (
 from fabric.context_managers import hide
 from fabric.state import env
 
+import requests
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("fabric")
 
@@ -40,6 +42,10 @@ DISABLED_MAINTENANCE_PAGE = os.path.join(
 ENABLED_MAINTENANCE_PAGE_NAME = os.path.join(
     DEPLOYMENT_DIR, 'nginx', 'maintenance_on.html'
 )
+
+# Health check settings
+HEALTHCHECK_URL = 'https://mrlokans.com/api/health/'
+AWAIT_TIMEOUT_IN_SEC, PAUSE_TIMEOUT = 60, 5
 
 
 env.hosts = ['mrlokans@mrlokans.com']
@@ -246,6 +252,24 @@ def setup_autostart():
     enable_systemd_unit()
 
 
+def check_site_availability():
+    time_already_waiting = 0
+    started = time.monotonic()
+    while time_already_waiting < AWAIT_TIMEOUT_IN_SEC:
+        response = requests.get(
+            HEALTHCHECK_URL,
+            headers={'Accept': 'application/json'}
+        )
+        if response.status_code == 200:
+            logger.info('Site is available!')
+            return
+        logger.info('Could not reach the site, waiting for %s seconds', PAUSE_TIMEOUT)
+        time.sleep(PAUSE_TIMEOUT)
+        time_already_waiting = time.monotonic() - started
+    logger.error('Waiting more than %s seconds, back-end does not work!', AWAIT_TIMEOUT_IN_SEC)
+    enable_maintenance_page()
+
+
 def manage():
     """
     Runs remote django management command
@@ -276,3 +300,4 @@ def deploy():
     maintenance_finished = time.monotonic()
     logger.info('Site was unavailable for %d seconds', maintenance_finished - maintenance_started)
     setup_autostart()
+    check_site_availability()
