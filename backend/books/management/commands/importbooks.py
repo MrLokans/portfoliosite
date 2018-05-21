@@ -3,9 +3,8 @@ import logging
 from tqdm import tqdm
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction, IntegrityError
 
-from books.models import Book, BookNote
+from books.models import Book
 
 from dropbox import Dropbox
 from dropbox.exceptions import DropboxException
@@ -43,13 +42,4 @@ class Command(BaseCommand):
         book_dicts = [book.to_dict()
                       for book in tqdm(books, total=kwargs['count'])]
 
-        try:
-            with transaction.atomic():
-                BookNote.objects.all().delete()
-                Book.objects.all().delete()
-
-                for book_dict in book_dicts:
-                    logger.info("Saving book {}.".format(book_dict))
-                    Book.from_dict(book_dict)
-        except IntegrityError:
-            logger.exception("Transaction error.")
+        Book.objects.load_new_entities(book_dicts)
