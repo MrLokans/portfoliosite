@@ -23,7 +23,7 @@ RUN apk update \
     && touch /var/log/cron/cron.log \
     && mkdir -m 0644 -p /etc/cron.d \
     # Install additional requirements
-    && apk add bash git
+    && apk add bash git libxslt-dev libxml2-dev
 COPY --from=builder /app/requirements.txt /app/requirements.txt
 COPY --from=builder /root/.cache /root/.cache
 RUN pip install -r /app/requirements.txt
