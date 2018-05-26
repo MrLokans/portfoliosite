@@ -2,7 +2,7 @@ import warnings
 
 from django.conf import settings
 from django.contrib import admin
-from django.db.models import Count
+from django.db.models import Count, F
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
@@ -11,7 +11,6 @@ from import_export.admin import ImportExportModelAdmin
 
 from .models import (
     Apartment,
-    ApartmentImage,
     ApartmentScrapingResults
 )
 
@@ -29,19 +28,15 @@ IMAGE_TEMPLATE = """
 """
 
 
-class ApartmentImageInline(admin.TabularInline):
-    model = ApartmentImage
-
-
 class ApartmentAdmin(ImportExportModelAdmin):
     readonly_fields = ('bulletin_images',)
 
-    list_display = ('bullettin_url', 'address', 'price',
+    list_display = ('bullettin_url', 'address', 'price_USD', 'price_BYN',
                     'latitude', 'longitude', 'status',
                     'created_at', 'updated_at', 'images_count')
-    search_fields = ('address', 'price')
-    exclude = ('created_at',)
-    inlines = [ApartmentImageInline]
+    search_fields = ('address', 'price_USD')
+    exclude = ()
+    inlines = []
     resource_class = ApartmentsResource
 
     class Media:
@@ -62,21 +57,16 @@ class ApartmentAdmin(ImportExportModelAdmin):
         return format_html_join(
             mark_safe('<br/>'),
             IMAGE_TEMPLATE,
-            ((i.image_url, ) for i in obj.images.all())
+            ((link, ) for link in obj.image_links)
         )
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        return qs.annotate(images_count=Count('images'))
+        return super().get_queryset(request)
 
     def images_count(self, obj):
-        return obj.images_count
+        return len(obj.image_links)
 
     images_count.admin_order_field = 'images_count'
-
-
-class ApartmentImageAdmin(admin.ModelAdmin):
-    pass
 
 
 class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
@@ -97,5 +87,4 @@ class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Apartment, ApartmentAdmin)
-admin.site.register(ApartmentImage, ApartmentImageAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)

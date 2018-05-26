@@ -18,6 +18,33 @@ class ApartmentDataImporter(object):
     Take care of importing apartment data into
     the database
     """
+    __JSON_DATABASE_FIELD_MAP = {
+        # JSON field: Corresponding DB model field
+        'images': 'image_links',
+        'origin_url': 'bullettin_url',
+        'phones': 'user_phones',
+        'user_url': 'author_url',
+    }
+
+    def __init__(self):
+        self.inactive_urls = []
+        self.active_urls = []
+        self.invalid_urls = []
+
+    def reset(self):
+        self.inactive_urls = []
+        self.active_urls = []
+        self.invalid_urls = []
+
+    def _map_field_names_to_internal_format(self, data: Dict) -> Dict:
+        name_map = self.__JSON_DATABASE_FIELD_MAP
+        output_data = {}
+        for field_name, value in data.items():
+            if field_name in name_map:
+                output_data[name_map[field_name]] = value
+            else:
+                output_data[field_name] = value
+        return output_data
 
     def _get_existing_apartment_urls(self) -> Set[str]:
         """
@@ -38,57 +65,50 @@ class ApartmentDataImporter(object):
         return joined_text or ''
 
     def _attempt_saving_item(self,
-                             item_data: dict,
-                             stats: dict,
-                             update=False,
+                             item_data: Dict,
+                             stats: Dict,
+                             update: bool=False,
                              instance=None):
-
+        item_data = self._map_field_names_to_internal_format(item_data)
         item_data['description'] = self\
             ._clean_up_description(item_data['description'])
         serializer_args = {'data': item_data}
+        processed_url = item_data['bullettin_url']
         if update:
             serializer_args.update({'instance': instance})
         ser = ApartmentSerializer(**serializer_args)
         if ser.is_valid():
             try:
-                with transaction.atomic():
-                    ser.save()
-                    stats['total_saved'] += 1
-            except IntegrityError as e:
-                logger.error("Error saving data %s: %s",
-                             ser.validated_data, str(e))
-                transaction.rollback()
+                ser.save()
+                stats['total_saved'] += 1
+                self.active_urls.append(processed_url)
+            except Exception as e:
+                logger.exception("Error saving data %s.", ser.validated_data)
                 stats['total_errors'] += 1
+                self.invalid_urls.append(processed_url)
         else:
-            logger.error('Error saving apartment data: %s', ser.errors)
+            logger.error('Invalid payload: %s', ser.errors)
             stats['total_errors'] += 1
+            self.invalid_urls.append(processed_url)
 
     def _handle_database_sync(self,
                               new_apartments,
                               apartments_to_update,
                               inactive_urls: Set[str],
-                              new_urls: Set[str],
                               stats: Dict) -> Dict:
-        """
-        :raises IntegrityError:
-        """
-        with transaction.atomic():
-            stats['total_inactive'] = Apartment.objects\
-                .mark_inactive(inactive_urls)
-            for item in new_apartments:
-                self._attempt_saving_item(item, stats)
-            for item in apartments_to_update:
-                ap = Apartment.objects.get(bullettin_url=item['origin_url'])
-                self._attempt_saving_item(item, stats,
-                                          update=True, instance=ap)
-            stats['total_active'] = Apartment.objects\
-                .mark_active(new_urls)
+        stats['total_inactive'] = Apartment.objects.mark_inactive(inactive_urls)
+        for item in new_apartments:
+            self._attempt_saving_item(item, stats)
+        for item in apartments_to_update:
+            ap = Apartment.objects.get(bullettin_url=item['origin_url'])
+            self._attempt_saving_item(item, stats,
+                                      update=True, instance=ap)
+        stats['total_active'] = Apartment.objects.mark_active(self.active_urls)
 
     def save_apartments_data(self,
                              new_apartments,
                              apartments_to_update,
-                             inactive_urls: Set[str],
-                             new_urls: Set[str]):
+                             inactive_urls: Set[str]):
         scrape_stats = {
             'total_errors': 0,
             'total_active': 0,
@@ -98,11 +118,12 @@ class ApartmentDataImporter(object):
             'succeeded': True,
             'time_started': datetime.datetime.utcnow(),
             'time_finished': None,
+            'invalid_urls': []
         }
         try:
             self._handle_database_sync(new_apartments,
                                        apartments_to_update,
-                                       inactive_urls, new_urls,
+                                       inactive_urls,
                                        scrape_stats)
         except Exception as exc:
             logger.exception('Error saving changes to the database.')
@@ -110,8 +131,12 @@ class ApartmentDataImporter(object):
             scrape_stats['error_message'] = str(exc)
         finally:
             scrape_stats['time_finished'] = datetime.datetime.utcnow()
+            if self.invalid_urls:
+                scrape_stats['succeeded'] = False
+            scrape_stats['invalid_urls'] = self.invalid_urls
             stats = ApartmentScrapingResults(**scrape_stats)
             stats.save()
+            self.reset()
 
     def load_from_json(self, filename: str):
         """
@@ -126,8 +151,7 @@ class ApartmentDataImporter(object):
 
     def load_from_serialized_values(self, items: List[Dict]):
         existing_urls = self._get_existing_apartment_urls()
-        loaded_urls = set(i['origin_url']
-                          for i in items)
+        loaded_urls = set(i['origin_url'] for i in items)
         inactive_urls = existing_urls - loaded_urls
         new_urls = loaded_urls - existing_urls
         updated_urls = loaded_urls - new_urls
@@ -135,8 +159,6 @@ class ApartmentDataImporter(object):
                           if i['origin_url'] in new_urls)
         apartments_to_update = (i for i in items
                                 if i['origin_url'] in updated_urls)
-
         self.save_apartments_data(new_apartments,
                                   apartments_to_update,
-                                  inactive_urls,
-                                  new_urls)
+                                  inactive_urls)

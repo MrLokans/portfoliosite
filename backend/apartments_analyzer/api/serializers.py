@@ -1,65 +1,31 @@
 from rest_framework import serializers
 
-from apartments_analyzer.models import Apartment, ApartmentImage
-
-
-class ApartmentImageSerializer(serializers.RelatedField):
-
-    def to_representation(self, obj):
-        return obj.image_url
-
-    def to_internal_value(self, value):
-        return value
+from apartments_analyzer.models import Apartment
 
 
 class ApartmentSerializer(serializers.ModelSerializer):
+    """
+    Defines a conversion layer between data generated
+    by the scrapper and our internal database representation
+    """
+    class Meta:
+        model = Apartment
+        fields = ('price_USD', 'price_BYN', 'author_url', 'bullettin_url', 'address', 'apartment_type',
+                  'longitude', 'latitude', 'description', 'image_links', 'user_phones', 'user_name',
+                  'last_updated',
+                  'has_balcony', 'has_conditioner', 'has_fridge', 'has_furniture', 'has_internet',
+                  'has_kitchen_furniture', 'has_oven', 'has_tv', 'has_washing_machine', )
 
-    price_USD = serializers.IntegerField(source='price')
-    url = serializers.URLField(source='author_url')
-    origin_url = serializers.URLField(source='bullettin_url')
-
-    longitude = serializers.DecimalField(max_digits=None, decimal_places=None)
-    latitude = serializers.DecimalField(max_digits=None, decimal_places=None)
-
-    description = serializers.CharField(allow_blank=True)
-    images = ApartmentImageSerializer(many=True,
-                                      queryset=Apartment.objects.all())
+    longitude = serializers.DecimalField(max_digits=15, decimal_places=12)
+    latitude = serializers.DecimalField(max_digits=15, decimal_places=12)
 
     def get_description(self, obj):
         # TODO: Add actual description transformation
         return obj.description
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images')
         apartment = Apartment.objects.create(**validated_data)
-        for image_url in images_data:
-            ApartmentImage.objects.create(apartment=apartment,
-                                          image_url=image_url)
         return apartment
 
     def update(self, instance, validated_data):
-        images_data = set(validated_data.pop('images'))
-        existing_images = set(ApartmentImage.objects\
-            .filter(apartment=instance)\
-            .values_list('image_url', flat=True))
-        new_images = images_data - existing_images
-        removed_images = existing_images - images_data
-
-        # If photos added to the apartment page
-        # we create it in the database
-        ApartmentImage.objects.bulk_create([
-            ApartmentImage(**{'image_url': image_url,
-                              'apartment': instance})
-            for image_url in new_images
-        ])
-        # If removed - delete it accordingly
-        ApartmentImage.objects\
-            .filter(apartment=instance,
-                    image_url__in=removed_images)\
-            .delete()
         return instance
-
-    class Meta:
-        model = Apartment
-        fields = ('price_USD', 'url', 'origin_url', 'address',
-                  'longitude', 'latitude', 'description', 'images')
