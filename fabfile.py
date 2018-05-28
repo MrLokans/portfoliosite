@@ -48,7 +48,7 @@ HEALTHCHECK_URL = 'https://mrlokans.com/api/health/'
 AWAIT_TIMEOUT_IN_SEC, PAUSE_TIMEOUT = 60, 5
 
 
-env.hosts = ['mrlokans@mrlokans.com']
+env.hosts = ['mrlokans@188.166.109.166']
 env.revision = getattr(env, 'revision', 'develop')
 env.backend_container_version = getattr(env, 'backend_container_version', 'latest')
 
@@ -280,7 +280,7 @@ def manage():
 
 
 def deploy():
-    run_tests()
+    # run_tests()
     launch_docker()
     create_directories()
     backup_database()
