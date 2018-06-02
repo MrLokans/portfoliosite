@@ -37,12 +37,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         token = self._read_access_token(kwargs)
-        if token and kwargs.get('file'):
-            raise CommandError('file and token options are mutually exclusive.')
-        if token:
-            books = self.download_books(token, kwargs['count'])
-        elif kwargs.get('file'):
+        if kwargs.get('file'):
             books = self.get_books_from_file(kwargs.get('file'))
+        elif token:
+            books = self.download_books(token, kwargs['count'])
         else:
             raise CommandError('Either dropbox token or books file should be provided')
         Book.objects.load_new_entities(books)

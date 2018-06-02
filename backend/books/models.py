@@ -33,7 +33,7 @@ class BookManager(models.Manager):
             db_book = self.get_queryset().get(title=book['title'])
             db_book.notes.all().delete()
             db_book.number_of_pages = book['pages']
-            db_book.percentage = book['pages']
+            db_book.percentage = book['percentage']
             db_book.save()
             BookNote.objects.bulk_create([BookNote(book=db_book, text=n['text']) for n in book['notes']])
 
