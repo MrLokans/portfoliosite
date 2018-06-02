@@ -1,8 +1,12 @@
+import json
 import logging
+import os
+from typing import List, Dict
 
 from tqdm import tqdm
 
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 
 from books.models import Book
 
@@ -26,20 +30,38 @@ class Command(BaseCommand):
         parser.add_argument('--count',
                             type=int,
                             help='Number of books to download',
-                            default=200)
+                            default=1000)
+        parser.add_argument('--file', type=str,
+                            help='JSON file, containing parsed books',
+                            required=False)
 
     def handle(self, *args, **kwargs):
-        token = kwargs.get('token')
-        if not token:
-            raise CommandError("No dropbox token specified.")
+        token = self._read_access_token(kwargs)
+        if token and kwargs.get('file'):
+            raise CommandError('file and token options are mutually exclusive.')
+        if token:
+            books = self.download_books(token, kwargs['count'])
+        elif kwargs.get('file'):
+            books = self.get_books_from_file(kwargs.get('file'))
+        else:
+            raise CommandError('Either dropbox token or books file should be provided')
+        Book.objects.load_new_entities(books)
+
+    def download_books(self, token, book_count: int) -> List[Dict]:
         try:
             downloader = DropboxDownloader(Dropbox(token))
         except DropboxException as e:
             msg = "Incorrect dropbox token: {}"
             raise CommandError(msg.format(str(e)))
+        books = downloader.get_books(book_count=book_count)
+        return [book.to_dict() for book in tqdm(books, total=book_count)]
 
-        books = downloader.get_books(book_count=kwargs['count'])
-        book_dicts = [book.to_dict()
-                      for book in tqdm(books, total=kwargs['count'])]
+    def get_books_from_file(self, books_file: str) -> List[Dict]:
+        assert os.path.isfile(books_file), "Provided file is not a file or does not exist."
+        with open(books_file, 'r') as f:
+            json_data = json.load(f)
+            assert isinstance(json_data, list)
+            return json_data
 
-        Book.objects.load_new_entities(book_dicts)
+    def _read_access_token(self, command_kwargs: Dict) -> str or None:
+        return command_kwargs.get('token') or settings.DROPBOX_ACCESS_TOKEN
