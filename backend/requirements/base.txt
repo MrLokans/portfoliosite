@@ -33,4 +33,7 @@ django-import-export==1.0.0
 # Manage.py extra commands
 django-extensions==2.0.6
 
+# Reading env variables
+django-dotenv==1.4.2
+
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.4.1#egg=agent_spider

@@ -26,3 +26,5 @@ htmlcov
 pgdata*
 .vagrant
 static
+
+.env
