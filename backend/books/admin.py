@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from books.models import Book, BookNote
+from books.models import Book, BookNote, BookNameMapper
 from django.db.models import Count
+
 
 
 class BookNoteInline(admin.TabularInline):
@@ -9,10 +10,16 @@ class BookNoteInline(admin.TabularInline):
 
 
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'percentage', 'number_of_pages', 'number_of_notes')
+    fields = ('original_title', 'author', 'title', 'percentage', 'rating', 'number_of_pages',)
+    list_display = ('proper_title', 'percentage', 'number_of_pages', 'number_of_notes', )
     inlines = [
         BookNoteInline,
     ]
+    search_fields = (
+        'title',
+        'author',
+        'original_title',
+    )
 
     def get_queryset(self, request):
         return (
@@ -31,5 +38,10 @@ class BookNoteAdmin(admin.ModelAdmin):
     pass
 
 
+class BookMapperAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(BookNote, BookNoteAdmin)
+admin.site.register(BookNameMapper, BookMapperAdmin)
