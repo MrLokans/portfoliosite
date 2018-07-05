@@ -8,7 +8,7 @@ networks:
 services:
 
   database:
-    image: postgres:10.2-alpine
+    image: mdillon/postgis:10-alpine
     env_file:
       - ./.env
     networks:
@@ -17,18 +17,6 @@ services:
       - "15432:5432"
     volumes:
       - ./.pgdata-dev/:/var/lib/postgresql/data
-
-  messagebus:
-    image: rabbitmq:3.6.6-management-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    volumes:
-      - ./rabbit-data/:/var/lib/rabbitmq
-    networks:
-      - backend_network
-    logging:
-      driver: none
 
   redis:
     image: redis:3.0.7-alpine

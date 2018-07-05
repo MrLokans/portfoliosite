@@ -7,9 +7,9 @@ networks:
 services:
 
   database:
-    image: postgres:10.2-alpine
+    image: mdillon/postgis:10-alpine
     volumes:
-      - ./pgdata-prod/:/var/lib/postgresql/data
+      - ./pgdata-postgis-prod/:/var/lib/postgresql/data
     env_file:
       - ./.env
     networks:
