@@ -1,12 +1,13 @@
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apartments_analyzer.api.serializers import ApartmentSerializer
 from apartments_analyzer.models import Apartment
+from apartments_analyzer.services import ApartmentsStatisticsAggregator
 from apartments_analyzer.utils import construct_onliner_user_url
 
 
@@ -23,6 +24,15 @@ class ApartmentsListAPIView(ListAPIView):
     def get_queryset(self):
         qs = Apartment.objects.prefetch_related('images')
         return qs
+
+
+class ApartmentsStatsAPIView(APIView):
+
+    def get(self, *args, **kwargs):
+        stats = {}
+        stats['by_hour'] = ApartmentsStatisticsAggregator.get_hour_aggregated_stats()
+        stats['by_weekday'] = ApartmentsStatisticsAggregator.get_weekday_aggregated_stats()
+        return Response(stats)
 
 
 class AgentCheckView(APIView):
