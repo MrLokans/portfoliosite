@@ -22,7 +22,6 @@ PREREQUSITE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
 
     # Third party
     'django_extensions',
@@ -84,8 +83,10 @@ WSGI_APPLICATION = 'personal_site.wsgi.application'
 DATABASES = {
     'default': env.db()
 }
-if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
-    DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
+
+# FIXME: enable PostGIS back-end on alpine linux images
+# if DATABASES['default']['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+#     DATABASES['default']['ENGINE'] = 'django.contrib.gis.db.backends.postgis'
 
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 
