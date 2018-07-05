@@ -4,8 +4,6 @@ import logging
 import os
 from typing import Dict, List, Set
 
-from django.db import transaction, IntegrityError
-
 from apartments_analyzer.models import Apartment, ApartmentScrapingResults
 from apartments_analyzer.api.serializers import ApartmentSerializer
 
@@ -81,6 +79,10 @@ class ApartmentDataImporter(object):
             try:
                 ser.save()
                 stats['total_saved'] += 1
+                if update:
+                    stats['updated_items'] += 1
+                else:
+                    stats['new_items'] += 1
                 self.active_urls.append(processed_url)
             except Exception as e:
                 logger.exception("Error saving data %s.", ser.validated_data)
@@ -104,6 +106,7 @@ class ApartmentDataImporter(object):
             self._attempt_saving_item(item, stats,
                                       update=True, instance=ap)
         stats['total_active'] = Apartment.objects.mark_active(self.active_urls)
+        return stats
 
     def save_apartments_data(self,
                              new_apartments,
@@ -114,6 +117,8 @@ class ApartmentDataImporter(object):
             'total_active': 0,
             'total_inactive': 0,
             'total_saved': 0,
+            'new_items': 0,
+            'updated_items': 0,
             'error_message': "",
             'succeeded': True,
             'time_started': datetime.datetime.utcnow(),

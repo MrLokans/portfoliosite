@@ -2,7 +2,6 @@ import warnings
 
 from django.conf import settings
 from django.contrib import admin
-from django.db.models import Count, F
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
@@ -79,6 +78,9 @@ class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
               'total_active',
               'total_inactive',
               'time_taken',
+              'invalid_urls',
+              'new_items',
+              'updated_items',
               )
     readonly_fields = fields
     list_display = ('time_started', 'time_finished', 'succeeded',

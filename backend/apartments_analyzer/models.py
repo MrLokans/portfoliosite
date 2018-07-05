@@ -127,6 +127,9 @@ class ApartmentScrapingResults(models.Model):
     # URLs we were unable to process
     invalid_urls = ArrayField(models.URLField(), default=[])
 
+    new_items = models.PositiveIntegerField(default=0)
+    updated_items = models.PositiveIntegerField(default=0)
+
     @property
     def time_taken(self):
         return self.time_finished - self.time_started
