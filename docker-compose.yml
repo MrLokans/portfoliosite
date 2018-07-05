@@ -28,7 +28,7 @@ services:
   # Django back-end
   backend:
     build:
-      context: ./backend
+      context: ./
       dockerfile: Dockerfile
     env_file:
       - ./.env

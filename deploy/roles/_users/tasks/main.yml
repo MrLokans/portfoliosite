@@ -1,5 +1,0 @@
-- name: Create group
-  group: name={{ project_group }} state=present
-
-- name: Create user
-  user: name={{ project_user }} state=present

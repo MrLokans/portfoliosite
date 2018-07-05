@@ -5,7 +5,7 @@
 
 set -e
 
-DOCKERFILE_DIR=backend
+DOCKERFILE_DIR=.
 DOCKER_REGISTRY_URL=registry.mrlokans.com:5000
 
 # Union of version, current date and git revision

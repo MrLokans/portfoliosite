@@ -1,9 +1,0 @@
-[program:{{ project_supervisor_name }}]
-command={{ project_venv }}/bin/gunicorn personal_site.wsgi -c {{ project_root }}/mrlokans.gunicorn.py
-nodaemon=true
-directory={{ project_root }}/personal_site/
-user={{ project_user }}
-group={{ project_group }}
-stdout_logfile = /var/log/personalsite.log
-redirect_stderr = true
-environment=PERSONAL_SITE_SECRET_KEY={{ project_secret_key }},DJANGO_SETTINGS_MODULE={{ project_settings_module }},STATIC_DIR={{ project_static_dir }}

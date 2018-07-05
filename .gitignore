@@ -28,3 +28,7 @@ pgdata*
 static
 
 .env
+backups
+cron-logs
+
+experiments

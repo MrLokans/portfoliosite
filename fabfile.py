@@ -14,33 +14,36 @@ import requests
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("fabric")
 
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+LOCAL_CONFIG_DIR = os.path.join(BASE_DIR, 'deployment')
+
 SECRET_KEY_FILE = os.path.abspath('secret.key')
-LOCAL_BACKEND_DIR = os.path.abspath('backend')
 REPOSITORY_URL = 'https://github.com/MrLokans/portfoliosite'
 DEPLOYMENT_DIR = '/opt/mrlokans.com'
 REMOTE_BACKEND_DIR = os.path.join(DEPLOYMENT_DIR, 'backend')
 REMOTE_STATIC_DIR = os.path.join(DEPLOYMENT_DIR, 'static')
 NGINX_CONFIG_NAME = 'mrlokans.com.conf'
-NGINX_CONFIG_LOCAL_PATH = os.path.abspath(os.path.join('nginx',
+NGINX_CONFIG_LOCAL_PATH = os.path.abspath(os.path.join(LOCAL_CONFIG_DIR, 'nginx',
                                                        NGINX_CONFIG_NAME))
 NGINX_CONFIG_REMOTE_PATH = os.path.join('/etc/nginx/sites-available',
                                         NGINX_CONFIG_NAME)
 NGINX_SYMLINK_REMOTE_PATH = os.path.join('/etc/nginx/sites-enabled',
                                          NGINX_CONFIG_NAME)
 SYSTEMD_UNIT_NAME = 'personalsite-backend.service'
-SYSTEMD_UNIT_LOCAL_PATH = os.path.abspath(SYSTEMD_UNIT_NAME)
+
+SYSTEMD_UNIT_LOCAL_PATH = os.path.join(LOCAL_CONFIG_DIR, SYSTEMD_UNIT_NAME)
 SYSTEMD_UNIT_REMOTE_PATH = os.path.join('/etc/systemd/system/',
                                         SYSTEMD_UNIT_NAME)
-CRONTAB_LOCAL_PATH = os.path.join(LOCAL_BACKEND_DIR, 'crontab')
+CRONTAB_LOCAL_PATH = os.path.join(LOCAL_CONFIG_DIR, 'crontab')
 ENV_VARS_FILE = '.env'
 REGISTRY_URL = 'registry.mrlokans.com:5000'
 
 
 DISABLED_MAINTENANCE_PAGE = os.path.join(
-    DEPLOYMENT_DIR, 'nginx', 'maintenance_off.html'
+    DEPLOYMENT_DIR, 'deployment', 'nginx', 'maintenance_off.html'
 )
 ENABLED_MAINTENANCE_PAGE_NAME = os.path.join(
-    DEPLOYMENT_DIR, 'nginx', 'maintenance_on.html'
+    DEPLOYMENT_DIR, 'deployment', 'nginx', 'maintenance_on.html'
 )
 
 # Health check settings
@@ -104,11 +107,10 @@ def launch_docker():
 
 
 def run_tests():
-    with lcd(LOCAL_BACKEND_DIR):
-        logger.info("Running local tests.")
-        result = local('tox')
-        if result.failed:
-            abort("Tests failed.")
+    logger.info("Running local tests.")
+    result = local('tox')
+    if result.failed:
+        abort("Tests failed.")
 
 
 def stop_previous_containers():
