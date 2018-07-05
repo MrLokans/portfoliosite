@@ -32,7 +32,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/:/app/
+      - ./:/app/
       - ./static/:/app/personal_site/staticfiles
       - ./cron-logs/:/var/log/cron/
     working_dir: /app/
