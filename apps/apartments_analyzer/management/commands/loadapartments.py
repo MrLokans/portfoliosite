@@ -2,7 +2,7 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from apartments_analyzer.apartment_importer import ApartmentDataImporter
+from apps.apartments_analyzer.apartment_importer import ApartmentDataImporter
 
 
 logger = logging.getLogger(__name__)

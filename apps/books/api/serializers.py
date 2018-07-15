@@ -42,7 +42,6 @@ class BookSerializer(serializers.ModelSerializer):
         instance.save()
         notes = validated_data.get('notes', None)
         if notes is not None:
-            # TODO: notes are not passed with notes JSON array
             pass
         return instance
 

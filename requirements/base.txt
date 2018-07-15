@@ -36,4 +36,17 @@ django-extensions==2.0.6
 # Reading env variables
 django-dotenv==1.4.2
 
+# telegram integration
+python-telegram-bot==10.1.0
+
 -e git://github.com/MrLokans/onliner-agent-finder.git@0.4.1#egg=agent_spider
+
+# Blogging support
+django-fluent-blogs==2.0.2
+django-fluent-contents[text,code,markdown]==2.0.3
+docutils==0.14
+Markdown==2.6.11
+textile==3.0.3
+django-fluent-utils==2.0
+django-wysiwyg==0.8.0
+django-taggit==0.22.2

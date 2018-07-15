@@ -2,8 +2,9 @@ import csv
 import logging
 from typing import List
 
-from apartments_analyzer.models import Apartment
 from django.core.management.base import BaseCommand, CommandError
+
+from apps.apartments_analyzer.models import Apartment
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -45,5 +46,5 @@ class Command(BaseCommand):
             writer = csv.writer(f)
             writer.writerow(self.EXPORTED_FIELDS)
 
-            for apartment in Apartment.objects.iterator():
+            for apartment in Apartment.objects.iterator():  # pylint: disable=not-an-iterable
                 writer.writerow(self.csv_row_from_instance(apartment))

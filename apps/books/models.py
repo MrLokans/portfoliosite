@@ -78,7 +78,7 @@ class BookManager(models.Manager):
         for book in book_list:
             deduplicated_books[book['title']][0] += 1
             deduplicated_books[book['title']][1].append(book)
-        for book_title, (book_count, books) in deduplicated_books.items():
+        for _, (book_count, books) in deduplicated_books.items():
             if book_count == 1:
                 output_books.append(books[0])
                 continue
@@ -100,7 +100,8 @@ class BookManager(models.Manager):
                 book.save(update_fields=['author', 'title'])
 
     def __deduplicate(self, books: List[Dict]) -> Dict:
-        max_notes, min_notes = max(books, key=lambda b: len(b['notes'])),  min(books, key=lambda b: len(b['notes']))
+        max_notes = max(books, key=lambda b: len(b['notes']))
+        min_notes = min(books, key=lambda b: len(b['notes']))
         if max_notes != min_notes:
             return max_notes
         return max(books, key=lambda b: b['percentage'])

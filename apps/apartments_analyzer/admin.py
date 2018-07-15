@@ -15,7 +15,7 @@ from .models import (
 
 
 class ApartmentsResource(resources.ModelResource):
-
+    # pylint: disable=no-init
     class Meta:
         model = Apartment
 
@@ -58,9 +58,6 @@ class ApartmentAdmin(ImportExportModelAdmin):
             IMAGE_TEMPLATE,
             ((link, ) for link in obj.image_links)
         )
-
-    def get_queryset(self, request):
-        return super().get_queryset(request)
 
     def images_count(self, obj):
         return len(obj.image_links)

@@ -20,7 +20,7 @@ class BaseSingletonCommand(BaseCommand):
     def get_lock_path(self):
         class_name = repr(self.__class__).replace("<class '", "").replace("'>", "")
         lock_path = os.path.join('/tmp', class_name + '.lock')
-        LOG.debug("Command log path: %s" % lock_path)
+        LOG.debug("Command log path: %s", lock_path)
         return lock_path
 
     def execute(self, *args, **kwargs):

@@ -29,7 +29,7 @@ class ApartmentManager(models.Manager):
         )
 
     def mark_active(self, urls: Iterable[str],
-                    current_time: datetime.datetime=None) -> int:
+                    current_time: datetime.datetime = None) -> int:
         """
         Marks bulletings with given URLs
         as active
@@ -43,7 +43,7 @@ class ApartmentManager(models.Manager):
         return number_updated
 
     def mark_inactive(self, urls: Iterable[str],
-                      current_time: datetime.datetime=None) -> int:
+                      current_time: datetime.datetime = None) -> int:
         """
         Marks bulletings with given URLs
         as active
@@ -96,7 +96,7 @@ class Apartment(TimeTrackable):
     has_conditioner = models.BooleanField()
     has_fridge = models.BooleanField()
     has_furniture = models.BooleanField()
-    has_internet = models.BooleanField(),
+    has_internet = models.BooleanField()
     has_kitchen_furniture = models.BooleanField()
     has_oven = models.BooleanField()
     has_tv = models.BooleanField()

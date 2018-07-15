@@ -4,8 +4,7 @@ import os
 from typing import List, Dict
 
 
-from django.core.files import locks
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import CommandError
 from django.conf import settings
 
 from tqdm import tqdm
@@ -20,7 +19,6 @@ from personal_site.base_command import BaseSingletonCommand
 logger = logging.getLogger(__name__)
 
 
-class Command(BaseCommand):
 class Command(BaseSingletonCommand):
     help = """Import books notes and reading statistics from
     Dropbox and dumps them to database"""

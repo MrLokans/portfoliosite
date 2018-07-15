@@ -1,7 +1,7 @@
 import logging
 import os
 
-from apartments_analyzer.management.commands import _base
+from apps.apartments_analyzer.management.commands import _base
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

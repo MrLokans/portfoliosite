@@ -66,7 +66,7 @@ class ApartmentDataImporter(object):
     def _attempt_saving_item(self,
                              item_data: Dict,
                              stats: Dict,
-                             update: bool=False,
+                             update: bool = False,
                              instance=None):
         item_data = self._map_field_names_to_internal_format(item_data)
         item_data['description'] = self\
@@ -85,7 +85,7 @@ class ApartmentDataImporter(object):
                 else:
                     stats['new_items'] += 1
                 self.active_urls.append(processed_url)
-            except Exception as e:
+            except Exception:
                 logger.exception("Error saving data %s.", ser.validated_data)
                 stats['total_errors'] += 1
                 self.invalid_urls.append(processed_url)

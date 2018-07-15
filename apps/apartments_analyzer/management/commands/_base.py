@@ -14,7 +14,6 @@ class BaseParserCommand(BaseCommand):
     help = """Spider launching command."""
 
     def _generate_filename(self):
-        # TODO: Add current date
         return 'bulletins.json'
 
     def _validate_filename(self, filename):

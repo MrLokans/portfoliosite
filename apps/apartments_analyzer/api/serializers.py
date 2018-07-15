@@ -20,7 +20,6 @@ class ApartmentSerializer(serializers.ModelSerializer):
     latitude = serializers.DecimalField(max_digits=15, decimal_places=12)
 
     def get_description(self, obj):
-        # TODO: Add actual description transformation
         return obj.description
 
     def create(self, validated_data):

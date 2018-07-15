@@ -10,7 +10,6 @@ class ApartmentsStatisticsAggregator(object):
 
     @staticmethod
     def get_hour_aggregated_stats() -> List[Tuple[int, int]]:
-        # FIXME: properly handle time zone difference
         qs = (
             Apartment.objects
             .values('created_at')

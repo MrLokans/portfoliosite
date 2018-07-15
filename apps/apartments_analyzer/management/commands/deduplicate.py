@@ -2,8 +2,8 @@ import logging
 
 from django.core.management.base import BaseCommand
 
-from apartments_analyzer.models import Apartment
-from apartments_analyzer.deduplicator import Deduplicator
+from apps.apartments_analyzer.deduplicator import Deduplicator
+from apps.apartments_analyzer.models import Apartment
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

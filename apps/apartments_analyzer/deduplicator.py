@@ -37,7 +37,7 @@ class Deduplicator(object):
                                url_dict: Dict[str, List]) -> List:
         logger.info('Finding items to remove.')
         entries_to_remove = []
-        for url, entry_list in url_dict.items():
+        for _, entry_list in url_dict.items():
             if len(entry_list) < 2:
                 continue
             # We exclude the latest entry marking
