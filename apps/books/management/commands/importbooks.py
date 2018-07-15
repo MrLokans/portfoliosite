@@ -3,23 +3,25 @@ import logging
 import os
 from typing import List, Dict
 
-from tqdm import tqdm
 
+from django.core.files import locks
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 
-from books.models import Book
-
+from tqdm import tqdm
 from dropbox import Dropbox
 from dropbox.exceptions import DropboxException
 
 from moonreader_tools.handlers import DropboxDownloader
 
+from apps.books.models import Book
+from personal_site.base_command import BaseSingletonCommand
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
+class Command(BaseSingletonCommand):
     help = """Import books notes and reading statistics from
     Dropbox and dumps them to database"""
 
