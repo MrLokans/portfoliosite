@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseSingletonCommand):
     help = """Import books notes and reading statistics from
-    Dropbox and dumps them to database"""
+    Dropbox and dump them to database"""
 
     def add_arguments(self, parser):
         parser.add_argument('--token',
