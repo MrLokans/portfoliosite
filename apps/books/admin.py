@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.db.models import Count
 
-from .models import Book, BookNote, BookNameMapper
-
+from .models import Book, BookNote, BookNameMapper, Favorite
 
 
 class BookNoteInline(admin.TabularInline):
@@ -42,6 +41,11 @@ class BookMapperAdmin(admin.ModelAdmin):
     pass
 
 
+class FavoritesAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Book, BookAdmin)
 admin.site.register(BookNote, BookNoteAdmin)
 admin.site.register(BookNameMapper, BookMapperAdmin)
+admin.site.register(Favorite, FavoritesAdmin)

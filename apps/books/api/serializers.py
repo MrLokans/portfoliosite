@@ -1,6 +1,7 @@
+from generic_relations.relations import GenericRelatedField
 from rest_framework import serializers
 
-from ..models import BookNote, Book
+from ..models import BookNote, Book, Favorite
 
 
 class BookNoteSerializer(serializers.ModelSerializer):
@@ -21,6 +22,7 @@ class BookSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
+            'original_title',
             'percentage',
             'rating',
             'notes'
@@ -49,3 +51,15 @@ class BookSerializer(serializers.ModelSerializer):
         notes = BookNote.objects.filter(book=obj)
         notes = BookNoteSerializer(notes, many=True).data
         return notes
+
+
+class FavoritesSerializer(serializers.ModelSerializer):
+    content_object = GenericRelatedField({
+        Book: BookSerializer(),
+        BookNote: BookNoteSerializer(),
+    })
+    content_type = serializers.StringRelatedField()
+
+    class Meta:
+        model = Favorite
+        fields = ('added', 'content_object', 'note', 'content_type', )

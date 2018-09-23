@@ -1,30 +1,9 @@
-from collections import defaultdict
-from typing import Dict, List
+from collections.__init__ import defaultdict
+from typing import List, Dict
 
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.utils.functional import cached_property
-
-
-class BookNameMapper(models.Model):
-    incoming_book_name = models.CharField(max_length=200)
-    output_title = models.CharField(max_length=200)
-    output_author = models.CharField(max_length=200)
-
-    def __str__(self):
-        return 'BookMap({})'.format(self.incoming_book_name)
-
-
-class BookNote(models.Model):
-
-    book = models.ForeignKey('Book', related_name='notes', on_delete=models.CASCADE)
-    text = models.TextField()
-
-    def __str__(self):
-        return 'BookNote(book={})'.format(self.book.proper_title)
+from apps.books.models import BookNote, BookNameMapper
 
 
 class BookManager(models.Manager):
@@ -107,39 +86,3 @@ class BookManager(models.Manager):
         if max_notes != min_notes:
             return max_notes
         return max(books, key=lambda b: b['percentage'])
-
-
-class Book(models.Model):
-
-    author = models.CharField(max_length=200)
-    title = models.CharField(max_length=200, default='')
-    original_title = models.CharField(max_length=200)
-    percentage = models.IntegerField(default=0)
-    rating = models.IntegerField(default=0, validators=[MinValueValidator(0),
-                                                        MaxValueValidator(5)])
-    number_of_pages = models.IntegerField(default=0)
-
-    objects = BookManager()
-
-    def __str__(self):
-        return '<Book {}>'.format(self.proper_title)
-
-    @cached_property
-    def proper_title(self) -> str:
-        if self.author and self.title:
-            return '{} - {}'.format(self.author, self.title)
-        return self.original_title
-
-    def get_related_notes(self):
-        return self.booknote_set.all()
-
-    def is_empty(self):
-        return self.booknote_set.count() == 0
-
-
-class Favorite(models.Model):
-    note = models.TextField(help_text='Why it is special', default='')
-    added = models.DateTimeField(auto_now_add=True)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey('content_type', 'object_id')
