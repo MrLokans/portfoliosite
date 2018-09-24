@@ -1,4 +1,4 @@
-Django==2.0.4
+Django==2.0.8
 # API building
 djangorestframework==3.8.2
 Pillow==5.1.0
@@ -47,12 +47,5 @@ djang-cors-headers==2.2.0
 # Generic relations API
 rest-framework-generic-relations==1.2.0
 
-# Blogging support
-django-fluent-blogs==2.0.2
-django-fluent-contents[text,code,markdown]==2.0.3
-docutils==0.14
-Markdown==2.6.11
-textile==3.0.3
-django-fluent-utils==2.0
-django-wysiwyg==0.8.0
-django-taggit==0.22.2
+# CMS capatibilities
+wagtail==2.2.2

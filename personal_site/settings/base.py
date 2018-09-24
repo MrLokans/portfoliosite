@@ -36,6 +36,24 @@ PREREQUSITE_APPS = [
     'generic_relations',
 ]
 
+WAGTAIL_APPS = [
+    'wagtail.contrib.forms',
+    'wagtail.contrib.redirects',
+    'wagtail.embeds',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.snippets',
+    'wagtail.documents',
+    'wagtail.images',
+    'wagtail.search',
+    'wagtail.admin',
+    'wagtail.core',
+
+    'modelcluster',
+    'taggit',
+
+]
+
 PROJECT_APPS = [
     'apps.about_me',
     'apps.apartments_analyzer',
@@ -45,13 +63,16 @@ PROJECT_APPS = [
 ]
 
 
-INSTALLED_APPS = PREREQUSITE_APPS + PROJECT_APPS
+INSTALLED_APPS = PREREQUSITE_APPS + WAGTAIL_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
 
     'corsheaders.middleware.CorsMiddleware',
+
+    'wagtail.core.middleware.SiteMiddleware',
+    'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,6 +142,9 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 LOGIN_REDIRECT_URL = '/'
 
 REST_FRAMEWORK = {
@@ -147,3 +171,6 @@ CORS_ORIGIN_WHITELIST = (
     'localhost:8100',
     '127.0.0.1:8000'
 )
+
+
+WAGTAIL_SITE_NAME = 'mrlokans.com'
