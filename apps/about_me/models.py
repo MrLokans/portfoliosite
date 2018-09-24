@@ -1,5 +1,9 @@
 from django.db import models
 from django.db.models import Case, When, Value, CharField
+from modelcluster.fields import ParentalKey
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.core.fields import RichTextField
+from wagtail.core.models import Page, Orderable
 
 
 class TechnologyManager(models.Manager):
@@ -90,3 +94,25 @@ class ProjectLink(models.Model):
 
     def __str__(self):
         return '<Project: {} - {}>'.format(self.project, self.link)
+
+
+class ConferenceTalkPage(Page):
+    intro = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+        InlinePanel('video_links', label="Video links"),
+    ]
+
+
+class ConferenceVideoLink(Orderable):
+    page = ParentalKey(ConferenceTalkPage, on_delete=models.CASCADE, related_name='video_links')
+    short_description = models.TextField()
+    video_url = models.URLField()
+    presentation_url = models.URLField()
+
+    panels = [
+        FieldPanel('short_description'),
+        FieldPanel('video_url'),
+        FieldPanel('presentation_url'),
+    ]

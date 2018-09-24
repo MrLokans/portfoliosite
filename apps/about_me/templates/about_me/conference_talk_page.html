@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% load wagtailcore_tags %}
+{% load wagtailembeds_tags %}
+
+{% block body_class %}template-blogindexpage{% endblock %}
+
+{% block content %}
+    <h1>{{ page.title }}</h1>
+
+    <div class="intro">{{ page.intro|richtext }}</div>
+
+    {% for video_detail in page.video_links.all %}
+        <hr>
+        <h4>{{ video_detail.short_description }}</h4>
+        {%  embed video_detail.video_url %}
+        <br>
+        <a href="{{ video_detail.presentation_url }}" target="_blank">Slides</a>
+    {% endfor %}
+
+{% endblock %}
