@@ -7,6 +7,7 @@ networks:
 services:
 
   database:
+    restart: unless-stopped
     image: mdillon/postgis:10-alpine
     volumes:
       - ./pgdata-postgis-prod/:/var/lib/postgresql/data
@@ -16,13 +17,14 @@ services:
       - production_network
 
   redis:
+    restart: unless-stopped
     image: redis:3.0.7-alpine
     networks:
       - production_network
 
   # Django back-end
   backend:
-    restart: always
+    restart: unless-stopped
     image: registry.mrlokans.com:5000/personal_site:${BACKEND_VERSION:-latest}
     command: --prod
     env_file:
