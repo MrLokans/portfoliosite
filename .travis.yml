@@ -8,11 +8,17 @@ jobs:
   include:
     - stage: Run tests and static analysis
       script: echo "Running tests"
+      if: type!=cron
     - stage: Build and push docker image
       script: 'bash docker_push.sh'
       on:
         branch: develop
+      if: type != cron
     - stage: Run the deployment
       script: echo "Running the fabric deployment"
       on:
         branch: develop
+      if: type != cron
+    - stage: Run availability tests
+      script: tox -e availability
+      if: type = cron
