@@ -17,13 +17,14 @@ COPY --from=builder /usr/local/bin/dumb-init /usr/local/bin/dumb-init
 RUN adduser -D -g '' bloguser
 RUN apk update \
     # Cron setup
-    && apk add dcron postgresql-dev \
+    && apk add dcron postgresql-dev jpeg-dev zlib-dev \
     && mkdir -p /var/log/cron \
     && mkdir -m 0644 -p /var/spool/cron/crontabs \
     && touch /var/log/cron/cron.log \
     && mkdir -m 0644 -p /etc/cron.d \
     # Install additional requirements
     && apk add bash git libxslt-dev libxml2-dev
+
 COPY --from=builder /app/requirements.txt /app/requirements.txt
 COPY --from=builder /root/.cache /root/.cache
 RUN pip install -r /app/requirements.txt
