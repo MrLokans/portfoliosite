@@ -4,7 +4,7 @@ from .base import *  # noqa
 # Take a look at this article
 
 DEBUG = False
-ALLOWED_HOSTS = ['.mrlokans.com', ]
+ALLOWED_HOSTS = ['.mrlokans.com', 'http://localhost:8000']
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
