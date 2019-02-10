@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
+from apps.apartments_analyzer.filters import PriceRangeFilter
 from .models import (
     Apartment,
     ApartmentScrapingResults
@@ -34,6 +35,7 @@ class ApartmentAdmin(ImportExportModelAdmin):
                     'latitude', 'longitude', 'status',
                     'created_at', 'updated_at', 'images_count')
     search_fields = ('address', 'price_USD')
+    list_filter = [PriceRangeFilter, ]
     exclude = ()
     inlines = []
     resource_class = ApartmentsResource
