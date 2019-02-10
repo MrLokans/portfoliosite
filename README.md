@@ -28,8 +28,21 @@ Run the whole stack
 docker-compose up --build
 ```
 
+Commands
+---
+Running parser and filling in initial database
+```
+python manage.py scrapeapartments
+```
+
 Deployment to the production
 ---
+Deploy built image uploaded to the registry
 ```
 fab deploy --set DOCKER_USERNAME=username,DOCKER_PASSWORD=password
+```
+
+Renew HTTPS certificates
+```
+fab renew_certificates
 ```
