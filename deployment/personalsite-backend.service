@@ -5,8 +5,8 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/usr/bin/docker-compose -f /opt/personalsite/docker-compose.prod.yml up backend
-ExecStop=/usr/bin/docker-compose -f /opt/personalsite/docker-compose.prod.yml stop backend
+ExecStart=/usr/bin/docker-compose -f /opt/mrlokans.com/docker-compose.prod.yml up backend
+ExecStop=/usr/bin/docker-compose -f /opt/mrlokans.com/docker-compose.prod.yml stop backend
 
 [Install]
 WantedBy=default.target

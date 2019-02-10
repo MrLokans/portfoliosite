@@ -1,6 +1,6 @@
 - model: about_me.technology
   pk: 1
-  fields: {name: Python, general_description: Python programming language, mastery_level: 3}
+  fields: {name: Python 2, general_description: Python programming language, mastery_level: 3}
 - model: about_me.technology
   pk: 2
   fields: {name: Ansible, general_description: 'Ansible is a radically simple IT automation
@@ -8,8 +8,8 @@
       deployment, intra-service orchestration, and many other IT needs.', mastery_level: 2}
 - model: about_me.technology
   pk: 3
-  fields: {name: Docker, general_description: "Docker is the world\u2019s leading
-      software containerization platform", mastery_level: 3}
+  fields: {name: Docker, general_description: "Docker is the world\u2019s leading\
+      \ software containerization platform", mastery_level: 3}
 - model: about_me.technology
   pk: 4
   fields: {name: Golang, general_description: Go programming language, mastery_level: 1}
@@ -67,20 +67,77 @@
   fields: {name: Nameko, general_description: Microservices building framework., mastery_level: 2}
 - model: about_me.technology
   pk: 20
-  fields: {name: PyQT, general_description: Cross-platform desktop GUI framework., mastery_level: 1}
+  fields: {name: PyQT, general_description: Cross-platform desktop GUI framework.,
+    mastery_level: 1}
+- model: about_me.technology
+  pk: 21
+  fields: {name: Fabfile, general_description: Simple deployment management tool,
+    mastery_level: 2}
+- model: about_me.technology
+  pk: 22
+  fields: {name: Google App Engine, general_description: PAAS solution from the google
+      inc., mastery_level: 3}
+- model: about_me.technology
+  pk: 23
+  fields: {name: Apache Solr, general_description: Full-text search database, mastery_level: 2}
+- model: about_me.technology
+  pk: 24
+  fields: {name: Google Cloud Datastore, general_description: Google NoSQL database,
+    mastery_level: 2}
+- model: about_me.technology
+  pk: 25
+  fields: {name: PostgreSQL, general_description: One of the most powerful RDMS solutions
+      on earth ;), mastery_level: 2}
+- model: about_me.technology
+  pk: 26
+  fields: {name: AWS Services, general_description: "Everyone knows them, from what\
+      \ I worked with:\r\n- VPC management\r\n- EC2 instance management\r\n- AWS RDS\
+      \ (Postgres)\r\n- S3\r\n- CloudWatch\r\n- ELB / ALB basic setup", mastery_level: 2}
+- model: about_me.technology
+  pk: 27
+  fields: {name: Terraform, general_description: Infrastructure-As-A-Code solution
+      to manage cloud configurations with ease, mastery_level: 2}
+- model: about_me.technology
+  pk: 28
+  fields: {name: Python 3, general_description: Shiny new python, mastery_level: 3}
+- model: about_me.technology
+  pk: 29
+  fields: {name: TurboGears 2, general_description: WSGI web-framework written in
+      python, mastery_level: 2}
+- model: about_me.technology
+  pk: 30
+  fields: {name: Sentry, general_description: Error-tracking saviour, mastery_level: 2}
+- model: about_me.technology
+  pk: 31
+  fields: {name: Prometheus, general_description: Time-series database (used primarily
+      with Grafana to provide various application metrics), mastery_level: 1}
+- model: about_me.technology
+  pk: 32
+  fields: {name: React / Redux stack, general_description: Minor functionality / fixes,
+    mastery_level: 1}
+- model: about_me.technology
+  pk: 33
+  fields: {name: System programming, general_description: 'Linux development (e.g.
+      writing services, low-level API communication services)', mastery_level: 1}
+- model: about_me.technology
+  pk: 34
+  fields: {name: Celery, general_description: Distributed task management software,
+    mastery_level: 2}
 - model: about_me.project
   pk: 1
   fields:
     title: Moonreader Tools
-    description: "A library handling parsing MoonReader statistics and notes files.\r\nIt
-      is capable of reading files from local files and from dropbox."
+    description: "A library handling parsing MoonReader statistics and notes files.\r\
+      \nIt is capable of reading files from local files and from dropbox."
+    type: null
     technologies: [1, 16]
 - model: about_me.project
   pk: 2
   fields:
     title: Personal Site
     description: This site itself. Personal blog, portfolio site, playground for experiments.
-    technologies: [1, 2, 3, 6, 7, 14, 17]
+    type: null
+    technologies: [7, 14, 3, 1, 6, 2, 17]
 - model: about_me.project
   pk: 3
   fields:
@@ -88,6 +145,7 @@
     description: Map of Belarus high-speed internet access. Each point represents
       house with some ISP availability. Blue represents ByFly \'s XPON, red - MTS
       ethernet, purple - Unet.by.
+    type: null
     technologies: [1]
 - model: about_me.project
   pk: 4
@@ -95,6 +153,7 @@
     title: Currency TelegramBot
     description: Telegram bot that displays currency exchange rates for several belarusian
       banks and also shows some pretty plots.
+    type: null
     technologies: [1]
 - model: about_me.project
   pk: 5
@@ -102,6 +161,7 @@
     title: IT Books spider
     description: Scrapy spider that parsers diffrent sites like onliner.by and grabs
       latest book data, in search of cheap IT books.
+    type: null
     technologies: [1]
 - model: about_me.project
   pk: 6
@@ -109,6 +169,7 @@
     title: Koshelek.org exporter
     description: Exports CSV data about incomes and spendings from <a href="https://koshelek.org/">koshelek.org</a>
       website
+    type: null
     technologies: [1]
 - model: about_me.project
   pk: 7
@@ -116,7 +177,71 @@
     title: VK API
     description: Simple library that wraps requests to <a href="https://new.vk.com/dev/methods">vkontakte
       API</a>.
+    type: null
     technologies: [1]
+- model: about_me.project
+  pk: 8
+  fields:
+    title: Online Lotto Platform
+    description: "The project aiming to help lotto players from around the world to\
+      \ occasionally win lots of money.\r\n\r\nDuring the course of the project I\
+      \ was responsible for writing the application business logic in Python 2.7,\
+      \ creating internal content management portal (custom admin) using bottle and\
+      \ ES2016, also coping with the existing development and deployment infrastructure."
+    type: 3
+    technologies: [1, 22, 15, 13, 5, 24, 4]
+- model: about_me.project
+  pk: 9
+  fields:
+    title: B2B ERP portal
+    description: "This project's goal was helping dealers and customers to shrink\
+      \ the existing facilitator count for small/medium businesses.\r\n\r\nDuring\
+      \ the course of that project I tried on many roles:\r\n- Technical architect\
+      \ (choice of tools to be used, facilitating changes in the existing solution\
+      \ architecture)\r\n- Microservice developer (thus meaning creating new services,\
+      \ defining API-s to be used between them)\r\n- Infrastructure developer (development,\
+      \ staging environments, deployment and monitoring tools set-up)"
+    type: 3
+    technologies: [14, 3, 7, 28, 12, 19, 21, 25, 30, 11, 15, 16, 17, 10, 31, 9, 8]
+- model: about_me.project
+  pk: 10
+  fields:
+    title: NLP investigation tool
+    description: "Support of the existing SOA application intending to help investigate\
+      \ commercial crimes with Natural Language Processing tools\r\n\r\nMy roles on\
+      \ the project:\r\n\r\n- Architect (investigation, documentation, POC development,\
+      \ design changes introduction)\r\n- Developer (adding new functionality to an\
+      \ existing legacy application)"
+    type: 3
+    technologies: [1, 5, 29, 19, 23, 12, 13, 16, 18, 9, 8]
+- model: about_me.project
+  pk: 11
+  fields:
+    title: Surveillance  device management platform
+    description: Development of a software/hardware complex managing connected devices
+      and having a connection with the Azure cloud
+    type: 3
+    technologies: [7, 1, 15, 6, 16, 17, 10, 33]
+- model: about_me.project
+  pk: 12
+  fields:
+    title: Financial Portfolio management tool
+    description: "A website helping people to build better financial investment portfolio,\
+      \ visually displaying all of the future inflows / outflows using complicated\
+      \ stochastic methods.\r\n\r\nDuring the course of the project I was responsible\
+      \ for:\r\n- Leading the team of back-end / front-end developers (up to 6 people)\r\
+      \n- Development of new features\r\n- Development of the AWS deployment / delivery\
+      \ pipelines\r\n- Integration of best technical practices"
+    type: 3
+    technologies: [14, 28, 7, 16, 17, 25, 26, 27, 30, 2, 15, 34, 32, 8, 9]
+- model: about_me.project
+  pk: 13
+  fields:
+    title: Car-sales dealership portal
+    description: "Portal helping acquire cars for people with low credit score\r\n\
+      \r\nRoles:\r\n- Technical coordination\r\n- Infrastructure management"
+    type: 3
+    technologies: [3, 7, 28, 14, 25, 26, 34, 30, 16, 17, 21, 10]
 - model: about_me.projectlink
   pk: 1
   fields: {link: 'https://github.com/mrlokans/moonreader_tools', name: github, project: 1}
@@ -139,3 +264,10 @@
 - model: about_me.projectlink
   pk: 7
   fields: {link: 'https://github.com/MrLokans/portfoliosite', name: Github, project: 2}
+- model: about_me.conferencetalkpage
+  pk: 3
+  fields: {intro: <p>List of talks I gave on various conferences</p>}
+- model: about_me.conferencevideolink
+  pk: 1
+  fields: {sort_order: 0, page: 3, short_description: Code review best practices (Python
+      meetup), video_url: 'https://www.youtube.com/watch?v=qADYWuy9IDg', presentation_url: 'https://www.slideshare.net/AndreiSviridov/code-review-to-the-rescue-99546418'}
