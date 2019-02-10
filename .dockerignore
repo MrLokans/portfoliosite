@@ -9,6 +9,7 @@
 # Docker
 docker-compose.yml
 .docker
+pgdata-prod
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -91,7 +92,9 @@ venv/
 */*/*.swp
 */*/*/*.swp
 
-.scrapy/
-pgdata*
-.pgdata*
+.scrapy
 rabbit*
+experiments
+mobileClient
+phone_app
+.docker

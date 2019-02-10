@@ -8,17 +8,17 @@ from django.utils.safestring import mark_safe
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from apps.apartments_analyzer.filters import PriceRangeFilter
+from apps.apartments_analyzer.filters import RentedPriceRangeFilter, RoomCountFilter, SoldPriceRangeFilter
 from .models import (
-    Apartment,
-    ApartmentScrapingResults
-)
+    RentApartment,
+    ApartmentScrapingResults,
+    SoldApartments)
 
 
 class ApartmentsResource(resources.ModelResource):
     # pylint: disable=no-init
     class Meta:
-        model = Apartment
+        model = RentApartment
 
 
 IMAGE_TEMPLATE = """
@@ -28,17 +28,7 @@ IMAGE_TEMPLATE = """
 """
 
 
-class ApartmentAdmin(ImportExportModelAdmin):
-    readonly_fields = ('bulletin_images',)
-
-    list_display = ('bullettin_url', 'address', 'price_USD', 'price_BYN',
-                    'latitude', 'longitude', 'status',
-                    'created_at', 'updated_at', 'images_count')
-    search_fields = ('address', 'price_USD')
-    list_filter = [PriceRangeFilter, ]
-    exclude = ()
-    inlines = []
-    resource_class = ApartmentsResource
+class BaseApartmentAdmin(admin.ModelAdmin):
 
     class Media:
         key_set = hasattr(settings, 'GOOGLE_MAPS_API_KEY') and settings.GOOGLE_MAPS_API_KEY
@@ -54,6 +44,12 @@ class ApartmentAdmin(ImportExportModelAdmin):
                 'js/admin/location_picker.js',
             )
 
+    readonly_fields = ('bulletin_images',)
+    list_display = ('bullettin_url', 'address', 'price_USD', 'price_BYN',
+                    'latitude', 'longitude', 'status',
+                    'created_at', 'updated_at', 'images_count')
+    search_fields = ('address', 'price_USD')
+
     def bulletin_images(self, obj):
         return format_html_join(
             mark_safe('<br/>'),
@@ -65,6 +61,18 @@ class ApartmentAdmin(ImportExportModelAdmin):
         return len(obj.image_links)
 
     images_count.admin_order_field = 'images_count'
+
+
+class ApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
+
+    list_filter = [RentedPriceRangeFilter, RoomCountFilter]
+
+    resource_class = ApartmentsResource
+
+
+class SoldApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
+
+    list_filter = [SoldPriceRangeFilter, ]
 
 
 class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
@@ -87,5 +95,6 @@ class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
                     'time_taken')
 
 
-admin.site.register(Apartment, ApartmentAdmin)
+admin.site.register(RentApartment, ApartmentAdmin)
+admin.site.register(SoldApartments, SoldApartmentAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)

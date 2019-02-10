@@ -3,7 +3,7 @@ from typing import List, Tuple
 from django.db.models import Count
 from django.db.models.functions import ExtractHour, ExtractWeekDay
 
-from .models import Apartment
+from .models import RentApartment
 
 
 class ApartmentsStatisticsAggregator(object):
@@ -11,7 +11,7 @@ class ApartmentsStatisticsAggregator(object):
     @staticmethod
     def get_hour_aggregated_stats() -> List[Tuple[int, int]]:
         qs = (
-            Apartment.objects
+            RentApartment.objects
             .values('created_at')
             .annotate(current_hour=ExtractHour('created_at'))
             .values('current_hour')
@@ -26,7 +26,7 @@ class ApartmentsStatisticsAggregator(object):
     @staticmethod
     def get_weekday_aggregated_stats() -> List[Tuple[int, int]]:
         qs = (
-            Apartment.objects
+            RentApartment.objects
             .values('created_at')
             .annotate(current_weekday=ExtractWeekDay('created_at'))
             .values('current_weekday')

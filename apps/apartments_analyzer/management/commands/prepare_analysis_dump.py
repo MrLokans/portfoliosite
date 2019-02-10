@@ -4,14 +4,14 @@ from typing import List
 
 from django.core.management.base import BaseCommand, CommandError
 
-from apps.apartments_analyzer.models import Apartment
+from apps.apartments_analyzer.models import RentApartment
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 class Command(BaseCommand):
-    SUPPORTED_FIELDS = {f.name for f in Apartment._meta.fields}
+    SUPPORTED_FIELDS = {f.name for f in RentApartment._meta.fields}
     EXPORTED_FIELDS = (
         'bullettin_url', 'address', 'apartment_type',
         'price_BYN', 'price_BYN', 'description',
@@ -46,5 +46,5 @@ class Command(BaseCommand):
             writer = csv.writer(f)
             writer.writerow(self.EXPORTED_FIELDS)
 
-            for apartment in Apartment.objects.iterator():  # pylint: disable=not-an-iterable
+            for apartment in RentApartment.objects.iterator():  # pylint: disable=not-an-iterable
                 writer.writerow(self.csv_row_from_instance(apartment))
