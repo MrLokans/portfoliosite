@@ -46,6 +46,8 @@ ENABLED_MAINTENANCE_PAGE_NAME = os.path.join(
     DEPLOYMENT_DIR, 'deployment', 'nginx', 'maintenance_on.html'
 )
 
+REGISTRY_CERTS_DIR = '/etc/letsencrypt/live/registry.mrlokans.com'
+
 # Health check settings
 HEALTHCHECK_URL = 'https://mrlokans.com/api/health/'
 AWAIT_TIMEOUT_IN_SEC, PAUSE_TIMEOUT = 60, 5
