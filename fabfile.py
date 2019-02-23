@@ -272,6 +272,15 @@ def check_site_availability():
     enable_maintenance_page()
 
 
+def renew_certificates():
+    sudo('systemctl stop nginx')
+    sudo('certbot renew')
+    with cd(REGISTRY_CERTS_DIR):
+        sudo('cp privkey.pem domain.key')
+        sudo('cat cert.pem chain.pem > domain.crt')
+    sudo('systemctl start nginx')
+
+
 def manage():
     """
     Runs remote django management command
