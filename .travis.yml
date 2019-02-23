@@ -19,6 +19,3 @@ jobs:
       on:
         branch: develop
       if: type != cron
-    - stage: Run availability tests
-      script: tox -e availability
-      if: type = cron
