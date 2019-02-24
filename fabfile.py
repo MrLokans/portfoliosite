@@ -300,7 +300,6 @@ def deploy():
     pull_backend_image()
     copy_local_environment_settings()
     fix_premissions()
-    pull_backend_image()
     maintenance_started = time.monotonic()
     enable_maintenance_page()
     stop_previous_containers()
