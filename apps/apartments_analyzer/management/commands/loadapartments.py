@@ -1,12 +1,6 @@
-import logging
-
 from django.core.management.base import BaseCommand
 
 from apps.apartments_analyzer.apartment_importer import ApartmentDataImporter
-
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 class Command(BaseCommand):
@@ -17,6 +11,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         filename = kwargs['filename']
-        logger.info(f'Loading apartments data from file "{filename}".')
+        self.stdout.write(f'Loading apartments data from file "{filename}".\n')
         importer = ApartmentDataImporter()
         importer.load_from_json(filename)

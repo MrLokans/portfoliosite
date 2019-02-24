@@ -8,7 +8,7 @@ from django.db import transaction
 logger = logging.getLogger(__name__)
 
 
-class Deduplicator(object):
+class Deduplicator:
 
     def __init__(self, apartment_cls, field_to_track: str):
         self.apartment_cls = apartment_cls

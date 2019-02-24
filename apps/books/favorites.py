@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from apps.books.models import Book, BookNote, Favorite
 
 
-class FavoritesService(object):
+class FavoritesService:
 
     @classmethod
     def remove_book_from_favorites(cls, book_id: int):
@@ -24,7 +24,7 @@ class FavoritesService(object):
     def add_book_to_favorites(cls, book_id: int, reason: str = '') -> Favorite:
         book = Book.objects.get(id=book_id)
         content_type = ContentType.objects.get_for_model(book)
-        favorite, added = Favorite.objects.get_or_create(
+        favorite, _ = Favorite.objects.get_or_create(
             content_type=content_type,
             object_id=book_id,
         )
@@ -36,7 +36,7 @@ class FavoritesService(object):
     def add_book_note_to_favorites(cls, note_id: int, reason: str = '') -> Favorite:
         note = BookNote.objects.get(id=note_id)
         content_type = ContentType.objects.get_for_model(note)
-        favorite, added = Favorite.objects.get_or_create(
+        favorite, _ = Favorite.objects.get_or_create(
             content_type=content_type,
             object_id=note_id,
         )

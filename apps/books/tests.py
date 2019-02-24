@@ -20,5 +20,4 @@ class FavoritesServiceTestCase(TestCase):
         note.save()
         self.assertEqual(Favorite.objects.count(), 0)
         FavoritesService.add_book_note_to_favorites(note.id, reason='I liked that one')
-        f = Favorite.objects.first()
         self.assertEqual(Favorite.objects.count(), 1)

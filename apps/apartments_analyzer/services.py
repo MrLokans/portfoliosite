@@ -6,7 +6,7 @@ from django.db.models.functions import ExtractHour, ExtractWeekDay
 from .models import RentApartment
 
 
-class ApartmentsStatisticsAggregator(object):
+class ApartmentsStatisticsAggregator:
 
     @staticmethod
     def get_hour_aggregated_stats() -> List[Tuple[int, int]]:

@@ -95,13 +95,12 @@ class ApartmentDataImporter:
             'invalid_urls': []
         }
 
-    def model_for_url(self, url):
+    def model_for_url(self, url: str):
         if RENTED_SUFFIX in url:
             return RentApartment
-        elif SOLD_SUFFIX in url:
+        if SOLD_SUFFIX in url:
             return SoldApartments
-        else:
-            raise ValueError("No model can support this url type: {}".format(url))
+        raise ValueError("No model can support this url type: {}".format(url))
 
     def reset(self):
         self._reset_urls()
@@ -130,7 +129,7 @@ class ApartmentDataImporter:
         bulletin_type = scrapy_item['bulletin_type']
         if bulletin_type == BulletinType.FOR_RENT.value:
             return RentApartmentSerializer
-        elif bulletin_type == BulletinType.FOR_SELL.value:
+        if bulletin_type == BulletinType.FOR_SELL.value:
             return SoldApartmentSerializer
         raise ValueError("Unknown scrapy item type: {}".format(bulletin_type))
 

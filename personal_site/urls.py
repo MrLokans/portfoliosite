@@ -5,7 +5,6 @@ from django.contrib import admin
 from django.urls import path, re_path
 
 from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.documents import urls as wagtaildocs_urls
 from wagtail.core import urls as wagtail_urls
 
 from apps.blog.feed import LatestPostsFeed
@@ -28,7 +27,7 @@ urlpatterns = [
 ]
 
 urlpatterns += wagtail_patterns
-urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
