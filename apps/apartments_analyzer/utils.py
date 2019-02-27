@@ -1,4 +1,4 @@
-USER_PROFILE_BASE_URL = 'https://profile.onliner.by/user/'
+USER_PROFILE_BASE_URL = "https://profile.onliner.by/user/"
 
 
 def construct_onliner_user_url(user_id):

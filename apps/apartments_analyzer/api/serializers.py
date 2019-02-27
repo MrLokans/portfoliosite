@@ -9,16 +9,28 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
 
     FIELD_NAME_MAP = (
         # Scrapy field, model field
-        ('images', 'image_links'),
-        ('origin_url', 'bullettin_url'),
-        ('phones', 'user_phones'),
-        ('user_url', 'author_url'),
+        ("images", "image_links"),
+        ("origin_url", "bullettin_url"),
+        ("phones", "user_phones"),
+        ("user_url", "author_url"),
     )
 
     class Meta:
-        fields = ('price_USD', 'price_BYN', 'author_url', 'bullettin_url', 'address', 'apartment_type',
-                  'longitude', 'latitude', 'description', 'image_links', 'user_phones', 'user_name',
-                  'last_updated')
+        fields = (
+            "price_USD",
+            "price_BYN",
+            "author_url",
+            "bullettin_url",
+            "address",
+            "apartment_type",
+            "longitude",
+            "latitude",
+            "description",
+            "image_links",
+            "user_phones",
+            "user_name",
+            "last_updated",
+        )
 
     longitude = serializers.DecimalField(max_digits=15, decimal_places=12)
     latitude = serializers.DecimalField(max_digits=15, decimal_places=12)
@@ -34,17 +46,21 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
     def perform_scrapy_data_transformation(cls, scrapy_data):
         scrapy_data = scrapy_data.copy()
         scrapy_data = cls._rename_scraped_fields(scrapy_data)
-        scrapy_data['description'] = cls._clean_up_description(scrapy_data['description'])
-        scrapy_data['image_links'] = cls._cleanup_image_links(scrapy_data['image_links'])
+        scrapy_data["description"] = cls._clean_up_description(
+            scrapy_data["description"]
+        )
+        scrapy_data["image_links"] = cls._cleanup_image_links(
+            scrapy_data["image_links"]
+        )
         return scrapy_data
 
     @classmethod
     def _clean_up_description(cls, text: List[str]) -> str:
-        joined_text = " ".join(text).replace('\n', ' ')
-        placed_pos = joined_text.find('Размещено')
+        joined_text = " ".join(text).replace("\n", " ")
+        placed_pos = joined_text.find("Размещено")
         if placed_pos != -1:
             joined_text = joined_text[:placed_pos]
-        return joined_text or ''
+        return joined_text or ""
 
     @classmethod
     def _cleanup_image_links(cls, links: List[str]):
@@ -68,26 +84,41 @@ class RentApartmentSerializer(BaseApartmentSerializer):
 
     class Meta:
         model = RentApartment
-        fields = BaseApartmentSerializer.Meta.fields + \
-                 ('has_balcony', 'has_conditioner', 'has_fridge', 'has_furniture', 'has_internet',
-                  'has_kitchen_furniture', 'has_oven', 'has_tv', 'has_washing_machine',)
+        fields = BaseApartmentSerializer.Meta.fields + (
+            "has_balcony",
+            "has_conditioner",
+            "has_fridge",
+            "has_furniture",
+            "has_internet",
+            "has_kitchen_furniture",
+            "has_oven",
+            "has_tv",
+            "has_washing_machine",
+        )
 
 
 class SoldApartmentSerializer(BaseApartmentSerializer):
     class Meta:
         model = SoldApartments
-        fields = BaseApartmentSerializer.Meta.fields + \
-                 ('on_floor', 'total_floors', 'total_area', 'living_area', 'kitchen_area', 'house_type',
-                  'balcony_details', 'parking_details', 'ceiling_details',)
+        fields = BaseApartmentSerializer.Meta.fields + (
+            "on_floor",
+            "total_floors",
+            "total_area",
+            "living_area",
+            "kitchen_area",
+            "house_type",
+            "balcony_details",
+            "parking_details",
+            "ceiling_details",
+        )
 
     @classmethod
     def perform_scrapy_data_transformation(cls, scrapy_data):
         scrapy_data = super().perform_scrapy_data_transformation(scrapy_data)
-        floors_data = scrapy_data.pop('floors')
-        on_floor, total_floors = floors_data.split('/')
-        scrapy_data['on_floor'] = int(on_floor)
-        scrapy_data['total_floors'] = int(total_floors)
-        scrapy_data['price_USD'] = int(scrapy_data['price_USD'].replace(' ', ''))
-        scrapy_data['price_BYN'] = scrapy_data['price_BYN'].replace(' ', '')
+        floors_data = scrapy_data.pop("floors")
+        on_floor, total_floors = floors_data.split("/")
+        scrapy_data["on_floor"] = int(on_floor)
+        scrapy_data["total_floors"] = int(total_floors)
+        scrapy_data["price_USD"] = int(scrapy_data["price_USD"].replace(" ", ""))
+        scrapy_data["price_BYN"] = scrapy_data["price_BYN"].replace(" ", "")
         return scrapy_data
-

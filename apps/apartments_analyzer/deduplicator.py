@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class Deduplicator:
-
     def __init__(self, apartment_cls, field_to_track: str):
         self.apartment_cls = apartment_cls
         self.field_to_track = field_to_track
@@ -24,18 +23,18 @@ class Deduplicator:
         self._delete_duplicated_entries_from_db(entries_to_remove)
 
     def _get_url_count(self) -> Dict[str, List]:
-        logger.info('Finding duplicate entries.')
-        entries = self.apartment_cls.objects\
-            .values_list('id', self.field_to_track, 'updated_at')
+        logger.info("Finding duplicate entries.")
+        entries = self.apartment_cls.objects.values_list(
+            "id", self.field_to_track, "updated_at"
+        )
         entries_duplicates = defaultdict(list)
         for entry in entries:
             url = entry[1]
             entries_duplicates[url].append(entry)
         return entries_duplicates
 
-    def _get_entries_to_remove(self,
-                               url_dict: Dict[str, List]) -> List:
-        logger.info('Finding items to remove.')
+    def _get_entries_to_remove(self, url_dict: Dict[str, List]) -> List:
+        logger.info("Finding items to remove.")
         entries_to_remove = []
         for _, entry_list in url_dict.items():
             if len(entry_list) < 2:
@@ -46,11 +45,9 @@ class Deduplicator:
             entries_to_remove.extend(entry_list)
         return entries_to_remove
 
-    def _delete_duplicated_entries_from_db(self,
-                                           entries_to_remove: List[tuple]):
-        logger.info('Deleting items.')
+    def _delete_duplicated_entries_from_db(self, entries_to_remove: List[tuple]):
+        logger.info("Deleting items.")
         _ids_to_remove = [e[0] for e in entries_to_remove]
         with transaction.atomic():
-            deleted_qs = self.apartment_cls.objects\
-                .filter(id__in=_ids_to_remove)
+            deleted_qs = self.apartment_cls.objects.filter(id__in=_ids_to_remove)
             deleted_qs.delete()

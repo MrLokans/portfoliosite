@@ -13,5 +13,5 @@ class Command(BaseCommand):
     help = """Deduplicates data in the database."""
 
     def handle(self, *args, **kwargs):
-        deduplicator = Deduplicator(RentApartment, 'bullettin_url')
+        deduplicator = Deduplicator(RentApartment, "bullettin_url")
         deduplicator.remove_duplicate_apartments()

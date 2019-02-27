@@ -20,7 +20,7 @@ class Command(_base.BaseParserCommand):
         importer.load_from_json(filename)
 
     def handle(self, *args, **kwargs):
-        filename = kwargs['filename'] or self._generate_filename()
+        filename = kwargs["filename"] or self._generate_filename()
         self._validate_filename(filename)
         if os.path.exists(filename):
             self.stdout.write(f'File "{filename}" exists, attempting to remove.\n')

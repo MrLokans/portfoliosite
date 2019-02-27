@@ -14,10 +14,10 @@ from ..models import Book, Favorite
 class BookListAPIView(ListAPIView):
     serializer_class = BookSerializer
     filter_backends = [SearchFilter, OrderingFilter]
-    ordering = 'title'
-    search_fields = ('title', 'notes__text')
+    ordering = "title"
+    search_fields = ("title", "notes__text")
     pagination_class = BookPageNumberPagination
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         qs = Book.objects.non_empty()
@@ -27,7 +27,7 @@ class BookListAPIView(ListAPIView):
 class BookDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = BookSerializer
 
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def get_queryset(self):
         qs = Book.objects.non_empty()
@@ -36,32 +36,28 @@ class BookDetailAPIView(RetrieveUpdateDestroyAPIView):
 
 class FavoritesViewSet(viewsets.ModelViewSet):
 
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     serializer_class = FavoritesSerializer
-    queryset = Favorite.objects.order_by('added').all()
+    queryset = Favorite.objects.order_by("added").all()
 
-    @action(methods=['post'], detail=True)
+    @action(methods=["post"], detail=True)
     def book_to_favorites(self, request, pk):
         favorite = FavoritesService.add_book_to_favorites(pk)
         serialized = self.get_serializer_class()(instance=favorite)
-        return Response(
-            serialized.data
-        )
+        return Response(serialized.data)
 
-    @action(methods=['post'], detail=True)
+    @action(methods=["post"], detail=True)
     def delete_book(self, request, pk):
         FavoritesService.remove_book_from_favorites(pk)
         return Response({})
 
-    @action(methods=['post'], detail=True)
+    @action(methods=["post"], detail=True)
     def delete_note(self, request, pk):
         FavoritesService.remove_book_note_from_favorites(pk)
         return Response({})
 
-    @action(methods=['post'], detail=True)
+    @action(methods=["post"], detail=True)
     def note_to_favorites(self, request, pk):
         favorite = FavoritesService.add_book_note_to_favorites(pk)
         serialized = self.get_serializer_class()(instance=favorite)
-        return Response(
-            serialized.data
-        )
+        return Response(serialized.data)

@@ -19,13 +19,13 @@ class BaseSingletonCommand(BaseCommand):
 
     def get_lock_path(self):
         class_name = repr(self.__class__).replace("<class '", "").replace("'>", "")
-        lock_path = os.path.join('/tmp', class_name + '.lock')
+        lock_path = os.path.join("/tmp", class_name + ".lock")  # nosec
         LOG.debug("Command log path: %s", lock_path)
         return lock_path
 
     def execute(self, *args, **kwargs):
         lock_path = self.get_lock_path()
-        with open(lock_path, 'wb') as lock_file:
+        with open(lock_path, "wb") as lock_file:
             try:
                 locks.lock(lock_file, locks.LOCK_EX)
                 return super().execute(*args, **kwargs)

@@ -12,42 +12,39 @@ class BaseCase(TestCase):
     with some common routines
     """
 
-    def _create_admin(self, username,
-                      password,
-                      email):
+    def _create_admin(self, username, password, email):
         """
         Creates superuser with provided credentials
         """
-        admin = User.objects.create_superuser(username=username,
-                                              email=email,
-                                              password=password)
+        admin = User.objects.create_superuser(
+            username=username, email=email, password=password
+        )
         return admin
 
     def _create_user(self, username, email, password):
         """
         Creates non-superuser with provided credentials
         """
-        return User.objects.create(username=username,
-                                   email=email,
-                                   password=password)
+        return User.objects.create(username=username, email=email, password=password)
 
     @classmethod
     def setUpClass(cls):
-        cls.ADMIN_USERNAME = 'superadmin'
-        cls.ADMIN_EMAIL = 'admin@email.com'
-        cls.ADMIN_PASS = 'TestPassword'
+        cls.ADMIN_USERNAME = "superadmin"
+        cls.ADMIN_EMAIL = "admin@email.com"
+        cls.ADMIN_PASS = "TestPassword"
         cls.rest_client = APIClient()
         super().setUpClass()
 
     def setUp(self):
-        self.admin_user = self._create_admin(username=self.ADMIN_USERNAME,
-                                             email=self.ADMIN_EMAIL,
-                                             password=self.ADMIN_PASS)
+        self.admin_user = self._create_admin(
+            username=self.ADMIN_USERNAME,
+            email=self.ADMIN_EMAIL,
+            password=self.ADMIN_PASS,
+        )
         super().setUp()
 
     def login_as_admin(self):
-        self.rest_client.login(username=self.ADMIN_USERNAME,
-                               password=self.ADMIN_PASS)
+        self.rest_client.login(username=self.ADMIN_USERNAME, password=self.ADMIN_PASS)
 
     def logout(self):
         self.rest_client.logout()
