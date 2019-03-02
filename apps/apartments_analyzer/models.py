@@ -14,55 +14,48 @@ logger.setLevel(logging.INFO)
 
 
 class ActiveInactiveManager(models.Manager):
-
     def urls(self):
-        return self.get_queryset().values_list('bullettin_url', flat=True)
+        return self.get_queryset().values_list("bullettin_url", flat=True)
 
     def active(self):
-        return (
-            self.get_queryset()
-                .filter(status=BullettingStatusEnum.ACTIVE.value)
-        )
+        return self.get_queryset().filter(status=BullettingStatusEnum.ACTIVE.value)
 
     def inactive(self):
-        return (
-            self.get_queryset()
-                .filter(status=BullettingStatusEnum.INACTIVE.value)
-        )
+        return self.get_queryset().filter(status=BullettingStatusEnum.INACTIVE.value)
 
-    def mark_active(self, urls: Iterable[str],
-                    current_time: datetime.datetime = None) -> int:
+    def mark_active(
+        self, urls: Iterable[str], current_time: datetime.datetime = None
+    ) -> int:
         """
         Marks bulletings with given URLs
         as active
         """
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
-        number_updated = (
-            qs.filter(bullettin_url__in=urls)
-                .update(status=BullettingStatusEnum.ACTIVE.value,
-                        updated_at=current_time))
+        number_updated = qs.filter(bullettin_url__in=urls).update(
+            status=BullettingStatusEnum.ACTIVE.value, updated_at=current_time
+        )
         return number_updated
 
-    def mark_inactive(self, urls: Iterable[str],
-                      current_time: datetime.datetime = None) -> int:
+    def mark_inactive(
+        self, urls: Iterable[str], current_time: datetime.datetime = None
+    ) -> int:
         """
         Marks bulletings with given URLs
         as active
         """
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
-        number_updated = (
-            qs.filter(bullettin_url__in=urls)
-                .update(status=BullettingStatusEnum.INACTIVE.value,
-                        updated_at=current_time))
+        number_updated = qs.filter(bullettin_url__in=urls).update(
+            status=BullettingStatusEnum.INACTIVE.value, updated_at=current_time
+        )
         return number_updated
 
 
 class BaseApartmentBulletin(models.Model):
-    EMPTY_BYN_PRICE = decimal.Decimal('0.0')
-    DEFAULT_LAST_UPDATED_TEXT = 'UNKNOWN'
-    DEFAULT_USER_NAME = 'UNKNOWN'
+    EMPTY_BYN_PRICE = decimal.Decimal("0.0")
+    DEFAULT_LAST_UPDATED_TEXT = "UNKNOWN"
+    DEFAULT_USER_NAME = "UNKNOWN"
 
     class Meta:
         abstract = True
@@ -73,9 +66,7 @@ class BaseApartmentBulletin(models.Model):
     address = models.TextField()
     apartment_type = models.CharField(max_length=40)
     price_BYN = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        default=EMPTY_BYN_PRICE,
+        max_digits=10, decimal_places=2, default=EMPTY_BYN_PRICE
     )
     price_USD = models.IntegerField()
 
@@ -86,9 +77,10 @@ class BaseApartmentBulletin(models.Model):
 
     # Author profile URL
     author_url = models.URLField()
-    status = models.SmallIntegerField(choices=[(x.value, x.name)
-                                               for x in BullettingStatusEnum],
-                                      default=BullettingStatusEnum.INACTIVE.value)
+    status = models.SmallIntegerField(
+        choices=[(x.value, x.name) for x in BullettingStatusEnum],
+        default=BullettingStatusEnum.INACTIVE.value,
+    )
 
     user_phones = ArrayField(models.CharField(max_length=24), default=[])
     user_name = models.CharField(max_length=96, default=DEFAULT_USER_NAME)
@@ -96,10 +88,10 @@ class BaseApartmentBulletin(models.Model):
 
     image_links = ArrayField(models.URLField(), default=[])
 
-
     def __str__(self):
-        return ('Apartment(bullettin_url={}, price_USD={})'
-                .format(self.bullettin_url, self.price_USD))
+        return "Apartment(bullettin_url={}, price_USD={})".format(
+            self.bullettin_url, self.price_USD
+        )
 
 
 class RentApartment(BaseApartmentBulletin, TimeTrackable):
@@ -138,6 +130,7 @@ class ApartmentScrapingResults(models.Model):
     This model is used to store scraping statistics
     after the crawler has been run.
     """
+
     time_started = models.DateTimeField()
     time_finished = models.DateTimeField(auto_now_add=True)
     succeeded = models.BooleanField()
@@ -159,8 +152,8 @@ class ApartmentScrapingResults(models.Model):
         return self.time_finished - self.time_started
 
     def __repr__(self):
-        return ('ApartmentScrapingResults('
-                'time_finished={0}, succeeded={1})'
-                .format(self.time_finished, self.succeeded))
+        return "ApartmentScrapingResults(" "time_finished={0}, succeeded={1})".format(
+            self.time_finished, self.succeeded
+        )
 
     __str__ = __repr__

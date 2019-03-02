@@ -15,5 +15,4 @@ class Post(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
 
     def __str__(self):
-        return ('BlogPost(author={0}, title={1})'
-                .format(self.author, self.title))
+        return "BlogPost(author={0}, title={1})".format(self.author, self.title)

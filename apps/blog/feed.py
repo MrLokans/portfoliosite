@@ -12,7 +12,7 @@ class LatestPostsFeed(Feed):
     description = "Latest blog posts."
 
     def items(self):
-        return Post.objects.order_by('-created')[:POST_ITEMS_COUNT]
+        return Post.objects.order_by("-created")[:POST_ITEMS_COUNT]
 
     def item_title(self, item):
         return item.title
@@ -22,4 +22,4 @@ class LatestPostsFeed(Feed):
 
     # item_link is only needed if NewsItem has no get_absolute_url method.
     def item_link(self, item):
-        return '/#/blog/{}/'.format(item.id)
+        return "/#/blog/{}/".format(item.id)

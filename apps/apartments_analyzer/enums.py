@@ -7,5 +7,5 @@ class BullettingStatusEnum(enum.Enum):
 
 
 class BulletinType(enum.Enum):
-    FOR_RENT = 'RENTED'
-    FOR_SELL = 'SOLD'
+    FOR_RENT = "RENTED"
+    FOR_SELL = "SOLD"

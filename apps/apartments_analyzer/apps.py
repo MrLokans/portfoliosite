@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class ApartmentsConfig(AppConfig):
-    name = 'apartments_analyzer'
+    name = "apartments_analyzer"

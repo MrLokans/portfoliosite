@@ -7,50 +7,52 @@ from wagtail.core.models import Page, Orderable
 
 
 class TechnologyManager(models.Manager):
-
     def get_queryset(self):
         # Yes, this could have been done in a more simple
         # manner, I just wanted to play around with model managers
-        return super().get_queryset().annotate(
-            mastery_description=Case(
-                When(mastery_level=self.model.NOVICE, then=Value('Novice')),
-                When(mastery_level=self.model.INTERMEDIATE, then=Value('Intermediate')),
-                When(mastery_level=self.model.ADVANCED, then=Value('Advanced')),
-                default=Value('Unspecified'),
-                output_field=CharField(),
+        return (
+            super()
+            .get_queryset()
+            .annotate(
+                mastery_description=Case(
+                    When(mastery_level=self.model.NOVICE, then=Value("Novice")),
+                    When(
+                        mastery_level=self.model.INTERMEDIATE,
+                        then=Value("Intermediate"),
+                    ),
+                    When(mastery_level=self.model.ADVANCED, then=Value("Advanced")),
+                    default=Value("Unspecified"),
+                    output_field=CharField(),
+                )
             )
-        ).order_by('-mastery_level')
+            .order_by("-mastery_level")
+        )
 
 
 class ProjectQuerySet(models.QuerySet):
-
     def fully_joined(self):
-        return (
-            self.prefetch_related('links')
-                .prefetch_related('technologies')
-        )
+        return self.prefetch_related("links").prefetch_related("technologies")
 
 
 class Technology(models.Model):
     """Model, representing single technology or skill"""
 
     class Meta:
-        verbose_name_plural = 'technologies'
+        verbose_name_plural = "technologies"
 
     NOVICE = 1
     INTERMEDIATE = 2
     ADVANCED = 3
 
     MASTERY_CHOICES = (
-        (NOVICE, 'Novice'),
-        (INTERMEDIATE, 'Intermediate'),
-        (ADVANCED, 'Advanced')
+        (NOVICE, "Novice"),
+        (INTERMEDIATE, "Intermediate"),
+        (ADVANCED, "Advanced"),
     )
 
     name = models.CharField(max_length=120)
     general_description = models.TextField()
-    mastery_level = models.IntegerField(choices=MASTERY_CHOICES,
-                                        default=NOVICE)
+    mastery_level = models.IntegerField(choices=MASTERY_CHOICES, default=NOVICE)
 
     objects = TechnologyManager()
 
@@ -63,20 +65,22 @@ class Project(models.Model):
     with a list of technologies used and appropriate
     links
     """
+
     OPEN_SOURCE = 1
     VOLUNTEER = 2
     ENTERPRISE = 3
 
     PROJECT_TYPE_CHOICES = (
-        (OPEN_SOURCE, 'open_source'),
-        (VOLUNTEER, 'volunteer'),
-        (ENTERPRISE, 'enterprise')
+        (OPEN_SOURCE, "open_source"),
+        (VOLUNTEER, "volunteer"),
+        (ENTERPRISE, "enterprise"),
     )
 
     title = models.CharField(max_length=200)
     description = models.TextField()
-    type = models.PositiveIntegerField(choices=PROJECT_TYPE_CHOICES,
-                                       blank=True, null=True)
+    type = models.PositiveIntegerField(
+        choices=PROJECT_TYPE_CHOICES, blank=True, null=True
+    )
     technologies = models.ManyToManyField(Technology)
 
     objects = ProjectQuerySet.as_manager()
@@ -87,32 +91,34 @@ class Project(models.Model):
 
 class ProjectLink(models.Model):
     """Model, representing single link of the project"""
+
     link = models.URLField()
     name = models.CharField(max_length=120)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE,
-                                related_name='links')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="links")
 
     def __str__(self):
-        return '<Project: {} - {}>'.format(self.project, self.link)
+        return "<Project: {} - {}>".format(self.project, self.link)
 
 
 class ConferenceTalkPage(Page):
     intro = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-        InlinePanel('video_links', label="Video links"),
+        FieldPanel("intro", classname="full"),
+        InlinePanel("video_links", label="Video links"),
     ]
 
 
 class ConferenceVideoLink(Orderable):
-    page = ParentalKey(ConferenceTalkPage, on_delete=models.CASCADE, related_name='video_links')
+    page = ParentalKey(
+        ConferenceTalkPage, on_delete=models.CASCADE, related_name="video_links"
+    )
     short_description = models.TextField()
     video_url = models.URLField()
     presentation_url = models.URLField()
 
     panels = [
-        FieldPanel('short_description'),
-        FieldPanel('video_url'),
-        FieldPanel('presentation_url'),
+        FieldPanel("short_description"),
+        FieldPanel("video_url"),
+        FieldPanel("presentation_url"),
     ]
