@@ -33,7 +33,9 @@ class ActiveInactiveManager(models.Manager):
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
         number_updated = qs.filter(bullettin_url__in=urls).update(
-            status=BullettingStatusEnum.ACTIVE.value, updated_at=current_time
+            status=BullettingStatusEnum.ACTIVE.value,
+            updated_at=current_time,
+            last_active_parse_time=current_time,
         )
         return number_updated
 
@@ -85,6 +87,8 @@ class BaseApartmentBulletin(models.Model):
     user_phones = ArrayField(models.CharField(max_length=24), default=list)
     user_name = models.CharField(max_length=96, default=DEFAULT_USER_NAME)
     last_updated = models.CharField(max_length=24, default=DEFAULT_LAST_UPDATED_TEXT)
+
+    last_active_parse_time = models.DateTimeField(null=True, blank=True)
 
     image_links = ArrayField(models.URLField(), default=list)
 

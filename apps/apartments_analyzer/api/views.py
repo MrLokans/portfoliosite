@@ -27,9 +27,14 @@ class ApartmentsListAPIView(ListAPIView):
 
 
 class ApartmentsStatsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
     def get(self, *args, **kwargs):
         stats = {}
         stats["by_hour"] = ApartmentsStatisticsAggregator.get_hour_aggregated_stats()
+        stats[
+            "average_square_meter_price"
+        ] = ApartmentsStatisticsAggregator.get_average_square_meter_price_in_usd()
         stats[
             "by_weekday"
         ] = ApartmentsStatisticsAggregator.get_weekday_aggregated_stats()

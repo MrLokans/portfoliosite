@@ -1,9 +1,9 @@
 from typing import List, Tuple
 
-from django.db.models import Count
-from django.db.models.functions import ExtractHour, ExtractWeekDay
+from django.db.models import Count, Avg, F, Value, CharField
+from django.db.models.functions import Concat, ExtractHour, ExtractWeekDay, ExtractMonth, ExtractYear
 
-from .models import RentApartment
+from .models import RentApartment, SoldApartments
 
 
 class ApartmentsStatisticsAggregator:
@@ -32,3 +32,25 @@ class ApartmentsStatisticsAggregator:
             [(item["current_weekday"], item["count"]) for item in qs],
             key=lambda t: t[0],
         )
+
+    @staticmethod
+    def get_average_square_meter_price_in_usd() -> List[Tuple[str, float]]:
+        qs = (
+            SoldApartments.objects
+            .exclude(last_active_parse_time=None)
+            .annotate(
+                import_month=Concat(
+                    ExtractYear('last_active_parse_time'), Value('-'), ExtractMonth('last_active_parse_time'),
+                    output_field=CharField())
+                )
+            .values('import_month', )
+            .annotate(
+                average_price=Avg('price_USD'),
+                average_square=Avg('total_area'),
+            )
+            .annotate(
+                average_square_meter_price=F('average_price') / F('average_square')
+            )
+            .values('average_price', 'average_square', 'average_square_meter_price', 'import_month')
+        )
+        return [(item['import_month'], item['average_square_meter_price']) for item in qs]
