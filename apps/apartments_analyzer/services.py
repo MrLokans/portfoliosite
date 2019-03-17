@@ -1,7 +1,9 @@
+from datetime import timedelta
 from typing import List, Tuple
 
-from django.db.models import Count, Avg, F, Value, CharField
+from django.db.models import Count, Avg, F, Value, CharField, Min, Max
 from django.db.models.functions import Concat, ExtractHour, ExtractWeekDay, ExtractMonth, ExtractYear
+from django.utils import timezone
 
 from .models import RentApartment, SoldApartments
 
@@ -32,6 +34,22 @@ class ApartmentsStatisticsAggregator:
             [(item["current_weekday"], item["count"]) for item in qs],
             key=lambda t: t[0],
         )
+
+    @staticmethod
+    def get_price_metrics_for_last_n_days(day_count=30):
+        later_than_days_ago = timedelta(days=day_count)
+        after = timezone.now() - later_than_days_ago
+        qs = (
+            SoldApartments.objects
+            .filter(last_active_parse_time__gte=after)
+            .values('price_USD')
+            .aggregate(
+                average_price=Avg('price_USD'),
+                min_price=Min('price_USD'),
+                max_price=Max('price_USD')
+            )
+        )
+        return [[key, value] for key, value in qs.items()]
 
     @staticmethod
     def get_average_square_meter_price_in_usd() -> List[Tuple[str, float]]:

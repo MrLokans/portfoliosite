@@ -49,3 +49,5 @@ rest-framework-generic-relations==1.2.0
 
 # CMS capatibilities
 wagtail==2.2.2
+
+django-controlcenter==0.2.9

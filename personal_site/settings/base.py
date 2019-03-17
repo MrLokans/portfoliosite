@@ -15,25 +15,26 @@ ALLOWED_HOSTS = []
 APPEND_SLASH = True
 
 PREREQUSITE_APPS = [
-    'django.contrib.sites',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
+    "django.contrib.sites",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Third party
-    'django_extensions',
-    'admin_honeypot',
-    'health_check',
-    'health_check.db',
-    'health_check.cache',
-    'import_export',
-    'pagedown',
-    'rest_framework',
-    'corsheaders',
-    'generic_relations',
+    "django_extensions",
+    "admin_honeypot",
+    "health_check",
+    "health_check.db",
+    "health_check.cache",
+    "import_export",
+    "pagedown",
+    "rest_framework",
+    "corsheaders",
+    "generic_relations",
+
+    "controlcenter",
 ]
 
 WAGTAIL_APPS = [
