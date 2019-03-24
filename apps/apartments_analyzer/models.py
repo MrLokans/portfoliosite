@@ -4,7 +4,7 @@ import logging
 from typing import Iterable
 
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 
 from personal_site.models_common import TimeTrackable
 from .enums import BullettingStatusEnum
@@ -13,9 +13,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
+SUBWAY_DISTANCES_FIELD = 'distances'
+
+
 class ActiveInactiveManager(models.Manager):
     def urls(self):
         return self.get_queryset().values_list("bullettin_url", flat=True)
+
+    def with_non_filled_subway_distance(self):
+        return self.get_queryset().exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
 
     def active(self):
         return self.get_queryset().filter(status=BullettingStatusEnum.ACTIVE.value)
@@ -91,6 +97,8 @@ class BaseApartmentBulletin(models.Model):
     last_active_parse_time = models.DateTimeField(null=True, blank=True)
 
     image_links = ArrayField(models.URLField(), default=list)
+
+    subway_distances = JSONField(default=dict)
 
     def __str__(self):
         return "Apartment(bullettin_url={}, price_USD={})".format(
