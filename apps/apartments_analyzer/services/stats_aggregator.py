@@ -1,19 +1,21 @@
 from datetime import timedelta
 from typing import List, Tuple
 
-from django.db.models import Count, Avg, F, Value, CharField, Min, Max
-from django.db.models.functions import Concat, ExtractHour, ExtractWeekDay, ExtractMonth, ExtractYear
+from django.db.models import Count, Avg, Min, Max, Value, CharField, F
+from django.db.models.functions import ExtractHour, ExtractWeekDay, Concat, ExtractYear, ExtractMonth
 from django.utils import timezone
 
-from .models import RentApartment, SoldApartments
+from apps.apartments_analyzer.models import RentApartment, SoldApartments
 
 
 class ApartmentsStatisticsAggregator:
     @staticmethod
     def get_hour_aggregated_stats() -> List[Tuple[int, int]]:
         qs = (
-            RentApartment.objects.values("created_at")
-            .annotate(current_hour=ExtractHour("created_at"))
+            RentApartment.objects
+            .exclude(last_active_parse_time=None)
+            .values("last_active_parse_time")
+            .annotate(current_hour=ExtractHour("last_active_parse_time"))
             .values("current_hour")
             .annotate(count=Count("current_hour"))
         )
@@ -25,8 +27,10 @@ class ApartmentsStatisticsAggregator:
     @staticmethod
     def get_weekday_aggregated_stats() -> List[Tuple[int, int]]:
         qs = (
-            RentApartment.objects.values("created_at")
-            .annotate(current_weekday=ExtractWeekDay("created_at"))
+            RentApartment.objects
+            .exclude(last_active_parse_time=None)
+            .values("last_active_parse_time")
+            .annotate(current_weekday=ExtractWeekDay("last_active_parse_time"))
             .values("current_weekday")
             .annotate(count=Count("current_weekday"))
         )

@@ -5,9 +5,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from apps.apartments_analyzer.services.stats_aggregator import ApartmentsStatisticsAggregator
 from .serializers import RentApartmentSerializer
 from ..models import RentApartment
-from ..services import ApartmentsStatisticsAggregator
 from ..utils import construct_onliner_user_url
 
 
