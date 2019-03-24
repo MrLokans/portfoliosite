@@ -51,3 +51,6 @@ rest-framework-generic-relations==1.2.0
 wagtail==2.2.2
 
 django-controlcenter==0.2.9
+
+# Distance between points
+vincenty==0.1.4

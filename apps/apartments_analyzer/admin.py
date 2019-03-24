@@ -12,8 +12,8 @@ from apps.apartments_analyzer.filters import (
     RentedPriceRangeFilter,
     RoomCountFilter,
     SoldPriceRangeFilter,
-)
-from .models import RentApartment, ApartmentScrapingResults, SoldApartments
+    NearestSubwayStation)
+from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD
 
 
 class ApartmentsResource(resources.ModelResource):
@@ -26,6 +26,10 @@ IMAGE_TEMPLATE = """
 <a href='{0}' target='blank_'>
     <img style='width: 300px; padding-top: 5px;' src='{0}'>
 </a>
+"""
+
+DISTANCE_TEMPLATE = """
+<strong>{0}</strong> - <span>{1}</span> 
 """
 
 
@@ -48,7 +52,7 @@ class BaseApartmentAdmin(admin.ModelAdmin):
                 "js/admin/location_picker.js",
             )
 
-    readonly_fields = ("bulletin_images",)
+    readonly_fields = ("bulletin_images", "subway_distances_list")
     list_display = (
         "bullettin_url",
         "address",
@@ -62,6 +66,10 @@ class BaseApartmentAdmin(admin.ModelAdmin):
         "images_count",
     )
     search_fields = ("address", "price_USD")
+
+    def subway_distances_list(self, obj):
+        distances = [(d['subway'], d['distance']) for d in obj.subway_distances.get(SUBWAY_DISTANCES_FIELD, [])]
+        return format_html_join(mark_safe("<hr/>"), DISTANCE_TEMPLATE, distances)
 
     def bulletin_images(self, obj):
         return format_html_join(
@@ -78,14 +86,14 @@ class BaseApartmentAdmin(admin.ModelAdmin):
 
 class ApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
 
-    list_filter = [RentedPriceRangeFilter, RoomCountFilter]
+    list_filter = [RentedPriceRangeFilter, RoomCountFilter, NearestSubwayStation]
 
     resource_class = ApartmentsResource
 
 
 class SoldApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
 
-    list_filter = [SoldPriceRangeFilter]
+    list_filter = [SoldPriceRangeFilter, NearestSubwayStation]
 
 
 class ApartmentScrapeStatsAdmin(admin.ModelAdmin):

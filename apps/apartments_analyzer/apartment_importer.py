@@ -9,6 +9,7 @@ from rest_framework.exceptions import ValidationError
 from tqdm import tqdm
 
 from apps.apartments_analyzer.enums import BulletinType
+from apps.apartments_analyzer.services.subway_distance_calculator import ApartmentDistanceEnricher
 from .api.serializers import RentApartmentSerializer, SoldApartmentSerializer
 from .models import RentApartment, ApartmentScrapingResults, SoldApartments
 
@@ -183,3 +184,6 @@ class ApartmentDataImporter:
         self._run_stats["total_active"] = RentApartment.objects.mark_active(
             active_rented_urls
         ) + SoldApartments.objects.mark_active(active_sold_urls)
+        ApartmentDistanceEnricher(
+            show_progress=False
+        ).update_distance_data_for_apartments()

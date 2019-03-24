@@ -31,6 +31,25 @@ class BasePriceFilter(SimpleListFilter):
         return queryset
 
 
+class NearestSubwayStation(SimpleListFilter):
+    title = _("Subway distance")
+    parameter_name = "subway_distance"
+
+    def lookups(self, request, model_admin):
+        return (
+            (100, "< 100 meters"),
+            (200, "< 200 meters"),
+            (500, "< 500 meters"),
+            (500, "< 1000 meters"),
+        )
+
+    def queryset(self, request, queryset):
+        subway_distance = self.value()
+        if not subway_distance:
+            return queryset
+        return queryset.filter(subway_distances__distances__0__distance__lte=int(subway_distance))
+
+
 class RoomCountFilter(SimpleListFilter):
     title = _("apartment type")
 
