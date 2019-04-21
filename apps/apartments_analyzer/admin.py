@@ -12,7 +12,7 @@ from apps.apartments_analyzer.filters import (
     RentedPriceRangeFilter,
     RoomCountFilter,
     SoldPriceRangeFilter,
-    NearestSubwayStation)
+    NearestSubwayStation, ActiveFilter)
 from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD
 
 
@@ -86,14 +86,14 @@ class BaseApartmentAdmin(admin.ModelAdmin):
 
 class ApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
 
-    list_filter = [RentedPriceRangeFilter, RoomCountFilter, NearestSubwayStation]
+    list_filter = [RentedPriceRangeFilter, RoomCountFilter, NearestSubwayStation, ActiveFilter]
 
     resource_class = ApartmentsResource
 
 
 class SoldApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
 
-    list_filter = [SoldPriceRangeFilter, NearestSubwayStation]
+    list_filter = [SoldPriceRangeFilter, NearestSubwayStation, ActiveFilter]
 
 
 class ApartmentScrapeStatsAdmin(admin.ModelAdmin):

@@ -2,6 +2,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.admin import SimpleListFilter
 
+from apps.apartments_analyzer.enums import BullettingStatusEnum
+
 
 class BasePriceFilter(SimpleListFilter):
     title = _("Price range")
@@ -29,6 +31,24 @@ class BasePriceFilter(SimpleListFilter):
             }
             queryset = queryset.filter(**search_kwargs)
         return queryset
+
+
+class ActiveFilter(SimpleListFilter):
+    title = _("Active/Inactive")
+
+    parameter_name = "status"
+
+    def lookups(self, request, model_admin):
+        return (
+            (BullettingStatusEnum.INACTIVE.value, "Inactive"),
+            (BullettingStatusEnum.ACTIVE.value, "Active"),
+        )
+
+    def queryset(self, request, queryset):
+        status = self.value()
+        if not status:
+            return queryset
+        return queryset.filter(status=status)
 
 
 class NearestSubwayStation(SimpleListFilter):
