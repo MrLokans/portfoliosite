@@ -5,9 +5,9 @@ from .base import *  # noqa
 
 DEBUG = False
 ALLOWED_HOSTS = (
-    '.mrlokans.com',
+    ".mrlokans.com",
     # Health checks
-    'http://localhost:8000'
+    "http://localhost:8000",
 )
 
 CSRF_COOKIE_SECURE = True
