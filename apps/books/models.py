@@ -4,9 +4,26 @@ from typing import Dict, List
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from django.db.models import functions
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.functional import cached_property
+
+
+class BookNoteManager(models.Manager):
+
+    NOTE_OF_INTEREST_LEN = 20
+
+    def random_note(self):
+        qs = (
+            self.annotate(
+                text_length=functions.Length('text')
+            )
+                .filter(text_length__gt=self.NOTE_OF_INTEREST_LEN)
+                # Inefficient for large queries
+                .order_by("?")
+        )
+        return qs.first()
 
 
 class BookNameMapper(models.Model):
@@ -22,6 +39,7 @@ class BookNote(models.Model):
 
     book = models.ForeignKey("Book", related_name="notes", on_delete=models.CASCADE)
     text = models.TextField()
+    objects = BookNoteManager()
 
     def __str__(self):
         return "BookNote(book={})".format(self.book.proper_title)

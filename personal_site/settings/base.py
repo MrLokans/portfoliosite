@@ -35,6 +35,8 @@ PREREQUSITE_APPS = [
     "generic_relations",
 
     "controlcenter",
+
+    "graphene_django",
 ]
 
 WAGTAIL_APPS = [
@@ -56,11 +58,12 @@ WAGTAIL_APPS = [
 ]
 
 PROJECT_APPS = [
-    'apps.about_me',
-    'apps.apartments_analyzer',
-    'apps.blog',
-    'apps.books',
-    'personal_site',
+    "apps.core",
+    "apps.about_me",
+    "apps.apartments_analyzer",
+    "apps.blog",
+    "apps.books",
+    "personal_site",
 ]
 
 
@@ -174,4 +177,6 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 
-WAGTAIL_SITE_NAME = 'mrlokans.com'
+WAGTAIL_SITE_NAME = 'mrlokans.com'GRAPHENE = {
+    "SCHEMA": "core.schema.schema",
+}
