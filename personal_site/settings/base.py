@@ -22,7 +22,6 @@ PREREQUSITE_APPS = [
     "django.contrib.staticfiles",
     # Third party
     "django_extensions",
-    "admin_honeypot",
     "health_check",
     "health_check.db",
     "health_check.cache",

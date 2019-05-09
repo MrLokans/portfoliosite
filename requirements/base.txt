@@ -1,11 +1,11 @@
-Django==2.0.8
+Django==2.2.1
 # API building
-djangorestframework==3.8.2
+djangorestframework==3.9.3
 Pillow==5.1.0
 redis==2.10.6
 
 # Running workerized django
-gunicorn==19.7.1
+gunicorn==19.9.0
 
 # Progress-bar for books downloading progress
 tqdm==4.19.5
@@ -21,17 +21,13 @@ django-pagedown==1.0.4
 
 django-environ==0.4.4
 
-# Temporary workaround, as current version does not support Django 2.0
-# and we're cool guys that use latest lib versions
--e git://github.com/mrlokans/django-admin-honeypot.git@2241626fe6c678396ae1ff53dd9122a59d173a6c#egg=django_admin_honeypot
-
 django-health-check==3.5.1
 
 # Exporting data from the admin
-django-import-export==1.0.0
+django-import-export==1.2.0
 
 # Manage.py extra commands
-django-extensions==2.0.6
+django-extensions==2.1.6
 
 # Reading env variables
 django-dotenv==1.4.2
@@ -42,13 +38,13 @@ python-telegram-bot==10.1.0
 -e git://github.com/MrLokans/onliner-agent-finder.git@1.0.2#egg=agent_spider
 
 # CORS
-django-cors-headers==2.2.0
+django-cors-headers==2.5.3
 
 # Generic relations API
 rest-framework-generic-relations==1.2.0
 
 # CMS capatibilities
-wagtail==2.2.2
+wagtail==2.5.1
 
 django-controlcenter==0.2.9
 
