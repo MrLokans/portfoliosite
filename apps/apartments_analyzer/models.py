@@ -17,6 +17,16 @@ logger.setLevel(logging.INFO)
 SUBWAY_DISTANCES_FIELD = 'distances'
 
 
+class ApartmentType:
+    SOLD = "S"
+    RENT = "R"
+
+
+class ContactType:
+    EMAIL = "E"
+    TELEGRAM = "T"
+
+
 class ActiveInactiveManager(models.Manager):
     def urls(self):
         return self.get_queryset().values_list("bullettin_url", flat=True)
@@ -169,3 +179,70 @@ class ApartmentScrapingResults(models.Model):
         )
 
     __str__ = __repr__
+
+
+class AreaOfInterest(gis_models.Model):
+    """Apartments in active search areas are sent to user."""
+    name = models.CharField(max_length=50)
+    poly = gis_models.PolygonField(geography=False)
+
+    class Meta:
+        ordering = ("name", )
+        verbose_name_plural = "Areas of interest"
+
+    def __str__(self):
+        return self.name
+
+
+class UserSearchContact(TimeTrackable):
+
+    CONTACT_TYPE_CHOICES = (
+        (ContactType.EMAIL, "Email"),
+        (ContactType.TELEGRAM, "Telegram messenger"),
+    )
+
+    contact_type = models.CharField(max_length=1, choices=CONTACT_TYPE_CHOICES)
+    contact_identifier = models.CharField(max_length=120)
+
+    class Meta:
+        verbose_name_plural = "User contacts"
+
+    def get_sender(self):
+        pass
+
+    def __str__(self):
+        return f"UserContact(type={self.contact_type}, id={self.contact_identifier})"
+
+
+class UserSearch(TimeTrackable):
+
+    APARTMENT_TYPE_CHOICES = (
+        (ApartmentType.SOLD, "На продажу"),
+        (ApartmentType.RENT, "В аренду"),
+    )
+
+    min_price = models.PositiveIntegerField(default=0, help_text="Минимальная цена в $")
+    max_price = models.PositiveIntegerField(help_text="Максимальная цена в $")
+
+    contacts = models.ManyToManyField(UserSearchContact)
+    areas_of_interest = models.ManyToManyField(AreaOfInterest)
+
+    apartment_type = models.CharField(max_length=1, choices=APARTMENT_TYPE_CHOICES)
+
+    class Meta:
+        verbose_name_plural = "Persisted user searches"
+
+    def get_search_polygons(self):
+        return [a.poly for a in self.areas_of_interest.all()]
+
+
+class SearchResults(TimeTrackable):
+
+    search_filter = models.ForeignKey(UserSearch, on_delete=models.DO_NOTHING)
+    reported_urls = ArrayField(models.CharField(max_length=255), default=list)
+
+    class Meta:
+        verbose_name_plural = "Reported search results"
+
+    def __str__(self):
+        return f"{self.created_at} - {len(self.reported_urls)} urls"

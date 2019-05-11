@@ -1,7 +1,5 @@
-import warnings
-
-from django.conf import settings
 from django.contrib import admin
+from django.contrib.gis.admin import OSMGeoAdmin
 from django.utils.html import format_html_join
 from django.utils.safestring import mark_safe
 
@@ -13,7 +11,8 @@ from apps.apartments_analyzer.filters import (
     RoomCountFilter,
     SoldPriceRangeFilter,
     NearestSubwayStation, ActiveFilter)
-from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD
+from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD, AreaOfInterest, \
+    UserSearchContact, UserSearch
 
 
 class ApartmentsResource(resources.ModelResource):
@@ -29,7 +28,7 @@ IMAGE_TEMPLATE = """
 """
 
 DISTANCE_TEMPLATE = """
-<strong>{0}</strong> - <span>{1}</span> 
+<strong>{0}</strong> - <span>{1}</span>
 """
 
 
@@ -104,6 +103,26 @@ class ApartmentScrapeStatsAdmin(admin.ModelAdmin):
     )
 
 
+class CityRegionAdmin(OSMGeoAdmin):
+    default_lon = 3068075
+    default_lat = 7152226
+    default_zoom = 11
+
+    map_width = 800
+    map_height = 600
+
+
+class UserSearchContactAdmin(admin.ModelAdmin):
+    pass
+
+
+class UserSearchAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(AreaOfInterest, CityRegionAdmin)
+admin.site.register(UserSearchContact, UserSearchContactAdmin)
+admin.site.register(UserSearch, UserSearchAdmin)
 admin.site.register(RentApartment, ApartmentAdmin)
 admin.site.register(SoldApartments, SoldApartmentAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)
