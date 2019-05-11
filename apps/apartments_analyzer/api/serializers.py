@@ -1,5 +1,6 @@
 from typing import List
 
+from django.contrib.gis.geos import Point
 from rest_framework import serializers
 
 from ..models import RentApartment, SoldApartments
@@ -23,8 +24,6 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
             "bullettin_url",
             "address",
             "apartment_type",
-            "longitude",
-            "latitude",
             "description",
             "image_links",
             "user_phones",
@@ -34,6 +33,15 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
 
     longitude = serializers.DecimalField(max_digits=15, decimal_places=12)
     latitude = serializers.DecimalField(max_digits=15, decimal_places=12)
+
+    def create(self, validated_data):
+        longitude = validated_data.pop('longitude')
+        latitude = validated_data.pop('latitude')
+        validated_data['location'] = Point(
+            x=float(longitude),
+            y=float(latitude),
+            srid=4326)
+        return super().create(validated_data)
 
     @classmethod
     def validate_and_save(cls, input_data, **serializer_args):

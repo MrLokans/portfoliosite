@@ -4,6 +4,7 @@ import logging
 from typing import Iterable
 
 from django.db import models
+from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
 
 from personal_site.models_common import TimeTrackable
@@ -80,8 +81,7 @@ class BaseApartmentBulletin(models.Model):
 
     description = models.TextField()
 
-    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    location = gis_models.PointField(geography=False, srid=4326, default='POINT(0.0 0.0)')
 
     # Author profile URL
     author_url = models.URLField()
