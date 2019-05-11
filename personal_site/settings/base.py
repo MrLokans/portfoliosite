@@ -3,7 +3,10 @@ import os
 
 import environ
 
-env = environ.Env(DEBUG=(bool, False))
+env = environ.Env(
+    DEBUG=(bool, False),
+    TELEGRAM_ACCESS_TOKEN=(str, ""),
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -160,3 +163,5 @@ CONTROLCENTER_DASHBOARDS = (
 GRAPHENE = {
     "SCHEMA": "core.schema.schema",
 }
+
+TELEGRAM_ACCESS_TOKEN = env.str("TELEGRAM_BOT_ACCESS_TOKEN")
