@@ -31,6 +31,10 @@ COPY --from=builder /root/.cache /root/.cache
 RUN pip install -r /app/requirements.txt
 COPY deployment/crontab /etc/cron.d/bloguser
 ADD deployment/entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
 
+RUN ln -s /usr/lib/libgeos_c.so.1.11.1 /usr/local/lib/libgeos_c.so.1
+RUN ln -s /usr/lib/libgdal.so.20 /usr/local/lib/libgdal.so
+RUN chmod +x /docker-entrypoint.sh
+ENV GDAL_LIBRARY_PATH=/usr/lib/libgdal.so.20
+ENV GEOS_LIBRARY_PATH=/usr/local/lib/libgeos_c.so.1
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "/docker-entrypoint.sh"]
