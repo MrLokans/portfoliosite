@@ -2,7 +2,7 @@ bandit==1.5.1
 
 black==18.9b0
 
-isort==4.3.4
+isort==4.3.17
 vulture==1.0
 
 # https://github.com/PyCQA/pylint-django/issues/201
