@@ -34,23 +34,6 @@ DISTANCE_TEMPLATE = """
 
 
 class BaseApartmentAdmin(admin.ModelAdmin):
-    class Media:
-        key_set = (
-            hasattr(settings, "GOOGLE_MAPS_API_KEY") and settings.GOOGLE_MAPS_API_KEY
-        )
-        if not key_set:
-            warnings.warn(
-                "GOOGLE_MAPS_API_KEY setting is not set. "
-                "Google Map will not be displayed in the admin site."
-            )
-        else:
-            css = {"all": ("css/admin/location_picker.css",)}
-            js = (
-                "https://maps.googleapis.com/maps/api/js?key={}".format(
-                    settings.GOOGLE_MAPS_API_KEY
-                ),
-                "js/admin/location_picker.js",
-            )
 
     readonly_fields = ("bulletin_images", "subway_distances_list")
     list_display = (

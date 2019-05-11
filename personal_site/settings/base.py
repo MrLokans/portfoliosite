@@ -20,6 +20,7 @@ PREREQUSITE_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.gis",
     # Third party
     "django_extensions",
     "health_check",
@@ -141,7 +142,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
 }
 
-GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY")
 
 SITE_ID = 1
 
