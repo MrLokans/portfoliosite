@@ -1,11 +1,15 @@
 import datetime
 import decimal
+import functools
 import logging
+import operator
 from typing import Iterable
 
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
+from django.db.models import Q
+from django.utils import timezone
 
 from personal_site.models_common import TimeTrackable
 from .enums import BullettingStatusEnum
@@ -27,18 +31,42 @@ class ContactType:
     TELEGRAM = "T"
 
 
-class ActiveInactiveManager(models.Manager):
-    def urls(self):
-        return self.get_queryset().values_list("bullettin_url", flat=True)
+class ApartmentsQueryset(models.QuerySet):
 
     def with_non_filled_subway_distance(self):
-        return self.get_queryset().exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
+        return self.exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
 
     def active(self):
-        return self.get_queryset().filter(status=BullettingStatusEnum.ACTIVE.value)
+        return self.filter(status=BullettingStatusEnum.ACTIVE.value)
 
     def inactive(self):
-        return self.get_queryset().filter(status=BullettingStatusEnum.INACTIVE.value)
+        return self.filter(status=BullettingStatusEnum.INACTIVE.value)
+
+    def in_price_range(self, from_: int, to_: int):
+        return self.filter(price_USD__gte=from_, price_USD__lte=to_)
+
+    def newer_than(self, diff: datetime.timedelta):
+        now = timezone.now()
+        return self.filter(
+            last_active_parse_time__gt=now - diff
+        )
+
+    def in_areas(self, area_polygons):
+        search_by_areas_filter = functools.reduce(
+            operator.or_, [
+                Q(location__within=poly)
+                for poly in area_polygons
+            ])
+        return self.filter(search_by_areas_filter)
+
+
+class ActiveInactiveManager(models.Manager):
+
+    def get_queryset(self):
+        return ApartmentsQueryset(model=self.model, using=self._db)
+
+    def urls(self):
+        return self.get_queryset().values_list("bullettin_url", flat=True)
 
     def mark_active(
         self, urls: Iterable[str], current_time: datetime.datetime = None
@@ -69,6 +97,24 @@ class ActiveInactiveManager(models.Manager):
             status=BullettingStatusEnum.INACTIVE.value, updated_at=current_time
         )
         return number_updated
+
+    def with_non_filled_subway_distance(self):
+        return self.get_queryset().with_non_filled_subway_distance()
+
+    def active(self):
+        return self.get_queryset().active()
+
+    def inactive(self):
+        return self.get_queryset().inactive()
+
+    def newer_than(self, diff: datetime.timedelta):
+        return self.get_queryset().newer_than(diff)
+
+    def in_price_range(self, from_: int, to_: int):
+        return self.get_queryset().in_price_range(from_, to_)
+
+    def in_areas(self, area_polygons):
+        return self.get_queryset().in_areas(area_polygons)
 
 
 class BaseApartmentBulletin(models.Model):
