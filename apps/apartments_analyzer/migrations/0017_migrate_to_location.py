@@ -11,7 +11,7 @@ def migrate_long_lat_to_geo_point(apps, schema_editor):
     RentApartment = apps.get_model('apartments_analyzer', 'RentApartment')
     SoldApartments = apps.get_model('apartments_analyzer', 'SoldApartments')
     for apartment in itertools.chain(
-            RentApartment.objects.all(), SoldApartments.objects.all()
+            RentApartment.objects.values("latitude", "longitude"), SoldApartments.objects.values("latitude", "longitude")
     ):
         apartment.location = Point(
             x=float(apartment.longitude),
