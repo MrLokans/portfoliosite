@@ -42,8 +42,8 @@ class ApartmentDistanceEnricher:
 
     def add_subway_distance_to_apartment(self, apartment):
         distances = self.get_subway_distances_for_coordinate(
-            latitude=float(apartment.latitude),
-            longitude=float(apartment.longitude),
+            latitude=float(apartment.location.x),
+            longitude=float(apartment.location.y),
         )
         apartment.subway_distances = {
             SUBWAY_DISTANCES_FIELD: [{

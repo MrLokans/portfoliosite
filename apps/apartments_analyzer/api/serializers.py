@@ -1,3 +1,4 @@
+import copy
 from typing import List
 
 from django.contrib.gis.geos import Point
@@ -29,6 +30,8 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
             "user_phones",
             "user_name",
             "last_updated",
+            "longitude",
+            "latitude",
         )
 
     longitude = serializers.DecimalField(max_digits=15, decimal_places=12)
@@ -46,9 +49,9 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
     @classmethod
     def validate_and_save(cls, input_data, **serializer_args):
         input_data = cls.perform_scrapy_data_transformation(input_data)
-        item = cls(data=input_data, **serializer_args)
-        item.is_valid(raise_exception=True)
-        return item.save()
+        item_validator = cls(data=input_data, **serializer_args)
+        item_validator.is_valid(raise_exception=True)
+        return item_validator.save()
 
     @classmethod
     def perform_scrapy_data_transformation(cls, scrapy_data):
