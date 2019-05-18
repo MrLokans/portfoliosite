@@ -59,7 +59,7 @@ WAGTAIL_APPS = [
 PROJECT_APPS = [
     "apps.core",
     "apps.about_me",
-    "apps.apartments_analyzer",
+    "apps.apartments_analyzer.apps.ApartmentsConfig",
     "apps.blog",
     "apps.books",
     "personal_site",

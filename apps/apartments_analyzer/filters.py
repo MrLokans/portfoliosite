@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.admin import SimpleListFilter
 
-from apps.apartments_analyzer.enums import BullettingStatusEnum
+from apps.apartments_analyzer.enums import BulletinStatusEnum
 
 
 class BasePriceFilter(SimpleListFilter):
@@ -40,8 +40,8 @@ class ActiveFilter(SimpleListFilter):
 
     def lookups(self, request, model_admin):
         return (
-            (BullettingStatusEnum.INACTIVE.value, "Inactive"),
-            (BullettingStatusEnum.ACTIVE.value, "Active"),
+            (BulletinStatusEnum.INACTIVE.value, "Inactive"),
+            (BulletinStatusEnum.ACTIVE.value, "Active"),
         )
 
     def queryset(self, request, queryset):

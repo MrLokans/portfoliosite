@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from django.views.generic import ListView
 
-from .models import Technology, Project
+from apps.about_me.models import Technology, Project
 
 
 class AboutMeView(ListView):

@@ -12,7 +12,7 @@ from apps.apartments_analyzer.filters import (
     SoldPriceRangeFilter,
     NearestSubwayStation, ActiveFilter)
 from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD, AreaOfInterest, \
-    UserSearchContact, UserSearch
+    UserSearchContact, UserSearch, SearchResults
 
 
 class ApartmentsResource(resources.ModelResource):
@@ -120,9 +120,15 @@ class UserSearchAdmin(admin.ModelAdmin):
     pass
 
 
+class SearchResultsAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(AreaOfInterest, CityRegionAdmin)
 admin.site.register(UserSearchContact, UserSearchContactAdmin)
 admin.site.register(UserSearch, UserSearchAdmin)
 admin.site.register(RentApartment, ApartmentAdmin)
 admin.site.register(SoldApartments, SoldApartmentAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)
+admin.site.register(SearchResults, SearchResultsAdmin)
+

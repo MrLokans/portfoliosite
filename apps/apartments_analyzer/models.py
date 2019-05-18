@@ -8,11 +8,12 @@ from typing import Iterable
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.db.models import Q
+from django.db.models import Q, F
 from django.utils import timezone
 
+from apps.apartments_analyzer.managers import SavedSearchManager
 from personal_site.models_common import TimeTrackable
-from .enums import BullettingStatusEnum
+from .enums import BulletinStatusEnum
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -37,10 +38,10 @@ class ApartmentsQueryset(models.QuerySet):
         return self.exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
 
     def active(self):
-        return self.filter(status=BullettingStatusEnum.ACTIVE.value)
+        return self.filter(status=BulletinStatusEnum.ACTIVE.value)
 
     def inactive(self):
-        return self.filter(status=BullettingStatusEnum.INACTIVE.value)
+        return self.filter(status=BulletinStatusEnum.INACTIVE.value)
 
     def in_price_range(self, from_: int, to_: int):
         return self.filter(price_USD__gte=from_, price_USD__lte=to_)
@@ -78,7 +79,7 @@ class ActiveInactiveManager(models.Manager):
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
         number_updated = qs.filter(bullettin_url__in=urls).update(
-            status=BullettingStatusEnum.ACTIVE.value,
+            status=BulletinStatusEnum.ACTIVE.value,
             updated_at=current_time,
             last_active_parse_time=current_time,
         )
@@ -94,7 +95,7 @@ class ActiveInactiveManager(models.Manager):
         current_time = current_time or datetime.datetime.utcnow()
         qs = self.get_queryset()
         number_updated = qs.filter(bullettin_url__in=urls).update(
-            status=BullettingStatusEnum.INACTIVE.value, updated_at=current_time
+            status=BulletinStatusEnum.INACTIVE.value, updated_at=current_time
         )
         return number_updated
 
@@ -142,8 +143,8 @@ class BaseApartmentBulletin(models.Model):
     # Author profile URL
     author_url = models.URLField()
     status = models.SmallIntegerField(
-        choices=[(x.value, x.name) for x in BullettingStatusEnum],
-        default=BullettingStatusEnum.INACTIVE.value,
+        choices=[(x.value, x.name) for x in BulletinStatusEnum],
+        default=BulletinStatusEnum.INACTIVE.value,
     )
 
     user_phones = ArrayField(models.CharField(max_length=24), default=list)
@@ -266,6 +267,7 @@ class UserSearch(TimeTrackable):
         (ApartmentType.SOLD, "На продажу"),
         (ApartmentType.RENT, "В аренду"),
     )
+    DEFAULT_SEARCH_VERSION = 0
 
     min_price = models.PositiveIntegerField(default=0, help_text="Минимальная цена в $")
     max_price = models.PositiveIntegerField(help_text="Максимальная цена в $")
@@ -275,17 +277,33 @@ class UserSearch(TimeTrackable):
 
     apartment_type = models.CharField(max_length=1, choices=APARTMENT_TYPE_CHOICES)
 
+    search_version = models.PositiveIntegerField(
+        default=DEFAULT_SEARCH_VERSION,
+        help_text="Number of search modifications"
+    )
+
     class Meta:
         verbose_name_plural = "Persisted user searches"
 
+    def increase_version(self):
+        self.search_version = F('search_version') + 1
+
     def get_search_polygons(self):
         return [a.poly for a in self.areas_of_interest.all()]
+
+    def available_contacts(self):
+        return self.contacts.filter(contact_type=ContactType.TELEGRAM)
 
 
 class SearchResults(TimeTrackable):
 
     search_filter = models.ForeignKey(UserSearch, on_delete=models.DO_NOTHING)
+    search_filter_version = models.PositiveIntegerField(
+        default=UserSearch.DEFAULT_SEARCH_VERSION
+    )
     reported_urls = ArrayField(models.CharField(max_length=255), default=list)
+
+    objects = SavedSearchManager()
 
     class Meta:
         verbose_name_plural = "Reported search results"

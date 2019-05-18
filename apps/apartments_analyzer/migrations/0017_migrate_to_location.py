@@ -3,7 +3,6 @@ import itertools
 
 from django.contrib.gis.geos import Point
 from django.db import migrations
-from django.db.models import F
 
 
 def migrate_long_lat_to_geo_point(apps, schema_editor):

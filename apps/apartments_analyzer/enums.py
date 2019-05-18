@@ -1,7 +1,7 @@
 import enum
 
 
-class BullettingStatusEnum(enum.Enum):
+class BulletinStatusEnum(enum.Enum):
     INACTIVE = 0
     ACTIVE = 1
 
