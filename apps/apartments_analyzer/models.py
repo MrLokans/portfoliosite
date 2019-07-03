@@ -157,6 +157,8 @@ class BaseApartmentBulletin(models.Model):
 
     subway_distances = JSONField(default=dict)
 
+    likely_agent = models.BooleanField(null=True, blank=True)
+
     def __str__(self):
         return "Apartment(bullettin_url={}, price_USD={})".format(
             self.bullettin_url, self.price_USD

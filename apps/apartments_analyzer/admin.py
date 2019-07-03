@@ -38,6 +38,7 @@ class BaseApartmentAdmin(admin.ModelAdmin):
     list_display = (
         "bullettin_url",
         "address",
+        "likely_agent",
         "price_USD",
         "price_BYN",
         "status",

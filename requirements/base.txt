@@ -35,7 +35,7 @@ django-dotenv==1.4.2
 # telegram integration
 python-telegram-bot==11.1.0
 
--e git://github.com/MrLokans/onliner-agent-finder.git@1.0.2#egg=agent_spider
+-e git://github.com/MrLokans/onliner-agent-finder.git@1.1.0#egg=agent_spider
 
 # CORS
 django-cors-headers==2.5.3
