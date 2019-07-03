@@ -279,6 +279,8 @@ class UserSearch(TimeTrackable):
 
     apartment_type = models.CharField(max_length=1, choices=APARTMENT_TYPE_CHOICES)
 
+    report_likely_agents = models.BooleanField(default=True)
+
     search_version = models.PositiveIntegerField(
         default=DEFAULT_SEARCH_VERSION,
         help_text="Number of search modifications"

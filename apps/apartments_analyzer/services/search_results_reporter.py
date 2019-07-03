@@ -60,6 +60,31 @@ class SearchReporter:
             telegram_client=telegram.bot.Bot(token=django_settings.TELEGRAM_ACCESS_TOKEN)
         )
 
+    def get_reporter(self, user_search, matched_apartments):
+        return TelegramReporter(
+            self.telegram_client,
+            initial_search=user_search,
+            matched_apartments=matched_apartments,
+        )
+
+    @classmethod
+    def find_matching_apartments(cls, user_search: UserSearch,
+                                 model=RentApartment, ):
+        previously_parsed_urls = \
+            SearchResults.objects.all_matched_for_search(user_search)
+        qs = (
+            model
+                .objects
+                .active()
+                .newer_than(datetime.timedelta(days=1))
+                .in_price_range(user_search.min_price, user_search.max_price)
+                .in_areas(user_search.get_search_polygons())
+                .exclude(bullettin_url__in=previously_parsed_urls)
+        )
+        if not user_search.report_likely_agents:
+            qs = qs.exlude(likely_agent=True)
+        return qs
+
     def process_user_searches(self, *args, **kwargs):
         """For every persisted user search runs filters
         again newly loaded apartments and reports results
@@ -68,16 +93,8 @@ class SearchReporter:
         for search in searches:
             self.log.info("Processing %s", search)
             model = self.__model_type_map__[search.apartment_type]
-            previously_parsed_urls = SearchResults.objects.all_matched_for_search(search)
-            matching_apartments = (
-                model
-                .objects
-                .active()
-                .newer_than(datetime.timedelta(days=1))
-                .in_price_range(search.min_price, search.max_price)
-                .in_areas(search.get_search_polygons())
-                .exclude(bullettin_url__in=previously_parsed_urls)
-            )
+            matching_apartments = self.find_matching_apartments(search,
+                                                                model=model)
             self.report_search_results(search, matching_apartments)
             SearchResults.objects.create(
                 search_filter=search,
@@ -88,10 +105,6 @@ class SearchReporter:
     def report_search_results(self, search: UserSearch, matching_apartments):
         """Send matching apartments to the user via available contact method."""
         for contact_details in search.available_contacts():
-            reporter = TelegramReporter(
-                self.telegram_client,
-                initial_search=search,
-                matched_apartments=matching_apartments,
-            )
+            reporter = self.get_reporter(search, matching_apartments)
             if reporter.should_report():
                 reporter.report(contact_details.contact_identifier)
