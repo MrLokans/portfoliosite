@@ -168,3 +168,12 @@ TELEGRAM_ACCESS_TOKEN = env.str("TELEGRAM_BOT_ACCESS_TOKEN")
 
 GDAL_LIBRARY_PATH = env.str("GDAL_LIBRARY_PATH", default="")
 GEOS_LIBRARY_PATH = env.str("GEOS_LIBRARY_PATH", default="")
+
+SENTRY_DSN = env.str("SENTRY_DSN", default="")
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
