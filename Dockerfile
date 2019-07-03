@@ -17,7 +17,7 @@ COPY --from=builder /usr/local/bin/dumb-init /usr/local/bin/dumb-init
 RUN adduser -D -g '' bloguser
 RUN apk update \
     # Cron setup
-    && apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing gdal proj4-dev \
+    && apk add --no-cache -X http://dl-cdn.alpinelinux.org/alpine/edge/testing gdal proj-dev \
     && apk add dcron postgresql-dev jpeg-dev zlib-dev \
     && mkdir -p /var/log/cron \
     && mkdir -m 0644 -p /var/spool/cron/crontabs \
