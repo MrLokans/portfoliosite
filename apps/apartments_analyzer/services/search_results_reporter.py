@@ -82,7 +82,7 @@ class SearchReporter:
                 .exclude(bullettin_url__in=previously_parsed_urls)
         )
         if not user_search.report_likely_agents:
-            qs = qs.exlude(likely_agent=True)
+            qs = qs.exclude(likely_agent=True)
         return qs
 
     def process_user_searches(self, *args, **kwargs):
