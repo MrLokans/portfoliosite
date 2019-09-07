@@ -41,6 +41,15 @@ class ApartmentsStatsAPIView(APIView):
         return Response(stats)
 
 
+class PriceFluctuationsAPIView(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, *args, **kwargs):
+        return Response(
+            ApartmentsStatisticsAggregator.prices_fluctuation_per_month()
+        )
+
+
 class AgentCheckView(APIView):
     def get(self, request, *args, **kwargs):
         """

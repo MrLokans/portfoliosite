@@ -3,12 +3,12 @@ import decimal
 import functools
 import logging
 import operator
-from typing import Iterable
+from typing import Iterable, Optional
 
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.db.models import Q, F
+from django.db.models import Q, F, UniqueConstraint, When, Value, Case
 from django.utils import timezone
 
 from apps.apartments_analyzer.managers import SavedSearchManager
@@ -33,6 +33,20 @@ class ContactType:
 
 
 class ApartmentsQueryset(models.QuerySet):
+
+    _ROOM_ONLY_COUNT = 0
+    _ROOM_TYPE_COUNT_MAPPING = {
+        "Комната": _ROOM_ONLY_COUNT,
+        "1-комнатная квартира": 1,
+        "2-комнатная квартира": 2,
+        "3-комнатная квартира": 3,
+        "4-комнатная квартира": 4,
+        "5-комнатная квартира": 5,
+        "6-комнатная квартира": 6,
+        "7-комнатная квартира": 7,
+        "8-комнатная квартира": 8,
+    }
+    _UNKNOWN_ROOM_COUNT = -1
 
     def with_non_filled_subway_distance(self):
         return self.exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
@@ -59,6 +73,22 @@ class ApartmentsQueryset(models.QuerySet):
                 for poly in area_polygons
             ])
         return self.filter(search_by_areas_filter)
+
+    def annotate_room_count(self):
+        type_annotations = [
+            When(apartment_type=known_type, then=Value(associated_value))
+            for known_type, associated_value in self._ROOM_TYPE_COUNT_MAPPING.items()
+        ]
+        return (
+            self
+            .annotate(
+                room_count=Case(
+                    *type_annotations,
+                    default=Value(self._UNKNOWN_ROOM_COUNT),
+                    output_field=models.IntegerField(),
+                )
+            )
+        )
 
 
 class ActiveInactiveManager(models.Manager):
@@ -116,6 +146,9 @@ class ActiveInactiveManager(models.Manager):
 
     def in_areas(self, area_polygons):
         return self.get_queryset().in_areas(area_polygons)
+
+    def annotate_room_count(self):
+        return self.get_queryset().annotate_room_count()
 
 
 class BaseApartmentBulletin(models.Model):

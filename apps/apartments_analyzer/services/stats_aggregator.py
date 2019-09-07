@@ -1,8 +1,9 @@
+import collections
 from datetime import timedelta
 from typing import List, Tuple
 
-from django.db.models import Count, Avg, Min, Max, Value, CharField, F
-from django.db.models.functions import ExtractHour, ExtractWeekDay, Concat, ExtractYear, ExtractMonth
+from django.db import models
+from django.db.models import functions
 from django.utils import timezone
 
 from apps.apartments_analyzer.models import RentApartment, SoldApartments
@@ -15,9 +16,9 @@ class ApartmentsStatisticsAggregator:
             RentApartment.objects
             .exclude(last_active_parse_time=None)
             .values("last_active_parse_time")
-            .annotate(current_hour=ExtractHour("last_active_parse_time"))
+            .annotate(current_hour=functions.ExtractHour("last_active_parse_time"))
             .values("current_hour")
-            .annotate(count=Count("current_hour"))
+            .annotate(count=models.Count("current_hour"))
         )
 
         return sorted(
@@ -30,9 +31,9 @@ class ApartmentsStatisticsAggregator:
             RentApartment.objects
             .exclude(last_active_parse_time=None)
             .values("last_active_parse_time")
-            .annotate(current_weekday=ExtractWeekDay("last_active_parse_time"))
+            .annotate(current_weekday=functions.ExtractWeekDay("last_active_parse_time"))
             .values("current_weekday")
-            .annotate(count=Count("current_weekday"))
+            .annotate(count=models.Count("current_weekday"))
         )
         return sorted(
             [(item["current_weekday"], item["count"]) for item in qs],
@@ -48,9 +49,9 @@ class ApartmentsStatisticsAggregator:
             .filter(last_active_parse_time__gte=after)
             .values('price_USD')
             .aggregate(
-                average_price=Avg('price_USD'),
-                min_price=Min('price_USD'),
-                max_price=Max('price_USD')
+                average_price=models.Avg('price_USD'),
+                min_price=models.Min('price_USD'),
+                max_price=models.Max('price_USD')
             )
         )
         return [[key, value] for key, value in qs.items()]
@@ -61,18 +62,62 @@ class ApartmentsStatisticsAggregator:
             SoldApartments.objects
             .exclude(last_active_parse_time=None)
             .annotate(
-                import_month=Concat(
-                    ExtractYear('last_active_parse_time'), Value('-'), ExtractMonth('last_active_parse_time'),
-                    output_field=CharField())
+                import_month=functions.Concat(
+                    functions.ExtractYear('last_active_parse_time'),
+                    models.Value('-'),
+                    functions.ExtractMonth('last_active_parse_time'),
+                    output_field=models.CharField())
                 )
             .values('import_month', )
             .annotate(
-                average_price=Avg('price_USD'),
-                average_square=Avg('total_area'),
+                average_price=models.Avg('price_USD'),
+                average_square=models.Avg('total_area'),
             )
             .annotate(
-                average_square_meter_price=F('average_price') / F('average_square')
+                average_square_meter_price=models.F('average_price') / models.F('average_square')
             )
             .values('average_price', 'average_square', 'average_square_meter_price', 'import_month')
         )
         return [(item['import_month'], item['average_square_meter_price']) for item in qs]
+
+    @staticmethod
+    def prices_fluctuation_per_month() -> List:
+        """
+        Returns price changes on a monthly basis
+        from the beginning of parsing towards the current day.
+
+        The stats are also subdivided for the number of rooms
+        as the metric that has the most effect on the price.
+
+        Sample response:
+        {
+           '2019-08': {'rooms': {'1': 100.0]}},
+           ...
+        }
+        """
+        qs = (
+            RentApartment.objects
+            .exclude(last_active_parse_time=None)
+            .annotate_room_count()
+            .annotate(
+                import_month=functions.Concat(
+                    functions.ExtractYear('last_active_parse_time'),
+                    models.Value('-'),
+                    functions.ExtractMonth(
+                        'last_active_parse_time'),
+                    output_field=models.CharField())
+            )
+            .annotate(
+                average_price=models.Window(
+                    expression=models.Avg('price_USD'),
+                    partition_by=[models.F('import_month'), models.F('room_count')],
+                )
+            )
+            .values("import_month", "room_count", "average_price")
+            .distinct("import_month", "room_count")
+        )
+
+        months = collections.defaultdict(lambda: {"rooms": {}})
+        for item in qs:
+            months[item["import_month"]]["rooms"][item["room_count"]] = item["average_price"]
+        return months
