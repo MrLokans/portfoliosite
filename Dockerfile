@@ -12,7 +12,7 @@ ADD ./deployment/gunicorn.conf /app//deployment/gunicorn.conf
 ADD ./manage.py /app/manage.py
 WORKDIR /app/
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends gdal-bin cron \
+    && apt-get install -y --no-install-recommends gdal-bin cron osmctools osm2pgsql \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /app/apps/about_me/fixtures
 
