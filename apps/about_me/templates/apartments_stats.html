@@ -3,8 +3,9 @@
 {% block content %}
     <h1>STATISTICS</h1>
 
-    <canvas id="apartmentsByWeekDay" width="200" height="200"></canvas>
-    <canvas id="apartmentsByDayHour" width="200" height="200"></canvas>
+    <canvas id="apartmentsByWeekDay" width="110" height="80"></canvas>
+    <canvas id="apartmentsByDayHour" width="110" height="80"></canvas>
+    <canvas id="rentedApartmentPriceFluctuations" width="110" height="80"></canvas>
 
 {% endblock %}
 
@@ -13,6 +14,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://underscorejs.org/underscore-min.js"></script>
     <script>
+        var knownApartmentTypes = {
+            0: 'Комната',
+            1: '1 Комната',
+            2: '2 Комнаты',
+            3: '3 Комнаты',
+            4: '4 Комнаты',
+            5: '5 Комнат',
+        };
+
         var plotData = [{
             selector: 'apartmentsByWeekDay',
             responseField: 'by_weekday',
@@ -25,11 +35,26 @@
             color: 'rgba(125, 200, 212, 255)',
             label: 'Apartments scraped by hour'
         }];
+        $.get('/api/apartments/stats/fluctuations/', resp => {
+            return new Chart(document.getElementById('rentedApartmentPriceFluctuations'), {
+                type: 'line',
+                data: {
+                    labels: _.map(resp, item => item[0]),
+                    datasets: _.map(knownApartmentTypes, (value, key) => {
+                        return {
+                            label: value,
+                            data: _.map(resp, item => item[1]['rooms'][key]),
+                        }
+                    })
+                }
+            })
+
+        });
 
         $.get('/api/apartments/stats/', (resp) => {
             _.each(plotData, elem => {
                 var displayedData = resp[elem.responseField];
-                var plot = new Chart(document.getElementById(elem.selector), {
+                return new Chart(document.getElementById(elem.selector), {
                     type: 'bar',
                     data: {
                         labels: _.map(displayedData, el => el[0]),
