@@ -12,7 +12,7 @@ from apps.apartments_analyzer.filters import (
     SoldPriceRangeFilter,
     NearestSubwayStation, ActiveFilter)
 from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD, AreaOfInterest, \
-    UserSearchContact, UserSearch, SearchResults
+    UserSearchContact, UserSearch, SearchResults, CityRegion
 
 
 class ApartmentsResource(resources.ModelResource):
@@ -32,7 +32,7 @@ DISTANCE_TEMPLATE = """
 """
 
 
-class BaseApartmentAdmin(admin.ModelAdmin):
+class BaseApartmentAdmin(OSMGeoAdmin):
 
     readonly_fields = ("bulletin_images", "subway_distances_list")
     list_display = (
@@ -125,6 +125,10 @@ class SearchResultsAdmin(admin.ModelAdmin):
     pass
 
 
+class CityRegionAdmin(OSMGeoAdmin):
+    pass
+
+
 admin.site.register(AreaOfInterest, CityRegionAdmin)
 admin.site.register(UserSearchContact, UserSearchContactAdmin)
 admin.site.register(UserSearch, UserSearchAdmin)
@@ -132,4 +136,5 @@ admin.site.register(RentApartment, ApartmentAdmin)
 admin.site.register(SoldApartments, SoldApartmentAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)
 admin.site.register(SearchResults, SearchResultsAdmin)
+admin.site.register(CityRegion, CityRegionAdmin)
 
