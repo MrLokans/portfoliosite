@@ -85,17 +85,8 @@ class ApartmentsStatisticsAggregator:
         """
         Returns price changes on a monthly basis
         from the beginning of parsing towards the current day.
-
-        The stats are also subdivided for the number of rooms
-        as the metric that has the most effect on the price.
-
-        Sample response:
-        {
-           '2019-08': {'rooms': {'1': 100.0]}},
-           ...
-        }
         """
-        qs = (
+        return (
             RentApartment.objects
             .exclude(last_active_parse_time=None)
             .annotate_room_count()
@@ -103,8 +94,7 @@ class ApartmentsStatisticsAggregator:
                 import_month=functions.Concat(
                     functions.ExtractYear('last_active_parse_time'),
                     models.Value('-'),
-                    functions.ExtractMonth(
-                        'last_active_parse_time'),
+                    functions.ExtractMonth('last_active_parse_time'),
                     output_field=models.CharField())
             )
             .annotate(
@@ -116,8 +106,3 @@ class ApartmentsStatisticsAggregator:
             .values("import_month", "room_count", "average_price")
             .distinct("import_month", "room_count")
         )
-
-        months = collections.defaultdict(lambda: {"rooms": {}})
-        for item in qs:
-            months[item["import_month"]]["rooms"][item["room_count"]] = item["average_price"]
-        return months

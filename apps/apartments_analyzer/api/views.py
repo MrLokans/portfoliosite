@@ -1,3 +1,7 @@
+import collections
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -29,6 +33,7 @@ class ApartmentsListAPIView(ListAPIView):
 class ApartmentsStatsAPIView(APIView):
     permission_classes = (AllowAny,)
 
+    @method_decorator(cache_page(60 * 60 * 10))
     def get(self, *args, **kwargs):
         stats = {}
         stats["by_hour"] = ApartmentsStatisticsAggregator.get_hour_aggregated_stats()
@@ -44,9 +49,28 @@ class ApartmentsStatsAPIView(APIView):
 class PriceFluctuationsAPIView(APIView):
     permission_classes = (AllowAny, )
 
+    def as_response(self, fluctuation_data):
+        """
+        The stats are also subdivided for the number of rooms
+        as the metric that has the most effect on the price.
+
+        Sample response:
+        [
+           ['2019-08', {'rooms': {'1': 100.0]}}],
+           ...
+        ]
+        """
+        months = collections.defaultdict(lambda: {"rooms": {}})
+        for item in fluctuation_data:
+            months[item["import_month"]]["rooms"][item["room_count"]] = item["average_price"]
+        return [[item, value] for item, value in months.items()]
+
+    @method_decorator(cache_page(60 * 60 * 10))
     def get(self, *args, **kwargs):
         return Response(
-            ApartmentsStatisticsAggregator.prices_fluctuation_per_month()
+            self.as_response(
+                ApartmentsStatisticsAggregator.prices_fluctuation_per_month()
+            )
         )
 
 
