@@ -347,3 +347,15 @@ class SearchResults(TimeTrackable):
 
     def __str__(self):
         return f"{self.created_at} - {len(self.reported_urls)} urls"
+
+
+class CityRegion(TimeTrackable):
+    region_name = models.CharField(
+        max_length=120, unique=True, db_index=True, primary_key=True)
+    polygon = gis_models.MultiPolygonField(geography=True)
+
+    class Meta:
+        verbose_name_plural = "City Regions"
+
+    def __str__(self):
+        return f"{self.region_name}"
