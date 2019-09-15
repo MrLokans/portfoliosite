@@ -31,11 +31,11 @@ class Query:
 
     random_note = graphene.Field(BookNoteType)
 
-    def resolve_random_note(self, info, **kwargs):
+    def resolve_random_note(self, _, **kwargs):
         return BookNote.objects.random_note()
 
-    def resolve_all_books(self, info, **kwargs):
+    def resolve_all_books(self, _, **kwargs):
         return Book.objects.non_empty().prefetch_related("notes")
 
-    def resolve_all_notes(self, info, **kwargs):
+    def resolve_all_notes(self, _, **kwargs):
         return BookNote.objects.prefetch_related("book")
