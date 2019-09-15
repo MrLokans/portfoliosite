@@ -7,13 +7,10 @@ GUNICORN_WORKERS=${GUNICORN_WORKERS:-4}
 GUNICORN_PORT=${GUNICORN_PORT:-8000}
 
 echo "Launching cron"
-[ "$(ls -A /etc/cron.d)" ] && cp -f /etc/cron.d/* /var/spool/cron/crontabs/$BACKEND_USER || true
-crond -s /var/spool/cron/crontabs -f -L /var/log/cron/cron.log &
+cron -f &
 
 echo "Applying migrations"
-su "$BACKEND_USER" -c "python manage.py migrate --run-syncdb"
-echo "Loading initial fixtures"
-su "$BACKEND_USER" -c "python manage.py loaddata apps/about_me/fixtures/fixtures.yaml"
+su "$BACKEND_USER" -c "python manage.py migrate"
 echo "Collecting static (output dir: $DJANGO_STATIC_DIR)"
 python manage.py collectstatic --no-input
 
