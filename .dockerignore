@@ -102,3 +102,7 @@ phone_app
 .env
 .env.SAMPLE
 creds
+
+backups/
+scraped.json
+minsk.osm.pbf
