@@ -288,9 +288,12 @@ class UserSearchContact(TimeTrackable):
 
     class Meta:
         verbose_name_plural = "User contacts"
+        constraints = (
+            UniqueConstraint(fields=('contact_type', 'contact_identifier'), name='unique_contact'),
+        )
 
-    def get_sender(self):
-        pass
+    def get_existing_search(self) -> Optional['UserSearch']:
+        return self.usersearch_set.first()
 
     def __str__(self):
         return f"UserContact(type={self.contact_type}, id={self.contact_identifier})"
@@ -305,7 +308,7 @@ class UserSearch(TimeTrackable):
     DEFAULT_SEARCH_VERSION = 0
 
     min_price = models.PositiveIntegerField(default=0, help_text="Минимальная цена в $")
-    max_price = models.PositiveIntegerField(help_text="Максимальная цена в $")
+    max_price = models.PositiveIntegerField(default=300, help_text="Максимальная цена в $")
 
     contacts = models.ManyToManyField(UserSearchContact)
     areas_of_interest = models.ManyToManyField(AreaOfInterest)
@@ -321,6 +324,17 @@ class UserSearch(TimeTrackable):
 
     class Meta:
         verbose_name_plural = "Persisted user searches"
+
+    def as_displayed_to_user(self) -> str:
+        buffer = []
+        buffer.append(f"Тип поиска: {self.display_search_type}")
+        buffer.append(f"Диапазон цен: {self.min_price} - {self.max_price}$")
+        buffer.append(f"Ищем агентов? {'Да' if self.report_likely_agents else 'Нет'}")
+        return "\n".join(buffer)
+
+    @property
+    def display_search_type(self):
+        return dict(self.APARTMENT_TYPE_CHOICES)[self.apartment_type]
 
     def increase_version(self):
         self.search_version = F('search_version') + 1
