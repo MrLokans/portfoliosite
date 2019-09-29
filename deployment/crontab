@@ -1,4 +1,0 @@
-# Every hour at 10 minutes
-10 * * * * cd /app && python manage.py scrapeapartments >> /var/log/cron/apartments-scrapper.log 2>&1
-40 * * * * cd /app && python manage.py importbooks --count 2000 >> /var/log/cron/books-importer.log 2>&1
-0 10 * * * cd /app && python manage.py import_osm_data >> /var/log/cron/osm-import.log 2>&1

@@ -2,8 +2,9 @@ import os
 import time
 import logging
 
-from fabric.api import abort, cd, get, local, lcd, put, run, settings, sudo
+from fabric.api import abort, cd, get, local, put, run, settings, sudo
 from fabric.context_managers import hide
+from fabric.contrib.files import upload_template
 from fabric.state import env
 
 import requests
@@ -29,7 +30,6 @@ SYSTEMD_UNIT_NAME = "personalsite-backend.service"
 
 SYSTEMD_UNIT_LOCAL_PATH = os.path.join(LOCAL_CONFIG_DIR, SYSTEMD_UNIT_NAME)
 SYSTEMD_UNIT_REMOTE_PATH = os.path.join("/etc/systemd/system/", SYSTEMD_UNIT_NAME)
-CRONTAB_LOCAL_PATH = os.path.join(LOCAL_CONFIG_DIR, "crontab")
 ENV_VARS_FILE = ".env"
 REGISTRY_URL = "registry.mrlokans.com:5000"
 
@@ -71,27 +71,16 @@ def create_directories():
     sudo("chown -R {user}:{user} {dir}".format(user=env.user, dir=DEPLOYMENT_DIR))
 
 
-def checkout_repository():
+def copy_configuration_files():
+    files_to_copy = (
+        'docker-compose.prod.yml',
+        'deployment/nginx/maintenance_off.html',
+        'deployment/manage.sh',
+    )
     with cd(DEPLOYMENT_DIR):
-        with settings(warn_only=True):
-            result = run(
-                "git clone {url} {path}".format(url=REPOSITORY_URL, path=DEPLOYMENT_DIR)
-            )
-            if result.failed:
-                logger.info(
-                    "Repository is already cloned. "
-                    "Checkout will be attempted "
-                    "together with pulling."
-                )
-                run("git reset --hard HEAD")
-            run("git fetch --all")
-            run("git checkout %s" % env.revision)
-            run("git pull")
-
-
-def fix_premissions():
-    with cd(REMOTE_BACKEND_DIR):
-        sudo("chmod +x entrypoint.sh")
+        for filename in files_to_copy:
+            put(filename, filename, use_sudo=True)
+        sudo(f"chmod +x deployment/manage.sh")
 
 
 def launch_docker():
@@ -289,16 +278,33 @@ def manage():
     command = input("Enter the management command > ")  # nosec
     container_id = _get_backend_container_id()
     _exec_docker_command(container_id, command)
+def setup_periodic_jobs():
+    """
+    Creates application specific crontab file
+    on the target server and registers it within
+    the crontab scheduler to periodicaly run required
+    jobs
+    """
+    target_crontab_dir = "/etc/cron.d/mrlokans.com"
+    upload_template(
+        filename="deployment/crontab.template",
+        destination=target_crontab_dir,
+        context={
+            'APPLICATION_DIR': DEPLOYMENT_DIR,
+            'MANAGEMENT_SCRIPT_PATH': './deployment/manage.sh',
+        },
+        use_sudo=True, backup=False,
+    )
+    sudo(f"crontab {target_crontab_dir}")
 
 
 def deploy():
     launch_docker()
     create_directories()
     backup_database()
-    checkout_repository()
+    copy_configuration_files()
     pull_backend_image()
     copy_local_environment_settings()
-    fix_premissions()
     maintenance_started = time.monotonic()
     enable_maintenance_page()
     stop_previous_containers()
