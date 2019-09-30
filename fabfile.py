@@ -266,8 +266,11 @@ def renew_certificates():
     sudo("systemctl stop nginx")
     sudo("certbot renew")
     with cd(REGISTRY_CERTS_DIR):
+        sudo("cp domain.crt domain.crt.BAK")
+        sudo("cp domain.key domain.key.BAK")
         sudo("cp privkey.pem domain.key")
         sudo("cat cert.pem chain.pem > domain.crt")
+    run("docker restart registry")
     sudo("systemctl start nginx")
 
 
