@@ -1,4 +1,4 @@
-FROM personal_site_base:latest
+FROM registry.mrlokans.com:5000/personal_site_base:latest
 
 COPY requirements/base.txt /app/base.txt
 RUN pip install -r /app/base.txt
