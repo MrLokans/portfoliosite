@@ -14,9 +14,4 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends gdal-bin osmctools osm2pgsql \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /app/apps/about_me/fixtures
-
-RUN chmod 0644 /etc/cron.d/bloguser
-RUN crontab /etc/cron.d/bloguser
-RUN touch /var/log/cron.log
-
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--", "/docker-entrypoint.sh"]

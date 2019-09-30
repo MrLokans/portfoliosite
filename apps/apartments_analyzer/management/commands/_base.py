@@ -1,5 +1,9 @@
 import logging
 
+import redis
+from agent_spider.url_cache import DummyCache, RedisURLCache
+
+from django.conf import settings
 from django.core.management.base import CommandError
 
 from agent_spider.run import SpiderLauncher
@@ -14,6 +18,14 @@ SUPPORTED_EXTENSIONS = ("json",)
 
 class BaseParserCommand(BaseSingletonCommand):
     help = """Spider launching command."""
+
+    def _url_cache_factory(self, django_settings):
+        redis_url = django_settings.REDIS_URL
+        if redis_url:
+            return RedisURLCache(
+                redis_client=redis.Redis.from_url(redis_url)
+            )
+        return DummyCache()
 
     def _generate_filename(self):
         return "bulletins.json"
@@ -30,10 +42,14 @@ class BaseParserCommand(BaseSingletonCommand):
             "FEED_FORMAT": output_filename.split(".")[-1],
             "FEED_URI": output_filename,
             "SPIDER_LOADER_WARN_ONLY": True,
-            "LOG_LEVEL": "INFO",
+            "LOG_LEVEL": "ERROR",
+            "LOG_STDOUT": False,
         }
         logger.info("Starting the apartment spider.")
-        launcher = SpiderLauncher(local_settings=overridden_settings)
+        launcher = SpiderLauncher(
+            local_settings=overridden_settings,
+            url_cache=self._url_cache_factory(django_settings=settings)
+        )
         launcher.run()
 
     def add_arguments(self, parser):

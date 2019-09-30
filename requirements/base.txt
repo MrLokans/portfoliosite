@@ -3,6 +3,7 @@ Django==2.2.1
 djangorestframework==3.9.3
 
 redis==2.10.6
+django-redis==4.10.0
 
 # Running workerized django
 gunicorn==19.9.0

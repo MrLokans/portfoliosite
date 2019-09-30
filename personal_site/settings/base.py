@@ -109,7 +109,10 @@ DATABASES = {"default": env.db()}
 
 SECRET_KEY = env("DJANGO_SECRET_KEY")
 
-if os.environ.get("REDIS_URL"):
+
+REDIS_URL = os.environ.get("REDIS_URL", "")
+
+if REDIS_URL:
     CACHES = {"default": env.cache("REDIS_URL")}
 
 LANGUAGE_CODE = "en-us"
