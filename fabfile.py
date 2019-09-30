@@ -274,13 +274,29 @@ def renew_certificates():
     sudo("systemctl start nginx")
 
 
-def manage():
-    """
-    Runs remote django management command
-    """
-    command = input("Enter the management command > ")  # nosec
+def import_production_data_to_local_db():
+    exported_file = "exported-bulletins.json"
+    exported_gz_file = f"{exported_file}.gz"
+    models_to_export = [
+        "apartments_analyzer.SoldApartments",
+        "apartments_analyzer.RentApartment",
+        "apartments_analyzer.ApartmentScrapingResults",
+    ]
+    command = (
+        "python3 manage.py dumpdata {models} > {output_file}"
+        .format(models=" ".join(models_to_export), output_file=exported_file)
+    )
     container_id = _get_backend_container_id()
     _exec_docker_command(container_id, command)
+    run(f"gzip -f -7 {exported_file}")
+    get(remote_path=exported_gz_file, local_path=exported_gz_file)
+    local(f"gzip -d {exported_gz_file} || true")
+    local("python manage.py remove_parsed_apartments")
+    local(
+        f"python manage.py loaddata {exported_file}"
+    )
+
+
 def setup_periodic_jobs():
     """
     Creates application specific crontab file
