@@ -1,0 +1,7 @@
+%(LOG_DIR)s/*.log {
+    daily
+    missingok
+    size 10m
+    rotate 4
+    compress
+}

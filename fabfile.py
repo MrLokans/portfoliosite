@@ -292,6 +292,15 @@ def setup_periodic_jobs():
         context={
             'APPLICATION_DIR': DEPLOYMENT_DIR,
             'MANAGEMENT_SCRIPT_PATH': './deployment/manage.sh',
+            'LOG_DIR': '/var/log/cron',
+        },
+        use_sudo=True, backup=False,
+    )
+    upload_template(
+        filename="deployment/logrotate.template",
+        destination="/etc/logrotate.d/mrlokanslogs",
+        context={
+            'LOG_DIR': '/var/log/cron',
         },
         use_sudo=True, backup=False,
     )

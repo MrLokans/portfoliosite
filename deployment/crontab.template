@@ -1,4 +1,4 @@
 # Copied to the server, executed on the host machine
-2 * * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s scrapeapartments >> /var/log/cron/apartments-scrapper.log 2>&1
-40 * * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s importbooks --count 2000 >> /var/log/cron/books-importer.log 2>&1
-0 10 * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s import_osm_data >> /var/log/cron/osm-import.log 2>&1
+15 * * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s scrapeapartments >> %(LOG_DIR)s/apartments-scrapper.log 2>&1
+30 * * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s importbooks --count 2000 >> %(LOG_DIR)s/books-importer.log 2>&1
+0 10 * * * cd %(APPLICATION_DIR)s && %(MANAGEMENT_SCRIPT_PATH)s import_osm_data >> %(LOG_DIR)s/osm-import.log 2>&1
