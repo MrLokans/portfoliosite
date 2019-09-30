@@ -19,7 +19,7 @@ export DOCKER_BUILDKIT=1
 
 use_base_image () {
 
-  docker pull personal_site_base:latest || true
+  docker pull registry.mrlokans.com:5000/personal_site_base:latest || true
 
   docker build --tag registry.mrlokans.com:5000/personal_site_base:latest -f Dockerfile.base .
   docker push registry.mrlokans.com:5000/personal_site_base:latest
