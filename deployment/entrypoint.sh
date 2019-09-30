@@ -18,3 +18,4 @@ then
 else
     echo "Using dev configuration"
     gunicorn --log-config deployment/gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application --reload -u $BACKEND_USER
+fi
