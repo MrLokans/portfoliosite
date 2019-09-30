@@ -22,7 +22,7 @@ run_management_command () {
     exit 1
   fi
   container_id=$(get_backend_id)
-  exec docker exec -it "$container_id" python3 manage.py $passed_arguments
+  docker exec -i "$container_id" python3 manage.py $passed_arguments
 }
 
 
