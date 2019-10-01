@@ -18,7 +18,7 @@ services:
 
   redis:
     restart: unless-stopped
-    image: redis:3.0.7-alpine
+    image: redis:5.0.6-alpine
     networks:
       - production_network
 
