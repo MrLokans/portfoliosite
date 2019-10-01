@@ -20,11 +20,6 @@ class BaseParserCommand(BaseSingletonCommand):
     help = """Spider launching command."""
 
     def _url_cache_factory(self, django_settings):
-        redis_url = django_settings.REDIS_URL
-        if redis_url:
-            return RedisURLCache(
-                redis_client=redis.Redis.from_url(redis_url)
-            )
         return DummyCache()
 
     def _generate_filename(self):
