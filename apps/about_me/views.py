@@ -16,14 +16,6 @@ class ProjectsListView(ListView):
     queryset = Project.objects.fully_joined()
 
 
-class ContactDetailsView(TemplateView):
-
-    template_name = "contacts.html"
-
-    def get_context_data(self, **kwargs):
-        return {}
-
-
 class ApartmentsStatisticsView(TemplateView):
 
     template_name = "apartments_stats.html"

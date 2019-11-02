@@ -4,18 +4,20 @@
 {% block content %}
     <h3>About me</h3>
     <p>My name is Andrew, I am a software engineer from Minsk, Belarus. I am a great linux lover and python language fan who enjoys good music, well-directed movies, and delicious food.</p>
+    <p>My main programming language is Python, I am also familiar with ECMA/TypeScript, Go, C and a little bit of Swift.</p>
+    <p>I mostly specialize in building large SAAS-application backends, interested in building high-load distributed systems.</p>
 
-        <h3>Skills</h3>
-        <h5>Technologies I had experience with and my level of their mastery (as far as I suppose)</h5>
-        <div class="skills-wrapper">
-            {% for skill in object_list %}
-                <div class="skill-container">
-                    <div class="skill-title"><strong>{{ skill.name }}</strong></div>
-                    <br>
-                    <div class="skill-description"><p>{{ skill.general_description }}</p></div>
-                </div>
-            {% endfor %}
-        </div>
+    <h4>Contact information</h4>
+    <div class="social-network" id="linkedin-social">
+        <a href="https://www.linkedin.com/in/andrei-sviridov-9619b9109">LinkedIn</a>
+    </div>
+    <div class="social-network" id="github-social">
+        <a href="https://github.com/MrLokans">Github</a>
+    </div>
+    <div class="social-network" id="lastfm-social">
+        <a href="http://www.last.fm/ru/user/MrLokans">Lastfm ;)</a>
+    </div>
+    <a href="mailto:mrlokans@gmail.com">E-mail</a>
 {% endblock %}
 
 {% block javascripts %}
