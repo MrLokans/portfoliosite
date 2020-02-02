@@ -25,6 +25,10 @@ django-health-check==3.5.1
 # Exporting data from the admin
 django-import-export==1.2.0
 
+# JSON and array data representation in the admin
+django-json-widget==1.0.0
+django-better-admin-arrayfield==1.0.5
+
 # Manage.py extra commands
 django-extensions==2.1.6
 
@@ -38,7 +42,7 @@ python-telegram-bot==11.1.0
 django-cors-headers==2.5.3
 
 # Generic relations API
-rest-framework-generic-relations==1.2.0
+rest-framework-generic-relations==1.2.2
 
 # CMS capatibilities
 wagtail==2.5.1

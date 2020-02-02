@@ -21,6 +21,12 @@ System requirements
 - [osmctools](https://packages.debian.org/search?keywords=osmctools)
 - [osm2pgsql](https://wiki.openstreetmap.org/wiki/Osm2pgsql)
 
+MacOS specific settings
+---
+Install GDAL
+```
+brew install gdal
+```
 
 Setting environment variables
 ---

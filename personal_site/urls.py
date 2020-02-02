@@ -26,6 +26,7 @@ urlpatterns = [
     path("api/apartments/", include("apps.apartments_analyzer.urls")),
     path("api/books/", include("apps.books.api.urls")),
     path("api/blog/", include("apps.blog.urls")),
+    path("api/spiders/", include("apps.spiders.urls")),
     path("api/health/", include("health_check.urls")),
     path("api/", include("apps.about_me.api.urls")),
     path("feed/latest", LatestPostsFeed()),

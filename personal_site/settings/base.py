@@ -37,6 +37,9 @@ PREREQUSITE_APPS = [
 
     "controlcenter",
 
+    "django_json_widget",
+    "django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig",
+
     "graphene_django",
 ]
 
@@ -62,6 +65,7 @@ PROJECT_APPS = [
     "apps.apartments_analyzer.apps.ApartmentsConfig",
     "apps.blog",
     "apps.books",
+    "apps.spiders",
     "personal_site",
 ]
 
