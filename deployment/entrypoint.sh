@@ -11,11 +11,13 @@ su "$BACKEND_USER" -c "python manage.py migrate"
 echo "Collecting static (output dir: $DJANGO_STATIC_DIR)"
 python manage.py collectstatic --no-input
 
-if [[ $@ == **prod** ]]
-then
-    echo "Using prod configuration."
+if [[ $@ == **prod** ]]; then
+    echo "Web-application in prod configuration."
     gunicorn --log-config deployment/gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application -u $BACKEND_USER
+elif [[ $@ == **bot** ]]; then
+    echo "Running telegram bot."
+    python manage.py run_apartments_bot
 else
-    echo "Using dev configuration"
+    echo "Web-application in dev configuration"
     gunicorn --log-config deployment/gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT personal_site.wsgi:application --reload -u $BACKEND_USER
 fi

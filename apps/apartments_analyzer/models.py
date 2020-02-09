@@ -60,11 +60,12 @@ class ApartmentsQueryset(models.QuerySet):
     def in_price_range(self, from_: int, to_: int):
         return self.filter(price_USD__gte=from_, price_USD__lte=to_)
 
+    def with_rooms_equal_or_more(self, room_count: int):
+        return self.filter(room_count__gte=room_count)
+
     def newer_than(self, diff: datetime.timedelta):
         now = timezone.now()
-        return self.filter(
-            last_active_parse_time__gt=now - diff
-        )
+        return self.filter(last_active_parse_time__gt=now - diff)
 
     def in_areas(self, area_polygons):
         search_by_areas_filter = functools.reduce(
@@ -74,25 +75,24 @@ class ApartmentsQueryset(models.QuerySet):
             ])
         return self.filter(search_by_areas_filter)
 
+    def exclude_previous_search_results(self, previously_parsed_urls):
+        return self.exclude(bullettin_url__in=previously_parsed_urls)
+
     def annotate_room_count(self):
         type_annotations = [
             When(apartment_type=known_type, then=Value(associated_value))
             for known_type, associated_value in self._ROOM_TYPE_COUNT_MAPPING.items()
         ]
-        return (
-            self
-            .annotate(
-                room_count=Case(
-                    *type_annotations,
-                    default=Value(self._UNKNOWN_ROOM_COUNT),
-                    output_field=models.IntegerField(),
-                )
+        return self.annotate(
+            room_count=Case(
+                *type_annotations,
+                default=Value(self._UNKNOWN_ROOM_COUNT),
+                output_field=models.IntegerField(),
             )
         )
 
 
 class ActiveInactiveManager(models.Manager):
-
     def get_queryset(self):
         return ApartmentsQueryset(model=self.model, using=self._db)
 
@@ -149,6 +149,12 @@ class ActiveInactiveManager(models.Manager):
 
     def annotate_room_count(self):
         return self.get_queryset().annotate_room_count()
+
+    def with_rooms_equal_or_more(self, room_count: int):
+        return self.get_queryset().with_rooms_equal_or_more(room_count)
+
+    def exclude_previous_search_results(self, previously_parsed_urls):
+        return self.get_queryset().exclude_previous_search_results(previously_parsed_urls)
 
 
 class BaseApartmentBulletin(models.Model):
@@ -278,6 +284,7 @@ class AreaOfInterest(gis_models.Model):
 
 class UserSearchContact(TimeTrackable):
 
+    MAX_DESCRIPTION_LENGTH: int = 120
     CONTACT_TYPE_CHOICES = (
         (ContactType.EMAIL, "Email"),
         (ContactType.TELEGRAM, "Telegram messenger"),
@@ -285,14 +292,17 @@ class UserSearchContact(TimeTrackable):
 
     contact_type = models.CharField(max_length=1, choices=CONTACT_TYPE_CHOICES)
     contact_identifier = models.CharField(max_length=120)
+    description = models.CharField(max_length=MAX_DESCRIPTION_LENGTH, default="")
 
     class Meta:
         verbose_name_plural = "User contacts"
         constraints = (
-            UniqueConstraint(fields=('contact_type', 'contact_identifier'), name='unique_contact'),
+            UniqueConstraint(
+                fields=("contact_type", "contact_identifier"), name="unique_contact"
+            ),
         )
 
-    def get_existing_search(self) -> Optional['UserSearch']:
+    def get_existing_search(self) -> Optional["UserSearch"]:
         return self.usersearch_set.first()
 
     def __str__(self):
@@ -308,7 +318,13 @@ class UserSearch(TimeTrackable):
     DEFAULT_SEARCH_VERSION = 0
 
     min_price = models.PositiveIntegerField(default=0, help_text="Минимальная цена в $")
-    max_price = models.PositiveIntegerField(default=300, help_text="Максимальная цена в $")
+    max_price = models.PositiveIntegerField(
+        default=300, help_text="Максимальная цена в $"
+    )
+    min_rooms = models.PositiveSmallIntegerField(
+        default=0, help_text="Минимальное количество комнат"
+    )
+    is_active = models.BooleanField(default=True)
 
     contacts = models.ManyToManyField(UserSearchContact)
     areas_of_interest = models.ManyToManyField(AreaOfInterest)
@@ -318,8 +334,7 @@ class UserSearch(TimeTrackable):
     report_likely_agents = models.BooleanField(default=True)
 
     search_version = models.PositiveIntegerField(
-        default=DEFAULT_SEARCH_VERSION,
-        help_text="Number of search modifications"
+        default=DEFAULT_SEARCH_VERSION, help_text="Number of search modifications"
     )
 
     class Meta:
@@ -327,9 +342,10 @@ class UserSearch(TimeTrackable):
 
     def as_displayed_to_user(self) -> str:
         buffer = []
+        buffer.append(f"Поиск активен: {self.is_active and 'Да' or 'Нет'}")
         buffer.append(f"Тип поиска: {self.display_search_type}")
         buffer.append(f"Диапазон цен: {self.min_price} - {self.max_price}$")
-        buffer.append(f"Ищем агентов? {'Да' if self.report_likely_agents else 'Нет'}")
+        buffer.append(f"Количество комнат: {self.min_rooms}+")
         return "\n".join(buffer)
 
     @property

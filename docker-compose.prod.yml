@@ -42,3 +42,21 @@ services:
     depends_on:
       - database
       - redis
+
+  # Django back-end
+  apartment_notifier_bot:
+    restart: unless-stopped
+    image: registry.mrlokans.com:5000/personal_site:${BACKEND_VERSION:-latest}
+    command: --bot
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_HOST=database
+    ports:
+      - "8000:8000"
+    working_dir: /app/
+    networks:
+      - production_network
+    depends_on:
+      - database
+      - redis

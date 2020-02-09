@@ -68,18 +68,18 @@ class SearchReporter:
         )
 
     @classmethod
-    def find_matching_apartments(cls, user_search: UserSearch,
-                                 model=RentApartment, ):
-        previously_parsed_urls = \
-            SearchResults.objects.all_matched_for_search(user_search)
+    def find_matching_apartments(cls, user_search: UserSearch, model=RentApartment):
+        previously_parsed_urls = SearchResults.objects.all_matched_for_search(
+            user_search
+        )
         qs = (
-            model
-                .objects
-                .active()
-                .newer_than(datetime.timedelta(days=1))
-                .in_price_range(user_search.min_price, user_search.max_price)
-                .in_areas(user_search.get_search_polygons())
-                .exclude(bullettin_url__in=previously_parsed_urls)
+            model.objects.active()
+            .annotate_room_count()
+            .newer_than(datetime.timedelta(days=1))
+            .in_price_range(user_search.min_price, user_search.max_price)
+            .in_areas(user_search.get_search_polygons())
+            .with_rooms_equal_or_more(user_search.min_rooms)
+            .exclude_previous_search_results(previously_parsed_urls)
         )
         if not user_search.report_likely_agents:
             qs = qs.exclude(likely_agent=True)
@@ -89,12 +89,11 @@ class SearchReporter:
         """For every persisted user search runs filters
         again newly loaded apartments and reports results
         if any."""
-        searches = UserSearch.objects.prefetch_related("areas_of_interest")
+        searches = UserSearch.objects.prefetch_related("areas_of_interest").filter(is_active=True)
         for search in searches:
             self.log.info("Processing %s", search)
             model = self.__model_type_map__[search.apartment_type]
-            matching_apartments = self.find_matching_apartments(search,
-                                                                model=model)
+            matching_apartments = self.find_matching_apartments(search, model=model)
             self.report_search_results(search, matching_apartments)
             SearchResults.objects.create(
                 search_filter=search,
