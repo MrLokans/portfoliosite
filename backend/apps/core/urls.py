@@ -1,4 +1,3 @@
-from controlcenter.views import controlcenter
 from django.conf import settings
 from django.conf.urls import include
 from django.conf.urls.static import static
@@ -22,7 +21,6 @@ wagtail_patterns = [
 urlpatterns = [
     path("", include("apps.about_me.urls", namespace="about_me")),
     path("_internal-portal_/", admin.site.urls),
-    path("_internal-portal_/dashboard/", controlcenter.urls),
     path("api/apartments/", include("apps.apartments_analyzer.urls")),
     path("api/books/", include("apps.books.api.urls")),
     path("api/blog/", include("apps.blog.urls")),

@@ -31,7 +31,6 @@ PREREQUSITE_APPS = [
     "rest_framework",
     "corsheaders",
     "generic_relations",
-    "controlcenter",
     "django_json_widget",
     "django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig",
     "graphene_django",
@@ -151,14 +150,10 @@ SITE_ID = 1
 DROPBOX_ACCESS_TOKEN = os.environ.get("DROPBOX_ACCESS_TOKEN")
 
 
-CORS_ORIGIN_WHITELIST = ("localhost:8100", "127.0.0.1:8000")
+CORS_ORIGIN_WHITELIST = ("http://localhost:8100", "http://127.0.0.1:8000")
 
 
 WAGTAIL_SITE_NAME = "mrlokans.com"
-
-CONTROLCENTER_DASHBOARDS = (
-    ("apartments", "apps.apartments_analyzer.dashboards.ApartmentsDashboard"),
-)
 
 GRAPHENE = {
     "SCHEMA": "core.schema.schema",

@@ -6,7 +6,7 @@ from ..api.views import BookListAPIView, BookDetailAPIView, FavoritesViewSet
 app_name = "books"
 
 router = SimpleRouter()
-router.register(r"favorites", FavoritesViewSet, base_name="favorite")
+router.register(r"favorites", FavoritesViewSet, basename="favorite")
 
 urlpatterns = [
     path("<int:pk>/", BookDetailAPIView.as_view(), name="book-details"),
