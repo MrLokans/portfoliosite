@@ -9,7 +9,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.apartments_analyzer.services.stats_aggregator import ApartmentsStatisticsAggregator
+from apps.apartments_analyzer.services.stats_aggregator import (
+    ApartmentsStatisticsAggregator,
+)
 from .serializers import RentApartmentSerializer
 from ..models import RentApartment
 from ..utils import construct_onliner_user_url
@@ -47,7 +49,7 @@ class ApartmentsStatsAPIView(APIView):
 
 
 class PriceFluctuationsAPIView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def as_response(self, fluctuation_data):
         """
@@ -62,7 +64,9 @@ class PriceFluctuationsAPIView(APIView):
         """
         months = collections.defaultdict(lambda: {"rooms": {}})
         for item in fluctuation_data:
-            months[item["import_month"]]["rooms"][item["room_count"]] = item["average_price"]
+            months[item["import_month"]]["rooms"][item["room_count"]] = item[
+                "average_price"
+            ]
         return [[item, value] for item, value in months.items()]
 
     @method_decorator(cache_page(60 * 60 * 10))

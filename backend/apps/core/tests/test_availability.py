@@ -9,8 +9,6 @@ SUCCESS_STATUS_CODE = 200
     "url_path,description",
     (
         ("/", "Site main page is available"),
-        ("/admin/", "Admin page is available"),
-        ("/_internal-portal_/", "Internal admin page is available"),
         ("/api/health/", "Health check is available"),
         ("/api/books/", "Books API is available"),
     ),

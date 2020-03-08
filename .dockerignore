@@ -100,7 +100,9 @@ phone_app
 .docker
 
 .env
+*/.env
 .env.SAMPLE
+*/.env.SAMPLE
 creds
 
 backups/

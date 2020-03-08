@@ -1,10 +1,6 @@
 from django.urls import path
 
-from .views import (
-    AboutMeView,
-    ProjectsListView,
-    ApartmentsStatisticsView,
-)
+from .views import AboutMeView, ProjectsListView, ApartmentsStatisticsView
 
 app_name = "about_me"
 

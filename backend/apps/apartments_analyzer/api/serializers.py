@@ -38,18 +38,17 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
     latitude = serializers.DecimalField(max_digits=15, decimal_places=12)
 
     def create(self, validated_data):
-        longitude = validated_data.pop('longitude')
-        latitude = validated_data.pop('latitude')
-        validated_data['location'] = Point(
-            x=float(longitude),
-            y=float(latitude),
-            srid=4326)
-        validated_data['likely_agent'] = not self.initial_data['is_owner']
+        longitude = validated_data.pop("longitude")
+        latitude = validated_data.pop("latitude")
+        validated_data["location"] = Point(
+            x=float(longitude), y=float(latitude), srid=4326
+        )
+        validated_data["likely_agent"] = not self.initial_data["is_owner"]
         return super().create(validated_data)
 
     @classmethod
     def validate_and_save(cls, input_data, **serializer_args):
-        input_data = cls.perform_scrapy_data_transformation(input_data)
+        input_data = copy.deepcopy(cls.perform_scrapy_data_transformation(input_data))
         item_validator = cls(data=input_data, **serializer_args)
         item_validator.is_valid(raise_exception=True)
         return item_validator.save()

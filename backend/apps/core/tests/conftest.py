@@ -1,4 +1,4 @@
-WEBSITE_URL_ENVIRONMENT_VARIABLE = "SERVER_ADDRESS"
+WEBSITE_URL_ENVIRONMENT_VARIABLE = "https://mrlokans.com"
 
 
 def pytest_addoption(parser):

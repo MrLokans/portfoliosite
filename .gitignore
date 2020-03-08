@@ -27,16 +27,16 @@ pgdata*
 .vagrant
 static
 
-.env
-.venv
-backups
-cron-logs
+**/.env
+**/.venv
+**/backups
+**/cron-logs
 
 experiments
 
-.coverage
-.deployment-env
-.ipynb_checkpoints
+**/.coverage
+**/.deployment-env
+**/.ipynb_checkpoints
 
 mobileClient
 .docker

@@ -6,7 +6,7 @@ set -o errexit
 
 
 get_backend_id () {
-  local container_id=$(docker ps | grep personal_site | awk '{print $1}')
+  local container_id=$(docker ps | grep backend | awk '{print $1}')
   if [[ ! "$container_id" ]]; then
     1>&2 echo "There is no running back-end container, quitting."
     exit 1

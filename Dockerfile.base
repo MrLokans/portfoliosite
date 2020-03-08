@@ -3,5 +3,5 @@ FROM python:3.8.0b3-buster
 RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 \
     && chmod +x /usr/local/bin/dumb-init
 
-COPY requirements/base_compiled.txt /app/base_compiled.txt
+COPY backend/requirements/base_compiled.txt /app/base_compiled.txt
 RUN pip install -r /app/base_compiled.txt
