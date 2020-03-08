@@ -3,10 +3,7 @@ import os
 
 import environ
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    TELEGRAM_ACCESS_TOKEN=(str, ""),
-)
+env = environ.Env(DEBUG=(bool, False), TELEGRAM_ACCESS_TOKEN=(str, ""),)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -34,12 +31,9 @@ PREREQUSITE_APPS = [
     "rest_framework",
     "corsheaders",
     "generic_relations",
-
     "controlcenter",
-
     "django_json_widget",
     "django_better_admin_arrayfield.apps.DjangoBetterAdminArrayfieldConfig",
-
     "graphene_django",
 ]
 
@@ -66,7 +60,6 @@ PROJECT_APPS = [
     "apps.blog",
     "apps.books",
     "apps.spiders",
-    "personal_site",
 ]
 
 
@@ -86,7 +79,7 @@ MIDDLEWARE = [
 ]
 
 
-ROOT_URLCONF = "personal_site.urls"
+ROOT_URLCONF = "apps.core.urls"
 
 TEMPLATES = [
     {
@@ -107,7 +100,7 @@ TEMPLATES = [
     }
 ]
 
-WSGI_APPLICATION = "personal_site.wsgi.application"
+WSGI_APPLICATION = "apps.core.wsgi.application"
 
 DATABASES = {"default": env.db()}
 
@@ -148,7 +141,7 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.BasicAuthentication",
     ),
-    "DEFAULT_PAGINATION_CLASS": "personal_site.paginators.CustomPagination",
+    "DEFAULT_PAGINATION_CLASS": "apps.core.paginators.CustomPagination",
     "PAGE_SIZE": 25,
 }
 
@@ -164,7 +157,7 @@ CORS_ORIGIN_WHITELIST = ("localhost:8100", "127.0.0.1:8000")
 WAGTAIL_SITE_NAME = "mrlokans.com"
 
 CONTROLCENTER_DASHBOARDS = (
-    ('apartments', 'apps.apartments_analyzer.dashboards.ApartmentsDashboard'),
+    ("apartments", "apps.apartments_analyzer.dashboards.ApartmentsDashboard"),
 )
 
 GRAPHENE = {
@@ -172,6 +165,7 @@ GRAPHENE = {
 }
 
 TELEGRAM_ACCESS_TOKEN = env.str("TELEGRAM_BOT_ACCESS_TOKEN")
+TELEGRAM_ADMIN_CHAT_ID = env.str("TELEGRAM_ADMIN_CHAT_ID")
 
 GDAL_LIBRARY_PATH = env.str("GDAL_LIBRARY_PATH", default="")
 GEOS_LIBRARY_PATH = env.str("GEOS_LIBRARY_PATH", default="")

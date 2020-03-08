@@ -30,7 +30,7 @@ urlpatterns = [
     path("api/health/", include("health_check.urls")),
     path("api/", include("apps.about_me.api.urls")),
     path("feed/latest", LatestPostsFeed()),
-    path("graphql", GraphQLView.as_view(graphiql=True, schema=schema.schema))
+    path("graphql", GraphQLView.as_view(graphiql=True, schema=schema.schema)),
 ]
 
 urlpatterns += wagtail_patterns

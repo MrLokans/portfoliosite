@@ -17,4 +17,6 @@ SUCCESS_STATUS_CODE = 200
 )
 def test_http_availability(request, url_path, description):
     site_base_address = request.config.getoption("--site_base_address")
-    assert requests.get(site_base_address + url_path).status_code == SUCCESS_STATUS_CODE
+    assert (
+        requests.get(site_base_address + url_path).status_code == SUCCESS_STATUS_CODE
+    ), description

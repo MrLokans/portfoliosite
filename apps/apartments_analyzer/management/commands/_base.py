@@ -8,7 +8,7 @@ from django.core.management.base import CommandError
 
 from agent_spider.run import SpiderLauncher
 
-from personal_site.base_command import BaseSingletonCommand
+from apps.core.base_command import BaseSingletonCommand
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

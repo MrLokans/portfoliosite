@@ -12,14 +12,14 @@ from django.db.models import Q, F, UniqueConstraint, When, Value, Case
 from django.utils import timezone
 
 from apps.apartments_analyzer.managers import SavedSearchManager
-from personal_site.models_common import TimeTrackable
+from apps.core.models_common import TimeTrackable
 from .enums import BulletinStatusEnum
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
-SUBWAY_DISTANCES_FIELD = 'distances'
+SUBWAY_DISTANCES_FIELD = "distances"
 
 
 class ApartmentType:
@@ -69,10 +69,8 @@ class ApartmentsQueryset(models.QuerySet):
 
     def in_areas(self, area_polygons):
         search_by_areas_filter = functools.reduce(
-            operator.or_, [
-                Q(location__within=poly)
-                for poly in area_polygons
-            ])
+            operator.or_, [Q(location__within=poly) for poly in area_polygons]
+        )
         return self.filter(search_by_areas_filter)
 
     def exclude_previous_search_results(self, previously_parsed_urls):
@@ -154,7 +152,9 @@ class ActiveInactiveManager(models.Manager):
         return self.get_queryset().with_rooms_equal_or_more(room_count)
 
     def exclude_previous_search_results(self, previously_parsed_urls):
-        return self.get_queryset().exclude_previous_search_results(previously_parsed_urls)
+        return self.get_queryset().exclude_previous_search_results(
+            previously_parsed_urls
+        )
 
 
 class BaseApartmentBulletin(models.Model):
@@ -177,7 +177,9 @@ class BaseApartmentBulletin(models.Model):
 
     description = models.TextField()
 
-    location = gis_models.PointField(geography=False, srid=4326, default='POINT(0.0 0.0)')
+    location = gis_models.PointField(
+        geography=False, srid=4326, default="POINT(0.0 0.0)"
+    )
 
     # Author profile URL
     author_url = models.URLField()
@@ -271,11 +273,12 @@ class ApartmentScrapingResults(models.Model):
 
 class AreaOfInterest(gis_models.Model):
     """Apartments in active search areas are sent to user."""
+
     name = models.CharField(max_length=50)
     poly = gis_models.PolygonField(geography=False)
 
     class Meta:
-        ordering = ("name", )
+        ordering = ("name",)
         verbose_name_plural = "Areas of interest"
 
     def __str__(self):
@@ -353,7 +356,7 @@ class UserSearch(TimeTrackable):
         return dict(self.APARTMENT_TYPE_CHOICES)[self.apartment_type]
 
     def increase_version(self):
-        self.search_version = F('search_version') + 1
+        self.search_version = F("search_version") + 1
 
     def get_search_polygons(self):
         return [a.poly for a in self.areas_of_interest.all()]
@@ -381,7 +384,8 @@ class SearchResults(TimeTrackable):
 
 class CityRegion(TimeTrackable):
     region_name = models.CharField(
-        max_length=120, unique=True, db_index=True, primary_key=True)
+        max_length=120, unique=True, db_index=True, primary_key=True
+    )
     polygon = gis_models.MultiPolygonField(geography=True)
 
     class Meta:

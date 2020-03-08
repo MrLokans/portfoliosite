@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from personal_site.telegram_notifier import send_notification
+from apps.core.telegram_notifier import send_notification
 
 
 class Command(BaseCommand):

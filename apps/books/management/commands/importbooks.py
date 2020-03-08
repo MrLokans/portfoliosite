@@ -14,7 +14,7 @@ from dropbox.exceptions import DropboxException
 from moonreader_tools.handlers import DropboxDownloader
 
 from apps.books.models import Book
-from personal_site.base_command import BaseSingletonCommand
+from apps.core.base_command import BaseSingletonCommand
 
 logger = logging.getLogger(__name__)
 
