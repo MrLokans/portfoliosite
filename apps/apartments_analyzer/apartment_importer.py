@@ -9,7 +9,9 @@ from rest_framework.exceptions import ValidationError
 from tqdm import tqdm
 
 from apps.apartments_analyzer.enums import BulletinType
-from apps.apartments_analyzer.services.subway_distance_calculator import ApartmentDistanceEnricher
+from apps.apartments_analyzer.services.subway_distance_calculator import (
+    ApartmentDistanceEnricher,
+)
 from .api.serializers import RentApartmentSerializer, SoldApartmentSerializer
 from .models import RentApartment, ApartmentScrapingResults, SoldApartments
 
@@ -62,7 +64,6 @@ class ApartmentDataImporter:
         self.load_from_serialized_values(json_items)
 
     def load_from_serialized_values(self, items: List[Dict]):
-
         existing_urls = self._get_existing_apartment_urls()
         loaded_urls = set(i["origin_url"] for i in items)
         inactive_urls = existing_urls - loaded_urls

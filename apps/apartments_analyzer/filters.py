@@ -67,7 +67,9 @@ class NearestSubwayStation(SimpleListFilter):
         subway_distance = self.value()
         if not subway_distance:
             return queryset
-        return queryset.filter(subway_distances__distances__0__distance__lte=int(subway_distance))
+        return queryset.filter(
+            subway_distances__distances__0__distance__lte=int(subway_distance)
+        )
 
 
 class RoomCountFilter(SimpleListFilter):

@@ -9,20 +9,17 @@ from apps.books.models import Book, BookNote
 class BookType(DjangoObjectType):
     class Meta:
         model = Book
-        filter_fields = {
-            'original_title': ['icontains', ]
-        }
-        interfaces = (graphene.relay.Node, )
+        filter_fields = {"original_title": ["icontains"]}
+        interfaces = (graphene.relay.Node,)
+
     proper_title = graphene.String()
 
 
 class BookNoteType(DjangoObjectType):
     class Meta:
         model = BookNote
-        filter_fields = {
-            'text': ['icontains', ]
-        }
-        interfaces = (graphene.relay.Node, )
+        filter_fields = {"text": ["icontains"]}
+        interfaces = (graphene.relay.Node,)
 
 
 class Query:

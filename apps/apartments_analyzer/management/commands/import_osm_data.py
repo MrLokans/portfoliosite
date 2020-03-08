@@ -19,19 +19,15 @@ ORDER BY way_area DESC;
 
 class Command(_base.BaseParserCommand):
 
-    expected_binaries = (
-        'wget',
-        'osmupdate',
-        'osm2pgsql',
-    )
+    expected_binaries = ("wget", "osmupdate", "osm2pgsql")
 
-    BELARUS_MAP_FILE = f'belarus-latest.osm.pbf'
-    MINSK_MAP_FILE = f'minsk.osm.pbf'
-    BELARUS_MAP_PATH = f'http://download.geofabrik.de/europe/{BELARUS_MAP_FILE}'
-    MINSK_COORDINATES = '27.3552344,53.7841053,28.1260829,53.9745307'
+    BELARUS_MAP_FILE = f"belarus-latest.osm.pbf"
+    MINSK_MAP_FILE = f"minsk.osm.pbf"
+    BELARUS_MAP_PATH = f"http://download.geofabrik.de/europe/{BELARUS_MAP_FILE}"
+    MINSK_COORDINATES = "27.3552344,53.7841053,28.1260829,53.9745307"
 
     def handle(self, *args, **kwargs):
-        db_settings = settings.DATABASES['default']
+        db_settings = settings.DATABASES["default"]
         self.stdout.write("Checking binary availability.")
         self._check_binaries()
         if not os.path.isfile(self.BELARUS_MAP_FILE):
@@ -43,7 +39,7 @@ class Command(_base.BaseParserCommand):
             f"--drop-version --drop-author "
             f"{self.BELARUS_MAP_FILE} {self.MINSK_MAP_FILE}"
         )
-        os.environ.setdefault('PGPASSWORD', db_settings['PASSWORD'])
+        os.environ.setdefault("PGPASSWORD", db_settings["PASSWORD"])
         self.stdout.write("Exporting data to the database.")
         self._run_shell_command(
             f"osm2pgsql {self.MINSK_MAP_FILE} "
@@ -55,9 +51,10 @@ class Command(_base.BaseParserCommand):
         )
         self._sync_regions()
 
-
     def _run_shell_command(self, command):
-        return subprocess.run(command, shell=True, check=True, stdout=subprocess.DEVNULL)
+        return subprocess.run(
+            command, shell=True, check=True, stdout=subprocess.DEVNULL
+        )
 
     def _check_binaries(self):
         for binary in self.expected_binaries:
@@ -79,4 +76,6 @@ class Command(_base.BaseParserCommand):
             for row in cursor.fetchall():
                 name, polygon = row
                 print(f"Update -> '{name}'.")
-                CityRegion.objects.get_or_create(region_name=name, defaults={'polygon': polygon})
+                CityRegion.objects.get_or_create(
+                    region_name=name, defaults={"polygon": polygon}
+                )

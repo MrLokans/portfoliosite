@@ -16,12 +16,11 @@ class BookNoteManager(models.Manager):
 
     def random_note(self):
         qs = (
-            self.annotate(
-                text_length=functions.Length('text')
+            self.annotate(text_length=functions.Length("text")).filter(
+                text_length__gt=self.NOTE_OF_INTEREST_LEN
             )
-                .filter(text_length__gt=self.NOTE_OF_INTEREST_LEN)
-                # Inefficient for large queries
-                .order_by("?")
+            # Inefficient for large queries
+            .order_by("?")
         )
         return qs.first()
 

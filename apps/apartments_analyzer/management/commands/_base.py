@@ -1,7 +1,6 @@
 import logging
 
-import redis
-from agent_spider.url_cache import DummyCache, RedisURLCache
+from agent_spider.url_cache import DummyCache
 
 from django.conf import settings
 from django.core.management.base import CommandError
@@ -43,7 +42,7 @@ class BaseParserCommand(BaseSingletonCommand):
         logger.info("Starting the apartment spider.")
         launcher = SpiderLauncher(
             local_settings=overridden_settings,
-            url_cache=self._url_cache_factory(django_settings=settings)
+            url_cache=self._url_cache_factory(django_settings=settings),
         )
         launcher.run()
 

@@ -3,8 +3,13 @@ import logging
 
 import telegram
 
-from apps.apartments_analyzer.models import UserSearch, ApartmentType, SoldApartments, RentApartment, ContactType, \
-    SearchResults
+from apps.apartments_analyzer.models import (
+    UserSearch,
+    ApartmentType,
+    SoldApartments,
+    RentApartment,
+    SearchResults,
+)
 
 
 class TelegramReporter:
@@ -25,22 +30,24 @@ class TelegramReporter:
             user_identifier,
             self.generate_summary(
                 self.initial_search, new_apartments=self.matched_apartments
-            )
+            ),
         )
         self.telegram_client.send_message(
             user_identifier,
             self.generate_reply(new_apartments=self.matched_apartments),
-            parse_mode=telegram.ParseMode.HTML
+            parse_mode=telegram.ParseMode.HTML,
         )
 
     def generate_summary(self, search, new_apartments) -> str:
         return f"Найдено квартир по фильтру ({search.min_price}$ - {search.max_price}$) - {len(new_apartments)}"
 
     def generate_reply(self, new_apartments) -> str:
-        return " \n".join([
-            f"<a href='{ap.bullettin_url}'>{ap.price_USD}$ - {ap.address}</a>"
-            for ap in new_apartments
-        ])
+        return " \n".join(
+            [
+                f"<a href='{ap.bullettin_url}'>{ap.price_USD}$ - {ap.address}</a>"
+                for ap in new_apartments
+            ]
+        )
 
 
 class SearchReporter:
@@ -57,7 +64,9 @@ class SearchReporter:
     @classmethod
     def from_settings(cls, django_settings):
         return cls(
-            telegram_client=telegram.bot.Bot(token=django_settings.TELEGRAM_ACCESS_TOKEN)
+            telegram_client=telegram.bot.Bot(
+                token=django_settings.TELEGRAM_ACCESS_TOKEN
+            )
         )
 
     def get_reporter(self, user_search, matched_apartments):
@@ -89,7 +98,9 @@ class SearchReporter:
         """For every persisted user search runs filters
         again newly loaded apartments and reports results
         if any."""
-        searches = UserSearch.objects.prefetch_related("areas_of_interest").filter(is_active=True)
+        searches = UserSearch.objects.prefetch_related("areas_of_interest").filter(
+            is_active=True
+        )
         for search in searches:
             self.log.info("Processing %s", search)
             model = self.__model_type_map__[search.apartment_type]

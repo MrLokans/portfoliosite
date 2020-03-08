@@ -10,9 +10,20 @@ from apps.apartments_analyzer.filters import (
     RentedPriceRangeFilter,
     RoomCountFilter,
     SoldPriceRangeFilter,
-    NearestSubwayStation, ActiveFilter)
-from .models import RentApartment, ApartmentScrapingResults, SoldApartments, SUBWAY_DISTANCES_FIELD, AreaOfInterest, \
-    UserSearchContact, UserSearch, SearchResults, CityRegion
+    NearestSubwayStation,
+    ActiveFilter,
+)
+from .models import (
+    RentApartment,
+    ApartmentScrapingResults,
+    SoldApartments,
+    SUBWAY_DISTANCES_FIELD,
+    AreaOfInterest,
+    UserSearchContact,
+    UserSearch,
+    SearchResults,
+    CityRegion,
+)
 
 
 class ApartmentsResource(resources.ModelResource):
@@ -50,7 +61,10 @@ class BaseApartmentAdmin(OSMGeoAdmin):
     search_fields = ("address", "price_USD")
 
     def subway_distances_list(self, obj):
-        distances = [(d['subway'], d['distance']) for d in obj.subway_distances.get(SUBWAY_DISTANCES_FIELD, [])]
+        distances = [
+            (d["subway"], d["distance"])
+            for d in obj.subway_distances.get(SUBWAY_DISTANCES_FIELD, [])
+        ]
         return format_html_join(mark_safe("<hr/>"), DISTANCE_TEMPLATE, distances)
 
     def bulletin_images(self, obj):
@@ -68,7 +82,12 @@ class BaseApartmentAdmin(OSMGeoAdmin):
 
 class ApartmentAdmin(BaseApartmentAdmin, ImportExportModelAdmin):
 
-    list_filter = [RentedPriceRangeFilter, RoomCountFilter, NearestSubwayStation, ActiveFilter]
+    list_filter = [
+        RentedPriceRangeFilter,
+        RoomCountFilter,
+        NearestSubwayStation,
+        ActiveFilter,
+    ]
 
     resource_class = ApartmentsResource
 
@@ -137,4 +156,3 @@ admin.site.register(SoldApartments, SoldApartmentAdmin)
 admin.site.register(ApartmentScrapingResults, ApartmentScrapeStatsAdmin)
 admin.site.register(SearchResults, SearchResultsAdmin)
 admin.site.register(CityRegion, CityRegionAdmin)
-
