@@ -6,6 +6,7 @@ ADD deployment/entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 RUN useradd -ms /bin/bash bloguser
 ADD ./backend/apps/ /app/apps/
+ADD ./backend/settings/ /app/settings/
 ADD ./backend/manage.py /app/manage.py
 ADD ./deployment/gunicorn.conf /app/deployment/gunicorn.conf
 WORKDIR /app/
