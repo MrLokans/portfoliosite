@@ -1,5 +1,6 @@
 import logging
-from typing import Tuple
+import operator
+from typing import Tuple, Optional
 
 from django.conf import settings as django_settings
 from django.core.management.base import BaseCommand
@@ -35,6 +36,22 @@ class MenuTitle:
     DISABLE_SEARCH = "Выключить поиск"
 
 
+def user_contact_description_from_update(update: Update) -> str:
+    from_ = update.message.from_user
+    username, first_name, last_name = operator.attrgetter('username', 'first_name', 'last_name')(from_)
+    description = []
+    if username:
+        description = [f"@{username}"]
+    else:
+        if first_name:
+            description.append(first_name)
+        if last_name:
+            description.append(last_name)
+    if not description:
+        description = ["Unknown data"]
+    return " ".join(description)[:UserSearchContact.MAX_DESCRIPTION_LENGTH]
+
+
 class TelegramSearchRepository:
     def __qs_for_contact_id(self, contact_id: str):
         return UserSearch.objects.filter(
@@ -63,6 +80,9 @@ class TelegramSearchRepository:
     def update_min_room_count(self, contact_id: str, min_room_count: int):
         assert min_room_count >= 0
         self.__qs_for_contact_id(contact_id).update(min_rooms=min_room_count,)
+
+    def set_contact_description(self, contact_id, description: str):
+        UserSearchContact.objects.filter(contact_identifier=contact_id).update(description=description)
 
     def enable_for_user(self, contact_id: str):
         self.__qs_for_contact_id(contact_id).update(is_active=True)
@@ -131,6 +151,7 @@ class ApartmentReporterBot:
                 text=f"Знакомые лица, ваши параметры:\n{search.as_displayed_to_user()}",
                 reply_markup=self.main_menu_for_contact(update.message.from_user.id),
             )
+        self.repo.set_contact_description(user_id, user_contact_description_from_update(update))
         return CHOOSING_OPTIONS
 
     def show_settings(self, update: Update, context: CallbackContext):

@@ -309,7 +309,7 @@ class UserSearchContact(TimeTrackable):
         return self.usersearch_set.first()
 
     def __str__(self):
-        return f"UserContact(type={self.contact_type}, id={self.contact_identifier})"
+        return f"UserContact(type={self.contact_type}, id={self.contact_identifier}, description={self.description})"
 
 
 class UserSearch(TimeTrackable):
