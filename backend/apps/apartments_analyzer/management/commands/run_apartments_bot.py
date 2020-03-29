@@ -49,8 +49,8 @@ class TelegramSearchRepository:
         existing_search = existing_conversation.get_existing_search()
         if not existing_search:
             existing_search = UserSearch()
-            existing_search.contacts.add(existing_conversation)
             existing_search.save()
+            existing_search.contacts.add(existing_conversation)
         return created, existing_search
 
     def update_search_price_range(
