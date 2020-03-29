@@ -59,14 +59,7 @@ class ApartmentsStatisticsAggregator:
     def get_average_square_meter_price_in_usd() -> List[Tuple[str, float]]:
         qs = (
             SoldApartments.objects.exclude(last_active_parse_time=None)
-            .annotate(
-                import_month=functions.Concat(
-                    functions.ExtractYear("last_active_parse_time"),
-                    models.Value("-"),
-                    functions.ExtractMonth("last_active_parse_time"),
-                    output_field=models.CharField(),
-                )
-            )
+            .annotate_import_month()
             .values("import_month")
             .annotate(
                 average_price=models.Avg("price_USD"),
@@ -96,14 +89,7 @@ class ApartmentsStatisticsAggregator:
         return (
             RentApartment.objects.exclude(last_active_parse_time=None)
             .annotate_room_count()
-            .annotate(
-                import_month=functions.Concat(
-                    functions.ExtractYear("last_active_parse_time"),
-                    models.Value("-"),
-                    functions.ExtractMonth("last_active_parse_time"),
-                    output_field=models.CharField(),
-                )
-            )
+            .annotate_import_month()
             .annotate(
                 average_price=models.Window(
                     expression=models.Avg("price_USD"),
@@ -112,4 +98,22 @@ class ApartmentsStatisticsAggregator:
             )
             .values("import_month", "room_count", "average_price")
             .distinct("import_month", "room_count")
+        )
+
+    @staticmethod
+    def prices_fluctuation_per_day(days_limit: int = 90) -> List:
+        now = timezone.now()
+        return (
+            RentApartment.objects.exclude(last_active_parse_time=None)
+            .annotate_room_count()
+            .annotate_import_day()
+            .filter(last_active_parse_time__gte=now - timedelta(days=days_limit))
+            .annotate(
+                average_price=models.Window(
+                    expression=models.Avg("price_USD"),
+                    partition_by=[models.F("import_day"), models.F("room_count")],
+                )
+            )
+            .values("import_day", "room_count", "average_price")
+            .distinct("import_day", "room_count")
         )

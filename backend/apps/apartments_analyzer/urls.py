@@ -5,6 +5,7 @@ from .api.views import (
     ApartmentsListAPIView,
     ApartmentsStatsAPIView,
     PriceFluctuationsAPIView,
+    DailyPriceFluctuationsAPIView,
 )
 
 
@@ -18,5 +19,10 @@ urlpatterns = [
         "stats/fluctuations/",
         PriceFluctuationsAPIView.as_view(),
         name="price-fluctuations",
+    ),
+    path(
+        "stats/fluctuations/daily/",
+        DailyPriceFluctuationsAPIView.as_view(),
+        name="daily-price-fluctuations",
     ),
 ]

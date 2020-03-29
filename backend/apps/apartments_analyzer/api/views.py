@@ -1,4 +1,5 @@
 import collections
+from typing import Tuple
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
@@ -18,6 +19,12 @@ from ..utils import construct_onliner_user_url
 
 
 AGENT_COUNT_THRESHOLD = 2
+
+
+def data_representation_as_tuple(date_representation: str) -> Tuple:
+    return tuple(
+        (int(date_part) for date_part in date_representation.split("-"))
+    )
 
 
 class ApartmentsListAPIView(ListAPIView):
@@ -62,18 +69,52 @@ class PriceFluctuationsAPIView(APIView):
            ...
         ]
         """
-        months = collections.defaultdict(lambda: {"rooms": {}})
+        data = collections.defaultdict(lambda: {"rooms": {}})
         for item in fluctuation_data:
-            months[item["import_month"]]["rooms"][item["room_count"]] = item[
+            data[item["import_month"]]["rooms"][item["room_count"]] = item[
                 "average_price"
             ]
-        return [[item, value] for item, value in months.items()]
+        return [[item, value] for item, value in data.items()]
 
     @method_decorator(cache_page(60 * 60 * 10))
     def get(self, *args, **kwargs):
         return Response(
             self.as_response(
                 ApartmentsStatisticsAggregator.prices_fluctuation_per_month()
+            )
+        )
+
+
+class DailyPriceFluctuationsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    def as_response(self, fluctuation_data):
+        """
+        The stats are also subdivided for the number of rooms
+        as the metric that has the most effect on the price.
+
+        Sample response:
+        [
+           ['2019-08', {'rooms': {'1': 100.0]}}],
+           ...
+        ]
+        """
+        data = collections.defaultdict(lambda: {"rooms": {}})
+
+        for item in fluctuation_data:
+            data[item["import_day"]]["rooms"][item["room_count"]] = item[
+                "average_price"
+            ]
+        return [
+            [item, value] for item, value in
+            sorted(data.items(), key=lambda item: data_representation_as_tuple(item[0]))
+        ]
+
+    @method_decorator(cache_page(60 * 60 * 10))
+    def get(self, *args, **kwargs):
+        return Response(
+            self.as_response(
+                ApartmentsStatisticsAggregator.prices_fluctuation_per_day()
             )
         )
 

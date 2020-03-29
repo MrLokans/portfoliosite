@@ -5,6 +5,7 @@ import logging
 import operator
 from typing import Iterable, Optional
 
+from django.db.models import functions
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
@@ -89,6 +90,28 @@ class ApartmentsQueryset(models.QuerySet):
             )
         )
 
+    def annotate_import_month(self):
+        return self.annotate(
+            import_month=functions.Concat(
+                functions.ExtractYear("last_active_parse_time"),
+                models.Value("-"),
+                functions.ExtractMonth("last_active_parse_time"),
+                output_field=models.CharField(),
+            )
+        )
+
+    def annotate_import_day(self):
+        return (
+            self.annotate_import_month()
+                .annotate(
+                    import_day=functions.Concat(
+                        F('import_month'),
+                        models.Value("-"),
+                        functions.ExtractDay("last_active_parse_time"),
+                        output_field=models.CharField(),
+                    )
+        ))
+
 
 class ActiveInactiveManager(models.Manager):
     def get_queryset(self):
@@ -155,6 +178,12 @@ class ActiveInactiveManager(models.Manager):
         return self.get_queryset().exclude_previous_search_results(
             previously_parsed_urls
         )
+
+    def annotate_import_month(self):
+        return self.get_queryset().annotate_import_month()
+
+    def annotate_import_day(self):
+        return self.get_queryset().annotate_import_day()
 
 
 class BaseApartmentBulletin(models.Model):
