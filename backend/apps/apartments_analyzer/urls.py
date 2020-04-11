@@ -5,7 +5,7 @@ from .api.views import (
     ApartmentsListAPIView,
     ApartmentsStatsAPIView,
     PriceFluctuationsAPIView,
-    DailyPriceFluctuationsAPIView,
+    DailyPriceFluctuationsAPIView, SearchAreasView,
 )
 
 
@@ -13,6 +13,7 @@ app_name = "apartments_analyzer"
 
 urlpatterns = [
     path("agents/<int:user_id>/", AgentCheckView.as_view(), name="agent-check"),
+    path("search-areas/<int:contact_id>/", SearchAreasView.as_view(), name="search-regions"),
     path("", ApartmentsListAPIView.as_view(), name="apartments-list"),
     path("stats/", ApartmentsStatsAPIView.as_view(), name="apartments-stats"),
     path(

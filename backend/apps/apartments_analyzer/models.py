@@ -427,3 +427,7 @@ class CityRegion(TimeTrackable):
 
     def __str__(self):
         return f"{self.region_name}"
+
+
+class PrecalculatedApartmentStats(TimeTrackable):
+    statistics = JSONField()

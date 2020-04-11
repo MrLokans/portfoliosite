@@ -29,6 +29,7 @@ PREREQUSITE_APPS = [
     "import_export",
     "pagedown",
     "rest_framework",
+    "rest_framework_gis",
     "corsheaders",
     "generic_relations",
     "django_json_widget",

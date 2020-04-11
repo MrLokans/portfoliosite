@@ -1,9 +1,13 @@
 import datetime
+from collections import defaultdict
+
 import itertools
 import json
 import logging
 import os
 from typing import Dict, List, Set, Tuple, Iterable
+
+import pandas as pd
 
 from rest_framework.exceptions import ValidationError
 from tqdm import tqdm
@@ -13,9 +17,68 @@ from apps.apartments_analyzer.services.subway_distance_calculator import (
     ApartmentDistanceEnricher,
 )
 from .api.serializers import RentApartmentSerializer, SoldApartmentSerializer
-from .models import RentApartment, ApartmentScrapingResults, SoldApartments
+from .models import RentApartment, ApartmentScrapingResults, SoldApartments, PrecalculatedApartmentStats
 
 RENTED_SUFFIX, SOLD_SUFFIX = "/ak/", "/pk/"
+
+
+def q25(x):
+    return x.quantile(0.25)
+
+
+def q50(x):
+    return x.quantile(0.5)
+
+
+def q90(x):
+    return x.quantile(0.9)
+
+
+def q99(x):
+    return x.quantile(0.99)
+
+
+class StatisticsAggregator:
+
+    SOLD_AGGREGATES = {
+        'price_USD': ['mean', q25, q50, q90, q99],
+        'total_area': ['mean', q25, q50, q90, q99],
+        'living_area': ['mean', q25, q50, q90, q99],
+    }
+    RENT_AGGREGATES = {
+        'price_USD': ['mean', q25, q50, q90, q99],
+    }
+
+    def __init__(self, filename):
+        self.dataframe = pd.read_json(filename)
+        self.prepare_dataframe()
+
+    def prepare_dataframe(self):
+        for money_field in ('price_USD', 'price_BYN'):
+            self.dataframe[money_field] = self.dataframe[money_field].str.replace(" ", "")
+            self.dataframe[money_field] = self.dataframe[money_field].astype(float)
+
+    def reshaped_aggregates(self, aggregates):
+        # {('price_USD', 'mean'): {1: 64771.463558765594, 2: 85659.79591836735}}
+        # -> {1: {'price_USD': {'mean': 64771.463558765594}}}
+        as_dict = aggregates.to_dict()
+        new_aggregate = defaultdict(
+            lambda: defaultdict(lambda: {})
+        )
+        for (second_level, third_level), room_values in as_dict.items():
+            for root_key, final_value in room_values.items():
+                new_aggregate[root_key][second_level][third_level] = final_value
+        return new_aggregate
+
+    def calculate_aggregates(self) -> dict:
+        rent = self.dataframe[self.dataframe.origin_url.str.contains('/ak/')]
+        sold = self.dataframe[self.dataframe.origin_url.str.contains('/pk/')]
+        rent_stats = rent.groupby('room_count').agg(self.RENT_AGGREGATES)
+        sold_stats = sold.groupby('room_count').agg(self.SOLD_AGGREGATES)
+        return {
+            'sold': self.reshaped_aggregates(sold_stats),
+            'rent': self.reshaped_aggregates(rent_stats),
+        }
 
 
 class ApartmentDataImporter:
@@ -62,6 +125,7 @@ class ApartmentDataImporter:
         with open(filename) as fd:
             json_items = json.load(fd)
         self.load_from_serialized_values(json_items)
+        self.save_stat_aggregates(filename)
 
     def load_from_serialized_values(self, items: List[Dict]):
         existing_urls = self._get_existing_apartment_urls()
@@ -73,6 +137,10 @@ class ApartmentDataImporter:
         apartments_to_update = (i for i in items if i["origin_url"] in updated_urls)
         self._progress_notifier = tqdm(total=len(new_urls) + len(updated_urls))
         self.save_apartments_data(new_apartments, apartments_to_update, inactive_urls)
+
+    def save_stat_aggregates(self, filename):
+        aggregates = StatisticsAggregator(filename).calculate_aggregates()
+        PrecalculatedApartmentStats.objects.create(statistics=aggregates)
 
     def report_run_statistics(self):
         self.logger.info(self._run_stats)
