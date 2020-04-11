@@ -45,7 +45,7 @@ DISTANCE_TEMPLATE = """
 
 class BaseApartmentAdmin(OSMGeoAdmin):
 
-    readonly_fields = ("bulletin_images", "subway_distances_list")
+    readonly_fields = ("bulletin_images", "subway_distances_list", "total_rooms")
     list_display = (
         "bullettin_url",
         "address",
@@ -57,6 +57,7 @@ class BaseApartmentAdmin(OSMGeoAdmin):
         "created_at",
         "updated_at",
         "images_count",
+        "total_rooms",
     )
     search_fields = ("address", "price_USD")
 
