@@ -3,6 +3,7 @@ import decimal
 import functools
 import logging
 import operator
+import uuid
 from typing import Iterable, Optional
 
 from django.db.models import functions
@@ -418,6 +419,7 @@ class CityRegion(TimeTrackable):
         max_length=120, unique=True, db_index=True, primary_key=True
     )
     polygon = gis_models.MultiPolygonField(geography=True)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4)
 
     class Meta:
         verbose_name_plural = "City Regions"
