@@ -308,6 +308,7 @@ class AreaOfInterest(gis_models.Model):
 
     name = models.CharField(max_length=50)
     poly = gis_models.PolygonField(geography=False)
+    uuid = models.UUIDField(unique=True, default=uuid.uuid4)
 
     class Meta:
         ordering = ("name",)
