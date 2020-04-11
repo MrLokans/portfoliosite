@@ -44,6 +44,7 @@ class BaseApartmentSerializer(serializers.ModelSerializer):
             x=float(longitude), y=float(latitude), srid=4326
         )
         validated_data["likely_agent"] = not self.initial_data["is_owner"]
+        validated_data["total_rooms"] = self.initial_data.get("room_count", None)
         return super().create(validated_data)
 
     @classmethod

@@ -229,6 +229,8 @@ class BaseApartmentBulletin(models.Model):
 
     likely_agent = models.BooleanField(null=True, blank=True)
 
+    total_rooms = models.IntegerField(null=True)
+
     def __str__(self):
         return "Apartment(bullettin_url={}, price_USD={})".format(
             self.bullettin_url, self.price_USD
