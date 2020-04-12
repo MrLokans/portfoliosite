@@ -17,13 +17,13 @@ from .models import (
     RentApartment,
     ApartmentScrapingResults,
     SoldApartments,
-    SUBWAY_DISTANCES_FIELD,
     AreaOfInterest,
     UserSearchContact,
     UserSearch,
     SearchResults,
     CityRegion,
 )
+from .constants import SUBWAY_DISTANCES_FIELD
 
 
 class ApartmentsResource(resources.ModelResource):

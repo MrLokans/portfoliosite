@@ -1,28 +1,21 @@
 import datetime
 import decimal
-import functools
 import logging
-import operator
 import uuid
 from typing import Iterable, Optional
 
-from django.db.models import functions
 from django.db import models
 from django.contrib.gis.db import models as gis_models
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.db.models import Q, F, UniqueConstraint, When, Value, Case
-from django.utils import timezone
+from django.db.models import F, UniqueConstraint
 
-from apps.apartments_analyzer.managers import SavedSearchManager
 from apps.core.models_common import TimeTrackable
 from .enums import BulletinStatusEnum
-from .querysets import PrecalculatedStatsQuerySet
+from .managers import SavedSearchManager
+from .querysets import PrecalculatedStatsQuerySet, ApartmentsQueryset
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
-
-SUBWAY_DISTANCES_FIELD = "distances"
 
 
 class ApartmentType:
@@ -33,86 +26,6 @@ class ApartmentType:
 class ContactType:
     EMAIL = "E"
     TELEGRAM = "T"
-
-
-class ApartmentsQueryset(models.QuerySet):
-
-    _ROOM_ONLY_COUNT = 0
-    _ROOM_TYPE_COUNT_MAPPING = {
-        "Комната": _ROOM_ONLY_COUNT,
-        "1-комнатная квартира": 1,
-        "2-комнатная квартира": 2,
-        "3-комнатная квартира": 3,
-        "4-комнатная квартира": 4,
-        "5-комнатная квартира": 5,
-        "6-комнатная квартира": 6,
-        "7-комнатная квартира": 7,
-        "8-комнатная квартира": 8,
-    }
-    _UNKNOWN_ROOM_COUNT = -1
-
-    def with_non_filled_subway_distance(self):
-        return self.exclude(subway_distances__has_key=SUBWAY_DISTANCES_FIELD)
-
-    def active(self):
-        return self.filter(status=BulletinStatusEnum.ACTIVE.value)
-
-    def inactive(self):
-        return self.filter(status=BulletinStatusEnum.INACTIVE.value)
-
-    def in_price_range(self, from_: int, to_: int):
-        return self.filter(price_USD__gte=from_, price_USD__lte=to_)
-
-    def with_rooms_equal_or_more(self, room_count: int):
-        return self.filter(room_count__gte=room_count)
-
-    def newer_than(self, diff: datetime.timedelta):
-        now = timezone.now()
-        return self.filter(last_active_parse_time__gt=now - diff)
-
-    def in_areas(self, area_polygons):
-        search_by_areas_filter = functools.reduce(
-            operator.or_, [Q(location__within=poly) for poly in area_polygons]
-        )
-        return self.filter(search_by_areas_filter)
-
-    def exclude_previous_search_results(self, previously_parsed_urls):
-        return self.exclude(bullettin_url__in=previously_parsed_urls)
-
-    def annotate_room_count(self):
-        type_annotations = [
-            When(apartment_type=known_type, then=Value(associated_value))
-            for known_type, associated_value in self._ROOM_TYPE_COUNT_MAPPING.items()
-        ]
-        return self.annotate(
-            room_count=Case(
-                *type_annotations,
-                default=Value(self._UNKNOWN_ROOM_COUNT),
-                output_field=models.IntegerField(),
-            )
-        )
-
-    def annotate_import_month(self):
-        return self.annotate(
-            import_month=functions.Concat(
-                functions.ExtractYear("last_active_parse_time"),
-                models.Value("-"),
-                functions.ExtractMonth("last_active_parse_time"),
-                output_field=models.CharField(),
-            )
-        )
-
-    def annotate_import_day(self):
-        return (
-            self.annotate_import_month()
-                .annotate(
-                    import_day=functions.Concat(
-                        F('import_month'),
-                        models.Value("-"),
-                        functions.ExtractDay("last_active_parse_time"),
-                        output_field=models.CharField(),
-                    )
-        ))
 
 
 class ActiveInactiveManager(models.Manager):
@@ -151,41 +64,6 @@ class ActiveInactiveManager(models.Manager):
             status=BulletinStatusEnum.INACTIVE.value, updated_at=current_time
         )
         return number_updated
-
-    def with_non_filled_subway_distance(self):
-        return self.get_queryset().with_non_filled_subway_distance()
-
-    def active(self):
-        return self.get_queryset().active()
-
-    def inactive(self):
-        return self.get_queryset().inactive()
-
-    def newer_than(self, diff: datetime.timedelta):
-        return self.get_queryset().newer_than(diff)
-
-    def in_price_range(self, from_: int, to_: int):
-        return self.get_queryset().in_price_range(from_, to_)
-
-    def in_areas(self, area_polygons):
-        return self.get_queryset().in_areas(area_polygons)
-
-    def annotate_room_count(self):
-        return self.get_queryset().annotate_room_count()
-
-    def with_rooms_equal_or_more(self, room_count: int):
-        return self.get_queryset().with_rooms_equal_or_more(room_count)
-
-    def exclude_previous_search_results(self, previously_parsed_urls):
-        return self.get_queryset().exclude_previous_search_results(
-            previously_parsed_urls
-        )
-
-    def annotate_import_month(self):
-        return self.get_queryset().annotate_import_month()
-
-    def annotate_import_day(self):
-        return self.get_queryset().annotate_import_day()
 
 
 class BaseApartmentBulletin(models.Model):
@@ -250,7 +128,7 @@ class RentApartment(BaseApartmentBulletin, TimeTrackable):
     has_tv = models.BooleanField()
     has_washing_machine = models.BooleanField()
 
-    objects = ActiveInactiveManager()
+    objects = ActiveInactiveManager.from_queryset(ApartmentsQueryset)()
 
 
 class SoldApartments(BaseApartmentBulletin, TimeTrackable):
@@ -267,7 +145,7 @@ class SoldApartments(BaseApartmentBulletin, TimeTrackable):
     parking_details = models.TextField()
     ceiling_details = models.TextField(default="")
 
-    objects = ActiveInactiveManager()
+    objects = ActiveInactiveManager.from_queryset(ApartmentsQueryset)()
 
 
 class ApartmentScrapingResults(models.Model):
