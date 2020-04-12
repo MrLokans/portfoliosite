@@ -282,6 +282,8 @@ class UserSearch(TimeTrackable):
 
     def __str__(self):
         contact = self.main_contact
+        if not contact:
+            return "Search by unknown contact"
         identity = contact.description or contact.contact_identifier
         return f"Search by {identity} ({self.min_price}$ - {self.max_price}$)"
 

@@ -6,10 +6,10 @@ from tqdm import tqdm
 from vincenty import vincenty
 
 from apps.apartments_analyzer.models import (
-    SUBWAY_DISTANCES_FIELD,
     RentApartment,
     SoldApartments,
 )
+from apps.apartments_analyzer.constants import SUBWAY_DISTANCES_FIELD
 from apps.apartments_analyzer.services.subway_data import SUBWAY_DATA
 
 SubwayDistance = namedtuple("SubwayDistance", "name distance")

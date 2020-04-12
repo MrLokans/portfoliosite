@@ -4,6 +4,7 @@ from typing import Tuple, Optional
 
 from django.conf import settings as django_settings
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from telegram import ReplyKeyboardMarkup, Update
 
 from telegram.ext import (
@@ -15,7 +16,7 @@ from telegram.ext import (
     CallbackContext,
 )
 
-from apps.apartments_analyzer.models import ContactType, UserSearchContact, UserSearch
+from apps.apartments_analyzer.models import ContactType, UserSearchContact, UserSearch, ApartmentType
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -59,17 +60,19 @@ class TelegramSearchRepository:
             contacts__contact_identifier=contact_id,
         )
 
-    def get_or_create_for_user(self, contact_id: str) -> Tuple[bool, UserSearch]:
+    @transaction.atomic
+    def get_or_create_for_user(self, contact_id: str, search_type=ApartmentType.RENT) -> Tuple[bool, UserSearch]:
         existing_conversation, created = UserSearchContact.objects.get_or_create(
             contact_type=ContactType.TELEGRAM, contact_identifier=contact_id
         )
         existing_search = existing_conversation.get_existing_search()
         if not existing_search:
-            existing_search = UserSearch()
+            existing_search = UserSearch(apartment_type=search_type)
             existing_search.save()
             existing_search.contacts.add(existing_conversation)
         return created, existing_search
 
+    @transaction.atomic
     def update_search_price_range(
         self, contact_id: str, min_price: int, max_price: int
     ):
@@ -77,16 +80,20 @@ class TelegramSearchRepository:
             min_price=min_price, max_price=max_price,
         )
 
+    @transaction.atomic
     def update_min_room_count(self, contact_id: str, min_room_count: int):
         assert min_room_count >= 0
         self.__qs_for_contact_id(contact_id).update(min_rooms=min_room_count,)
 
+    @transaction.atomic
     def set_contact_description(self, contact_id, description: str):
         UserSearchContact.objects.filter(contact_identifier=contact_id).update(description=description)
 
+    @transaction.atomic
     def enable_for_user(self, contact_id: str):
         self.__qs_for_contact_id(contact_id).update(is_active=True)
 
+    @transaction.atomic
     def disable_for_user(self, contact_id: str):
         self.__qs_for_contact_id(contact_id).update(is_active=False)
 
@@ -143,7 +150,11 @@ class ApartmentReporterBot:
         is_created, search = self.repo.get_or_create_for_user(contact_id=user_id)
         if is_created:
             update.message.reply_text(
-                text="Добро пожаловать в помощник поиска жилья.",
+                text=(
+                    "Добро пожаловать в помощник поиска жилья. "
+                    "Введите интересующие вас значения и мы оповестим вас "
+                    "как только появятся подходящие квартиры."
+                ),
                 reply_markup=self.main_menu_for_contact(update.message.from_user.id),
             )
         else:
