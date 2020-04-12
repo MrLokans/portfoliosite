@@ -145,10 +145,6 @@ class SearchResultsAdmin(admin.ModelAdmin):
     pass
 
 
-class CityRegionAdmin(OSMGeoAdmin):
-    pass
-
-
 admin.site.register(AreaOfInterest, CityRegionAdmin)
 admin.site.register(UserSearchContact, UserSearchContactAdmin)
 admin.site.register(UserSearch, UserSearchAdmin)

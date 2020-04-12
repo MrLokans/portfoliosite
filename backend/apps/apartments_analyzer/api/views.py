@@ -4,7 +4,7 @@ from typing import Tuple
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import status, serializers
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -13,8 +13,8 @@ from rest_framework.views import APIView
 from apps.apartments_analyzer.services.stats_aggregator import (
     ApartmentsStatisticsAggregator,
 )
-from .serializers import RentApartmentSerializer
-from ..models import RentApartment, CityRegion, AreaOfInterest
+from .serializers import RentApartmentSerializer, LatestStatsSerializer
+from ..models import RentApartment, CityRegion, AreaOfInterest, PrecalculatedApartmentStats
 from ..utils import construct_onliner_user_url
 
 
@@ -53,6 +53,15 @@ class ApartmentsStatsAPIView(APIView):
             "by_weekday"
         ] = ApartmentsStatisticsAggregator.get_weekday_aggregated_stats()
         return Response(stats)
+
+
+class ApartmentsLatestStatsAPIView(RetrieveAPIView):
+    permission_classes = (AllowAny, )
+
+    serializer_class = LatestStatsSerializer
+
+    def get_object(self):
+        return PrecalculatedApartmentStats.objects.fetch_latest()
 
 
 class SearchAreaListSerializer(serializers.ModelSerializer):

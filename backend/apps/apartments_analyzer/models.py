@@ -16,6 +16,7 @@ from django.utils import timezone
 from apps.apartments_analyzer.managers import SavedSearchManager
 from apps.core.models_common import TimeTrackable
 from .enums import BulletinStatusEnum
+from .querysets import PrecalculatedStatsQuerySet
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -397,6 +398,14 @@ class UserSearch(TimeTrackable):
     def available_contacts(self):
         return self.contacts.filter(contact_type=ContactType.TELEGRAM)
 
+    @property
+    def main_contact(self):
+        return self.contacts.first()
+
+    def __str__(self):
+        contact = self.main_contact
+        identity = contact.description or contact.contact_identifier
+        return f"Search by {identity} ({self.min_price}$ - {self.max_price}$)"
 
 class SearchResults(TimeTrackable):
 
@@ -431,3 +440,5 @@ class CityRegion(TimeTrackable):
 
 class PrecalculatedApartmentStats(TimeTrackable):
     statistics = JSONField()
+
+    objects = PrecalculatedStatsQuerySet.as_manager()

@@ -134,3 +134,9 @@ class SoldApartmentSerializer(BaseApartmentSerializer):
         scrapy_data["price_USD"] = int(scrapy_data["price_USD"].replace(" ", ""))
         scrapy_data["price_BYN"] = scrapy_data["price_BYN"].replace(" ", "")
         return scrapy_data
+
+
+class LatestStatsSerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        return instance.statistics
