@@ -88,7 +88,6 @@ class ApartmentsStatisticsAggregator:
         """
         return (
             RentApartment.objects.exclude(last_active_parse_time=None)
-            .annotate_room_count()
             .annotate_import_month()
             .annotate(
                 average_price=models.Window(
@@ -96,8 +95,8 @@ class ApartmentsStatisticsAggregator:
                     partition_by=[models.F("import_month"), models.F("room_count")],
                 )
             )
-            .values("import_month", "room_count", "average_price")
-            .distinct("import_month", "room_count")
+            .values("import_month", "total_rooms", "average_price")
+            .distinct("import_month", "total_rooms")
         )
 
     @staticmethod
@@ -105,15 +104,14 @@ class ApartmentsStatisticsAggregator:
         now = timezone.now()
         return (
             RentApartment.objects.exclude(last_active_parse_time=None)
-            .annotate_room_count()
             .annotate_import_day()
             .filter(last_active_parse_time__gte=now - timedelta(days=days_limit))
             .annotate(
                 average_price=models.Window(
                     expression=models.Avg("price_USD"),
-                    partition_by=[models.F("import_day"), models.F("room_count")],
+                    partition_by=[models.F("import_day"), models.F("total_rooms")],
                 )
             )
-            .values("import_day", "room_count", "average_price")
-            .distinct("import_day", "room_count")
+            .values("import_day", "total_rooms", "average_price")
+            .distinct("import_day", "total_rooms")
         )

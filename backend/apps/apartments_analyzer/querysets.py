@@ -59,19 +59,6 @@ class ApartmentsQueryset(models.QuerySet):
     def exclude_previous_search_results(self, previously_parsed_urls):
         return self.exclude(bullettin_url__in=previously_parsed_urls)
 
-    def annotate_room_count(self):
-        type_annotations = [
-            When(apartment_type=known_type, then=Value(associated_value))
-            for known_type, associated_value in self._ROOM_TYPE_COUNT_MAPPING.items()
-        ]
-        return self.annotate(
-            room_count=Case(
-                *type_annotations,
-                default=Value(self._UNKNOWN_ROOM_COUNT),
-                output_field=models.IntegerField(),
-            )
-        )
-
     def annotate_import_month(self):
         return self.annotate(
             import_month=functions.Concat(

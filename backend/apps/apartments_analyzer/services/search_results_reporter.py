@@ -84,7 +84,6 @@ class SearchReporter:
         )
         qs = (
             model.objects.active()
-            .annotate_room_count()
             .newer_than(datetime.timedelta(days=1))
             .in_price_range(user_search.min_price, user_search.max_price)
             .in_areas(user_search.get_search_polygons())
