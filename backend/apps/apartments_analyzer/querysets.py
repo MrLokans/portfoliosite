@@ -44,7 +44,7 @@ class ApartmentsQueryset(models.QuerySet):
         return self.filter(price_USD__gte=from_, price_USD__lte=to_)
 
     def with_rooms_equal_or_more(self, room_count: int):
-        return self.filter(room_count__gte=room_count)
+        return self.filter(total_rooms__gte=room_count)
 
     def newer_than(self, diff: datetime.timedelta):
         now = timezone.now()

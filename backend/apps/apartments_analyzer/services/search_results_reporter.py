@@ -2,6 +2,7 @@ import datetime
 import logging
 
 import telegram
+from django.db import transaction
 
 from apps.apartments_analyzer.models import (
     UserSearch,
@@ -117,4 +118,22 @@ class SearchReporter:
         for contact_details in search.available_contacts():
             reporter = self.get_reporter(search, matching_apartments)
             if reporter.should_report():
-                reporter.report(contact_details.contact_identifier)
+                try:
+                    reporter.report(contact_details.contact_identifier)
+                except telegram.error.BadRequest as e:
+                    if getattr(e, 'message', '') == 'Chat not found':
+                        self.remove_broken_user_search(search)
+                        continue
+                    self.__log_error(e, search)
+                except Exception as e:
+                    self.__log_error(e, search)
+
+    @transaction.atomic
+    def remove_broken_user_search(self, search):
+        self.log.info(f"Removing user search {search}")
+        search.delete()
+
+    def __log_error(self, exception: Exception, search: UserSearch):
+        self.log.error(
+            f"Error reporting search results (details={search})", exc_info=exception
+        )
