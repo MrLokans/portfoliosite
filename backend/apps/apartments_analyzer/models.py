@@ -204,7 +204,6 @@ class UserSearchContact(TimeTrackable):
         (ContactType.EMAIL, "Email"),
         (ContactType.TELEGRAM, "Telegram messenger"),
     )
-
     contact_type = models.CharField(max_length=1, choices=CONTACT_TYPE_CHOICES)
     contact_identifier = models.CharField(max_length=120)
     description = models.CharField(max_length=MAX_DESCRIPTION_LENGTH, default="")
@@ -286,6 +285,7 @@ class UserSearch(TimeTrackable):
             return "Search by unknown contact"
         identity = contact.description or contact.contact_identifier
         return f"Search by {identity} ({self.min_price}$ - {self.max_price}$)"
+
 
 class SearchResults(TimeTrackable):
 

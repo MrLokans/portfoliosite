@@ -95,7 +95,7 @@ class PriceFluctuationsAPIView(APIView):
         """
         data = collections.defaultdict(lambda: {"rooms": {}})
         for item in fluctuation_data:
-            data[item["import_month"]]["rooms"][item["room_count"]] = item[
+            data[item["import_month"]]["rooms"][item["total_rooms"]] = item[
                 "average_price"
             ]
         return [[item, value] for item, value in data.items()]
@@ -126,7 +126,7 @@ class DailyPriceFluctuationsAPIView(APIView):
         data = collections.defaultdict(lambda: {"rooms": {}})
 
         for item in fluctuation_data:
-            data[item["import_day"]]["rooms"][item["room_count"]] = item[
+            data[item["import_day"]]["rooms"][item["total_rooms"]] = item[
                 "average_price"
             ]
         return [
