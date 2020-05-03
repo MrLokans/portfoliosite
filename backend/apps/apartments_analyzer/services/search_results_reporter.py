@@ -105,15 +105,17 @@ class SearchReporter:
             self.log.info("Processing %s", search)
             model = self.__model_type_map__[search.apartment_type]
             matching_apartments = self.find_matching_apartments(search, model=model)
-            self.report_search_results(search, matching_apartments)
-            SearchResults.objects.create(
-                search_filter=search,
-                search_filter_version=search.search_version,
-                reported_urls=[ap.bullettin_url for ap in matching_apartments],
-            )
+            failed = self.report_search_results(search, matching_apartments)
+            if not failed:
+                SearchResults.objects.create(
+                    search_filter=search,
+                    search_filter_version=search.search_version,
+                    reported_urls=[ap.bullettin_url for ap in matching_apartments],
+                )
 
-    def report_search_results(self, search: UserSearch, matching_apartments):
+    def report_search_results(self, search: UserSearch, matching_apartments) -> bool:
         """Send matching apartments to the user via available contact method."""
+        has_failed = False
         for contact_details in search.available_contacts():
             reporter = self.get_reporter(search, matching_apartments)
             if reporter.should_report():
@@ -124,12 +126,16 @@ class SearchReporter:
                         self.remove_broken_user_search(search)
                         continue
                     self.__log_error(e, search)
+                    has_failed = True
                 except Exception as e:
                     self.__log_error(e, search)
+                    has_failed = True
+        return has_failed
 
     @transaction.atomic
-    def remove_broken_user_search(self, search):
+    def remove_broken_user_search(self, search: UserSearch):
         self.log.info(f"Removing user search {search}")
+        SearchResults.objects.filter(search_filter=search).delete()
         search.delete()
 
     def __log_error(self, exception: Exception, search: UserSearch):

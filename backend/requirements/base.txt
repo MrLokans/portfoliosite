@@ -57,7 +57,7 @@ vincenty==0.1.4
 django-filter==2.2.0
 
 # Error reporting
-sentry-sdk==0.14.2
+sentry-sdk==0.14.3
 
 # GraphQL integration
 graphene==2.1.8
