@@ -60,6 +60,7 @@ PROJECT_APPS = [
     "apps.blog",
     "apps.books",
     "apps.spiders",
+    "apps.internal_users",
 ]
 
 
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.internal_users.middlewares.TelegramAuthMiddleware",
 ]
 
 

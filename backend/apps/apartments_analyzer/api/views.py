@@ -1,7 +1,10 @@
 import collections
 from typing import Tuple
 
+import jwt
+from django.conf import settings
 from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 from django.views.decorators.cache import cache_page
 from rest_framework import status, serializers
 from rest_framework.generics import ListAPIView, RetrieveAPIView
@@ -13,8 +16,11 @@ from rest_framework.views import APIView
 from apps.apartments_analyzer.services.stats_aggregator import (
     ApartmentsStatisticsAggregator,
 )
-from .serializers import RentApartmentSerializer, LatestStatsSerializer
-from ..models import RentApartment, CityRegion, AreaOfInterest, PrecalculatedApartmentStats
+from .serializers import RentApartmentSerializer, LatestStatsSerializer, StatsHistorySerializer
+from .. import entities
+from ..models import RentApartment, AreaOfInterest, PrecalculatedApartmentStats
+from ..permissions import TelegramAuthAccess
+from ..services.telegram_auth import TelegramUserService
 from ..utils import construct_onliner_user_url
 
 
@@ -64,6 +70,15 @@ class ApartmentsLatestStatsAPIView(RetrieveAPIView):
         return PrecalculatedApartmentStats.objects.fetch_latest()
 
 
+class ApartmentsStatsProgressAPIView(ListAPIView):
+    permission_classes = (AllowAny, )
+    pagination_class = None
+    serializer_class = StatsHistorySerializer
+
+    def get_queryset(self):
+        return PrecalculatedApartmentStats.objects.latest_per_day(days_before=60)
+
+
 class SearchAreaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = AreaOfInterest
@@ -72,11 +87,13 @@ class SearchAreaListSerializer(serializers.ModelSerializer):
 
 class SearchAreasView(ListAPIView):
 
-    permission_classes = (AllowAny, )
+    permission_classes = (TelegramAuthAccess, )
     serializer_class = SearchAreaListSerializer
+    service = TelegramUserService.from_settings(settings)
 
     def get_queryset(self):
-        return AreaOfInterest.objects.all()
+        search = self.service.get_search(self.request.telegram_user)
+        return search.areas_of_interest.all()
 
 
 class PriceFluctuationsAPIView(APIView):
@@ -165,3 +182,57 @@ class AgentCheckView(APIView):
             "posts": apartment_urls,
         }
         return Response(payload, status=status.HTTP_200_OK)
+
+
+class TelegramAuthUserView(APIView):
+
+    permission_classes = (AllowAny,)
+
+    @cached_property
+    def service(self):
+        return TelegramUserService(settings.TELEGRAM_ACCESS_TOKEN)
+
+    def authenticate_user(self, user_data: dict) -> models.TelegramUser:
+        telegram_id = int(user_data['id'])
+        get = user_data.get
+        first_name, last_name, username = get('first_name'), get('last_name'), get('username')
+        internal_user = self.service.get_or_create_internal_user(
+            entities.TelegramUserData(
+                id=telegram_id,
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+            )
+        )
+        return internal_user
+
+    def auth_token_for_user(self, user: models.TelegramUser) -> str:
+        return jwt.encode({
+            'telegram_id': user.telegram_id,
+            'user_id': user.pk,
+        }, settings.SECRET_KEY, algorithm='HS256')
+
+    def post(self, request, *args, **kwargs):
+        user_data = request.data.copy()
+        user_data.pop('format', '')
+        self.service.verify_telegram_payload(
+            user_data
+        )
+        user = self.authenticate_user(user_data=user_data)
+        return Response({
+            'id': user.pk,
+            'token': self.auth_token_for_user(user=user),
+            'username': user.username,
+        }, status=status.HTTP_200_OK)
+
+
+class TelegramTokenVerifyView(APIView):
+
+    permission_classes = (AllowAny, TelegramAuthAccess, )
+
+    def get(self, request, *args, **kwargs):
+        telegram_user = request.telegram_user
+        return Response({
+            'id': telegram_user.pk,
+            'username': telegram_user.username,
+        }, status=status.HTTP_200_OK)

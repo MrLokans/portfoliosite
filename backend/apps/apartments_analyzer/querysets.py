@@ -1,5 +1,6 @@
 import datetime
 import functools
+import itertools
 import operator
 
 from django.db import models
@@ -11,8 +12,28 @@ from apps.apartments_analyzer.constants import SUBWAY_DISTANCES_FIELD
 
 
 class PrecalculatedStatsQuerySet(models.QuerySet):
+
     def fetch_latest(self):
         return self.order_by('created_at').last()
+
+    def latest_per_day(self, days_before: int):
+        search_after = timezone.now() - datetime.timedelta(days=days_before)
+        dates_to_filter = (
+            d for d in self
+            .filter(created_at__gte=search_after)
+            .order_by('created_at')
+            .values_list('id', 'created_at')
+        )
+        dates_to_filter = itertools.groupby(
+            dates_to_filter,
+            key=lambda item: item[1].date()
+        )
+        ids = (
+            max(dates_partition, key=operator.itemgetter(1))[0]
+            for _, dates_partition
+            in dates_to_filter
+        )
+        return self.filter(id__in=ids)
 
 
 class ApartmentsQueryset(models.QuerySet):

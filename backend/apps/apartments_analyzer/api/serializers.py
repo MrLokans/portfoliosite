@@ -140,3 +140,12 @@ class LatestStatsSerializer(serializers.Serializer):
 
     def to_representation(self, instance):
         return instance.statistics
+
+
+class StatsHistorySerializer(serializers.Serializer):
+
+    def to_representation(self, instance):
+        return {
+            "created_at": instance.created_at,
+            **instance.statistics,
+        }
