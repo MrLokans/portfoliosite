@@ -3,34 +3,41 @@ from typing import Tuple
 
 import jwt
 from django.conf import settings
-from django.utils.decorators import method_decorator
-from django.utils.functional import cached_property
-from django.views.decorators.cache import cache_page
 from rest_framework import status, serializers
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.filters import SearchFilter, OrderingFilter
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from django.views.decorators.cache import cache_page
 
+from apps.internal_users import models
+from apps.apartments_analyzer import entities
+from apps.apartments_analyzer.utils import construct_onliner_user_url
+from apps.apartments_analyzer.models import (
+    RentApartment,
+    AreaOfInterest,
+    PrecalculatedApartmentStats,
+)
+from apps.apartments_analyzer.permissions import TelegramAuthAccess
+from apps.apartments_analyzer.api.serializers import (
+    LatestStatsSerializer,
+    StatsHistorySerializer,
+    RentApartmentSerializer,
+)
+from apps.apartments_analyzer.services.telegram_auth import TelegramUserService
 from apps.apartments_analyzer.services.stats_aggregator import (
     ApartmentsStatisticsAggregator,
 )
-from .serializers import RentApartmentSerializer, LatestStatsSerializer, StatsHistorySerializer
-from .. import entities
-from ..models import RentApartment, AreaOfInterest, PrecalculatedApartmentStats
-from ..permissions import TelegramAuthAccess
-from ..services.telegram_auth import TelegramUserService
-from ..utils import construct_onliner_user_url
 
+from django.utils.decorators import method_decorator
+from django.utils.functional import cached_property
 
 AGENT_COUNT_THRESHOLD = 2
 
 
 def data_representation_as_tuple(date_representation: str) -> Tuple:
-    return tuple(
-        (int(date_part) for date_part in date_representation.split("-"))
-    )
+    return tuple((int(date_part) for date_part in date_representation.split("-")))
 
 
 class ApartmentsListAPIView(ListAPIView):
@@ -62,7 +69,7 @@ class ApartmentsStatsAPIView(APIView):
 
 
 class ApartmentsLatestStatsAPIView(RetrieveAPIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     serializer_class = LatestStatsSerializer
 
@@ -71,7 +78,7 @@ class ApartmentsLatestStatsAPIView(RetrieveAPIView):
 
 
 class ApartmentsStatsProgressAPIView(ListAPIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     pagination_class = None
     serializer_class = StatsHistorySerializer
 
@@ -82,12 +89,16 @@ class ApartmentsStatsProgressAPIView(ListAPIView):
 class SearchAreaListSerializer(serializers.ModelSerializer):
     class Meta:
         model = AreaOfInterest
-        fields = ('uuid', 'poly', 'name', )
+        fields = (
+            "uuid",
+            "poly",
+            "name",
+        )
 
 
 class SearchAreasView(ListAPIView):
 
-    permission_classes = (TelegramAuthAccess, )
+    permission_classes = (TelegramAuthAccess,)
     serializer_class = SearchAreaListSerializer
     service = TelegramUserService.from_settings(settings)
 
@@ -147,8 +158,10 @@ class DailyPriceFluctuationsAPIView(APIView):
                 "average_price"
             ]
         return [
-            [item, value] for item, value in
-            sorted(data.items(), key=lambda item: data_representation_as_tuple(item[0]))
+            [item, value]
+            for item, value in sorted(
+                data.items(), key=lambda item: data_representation_as_tuple(item[0])
+            )
         ]
 
     @method_decorator(cache_page(60 * 60 * 10))
@@ -193,9 +206,13 @@ class TelegramAuthUserView(APIView):
         return TelegramUserService(settings.TELEGRAM_ACCESS_TOKEN)
 
     def authenticate_user(self, user_data: dict) -> models.TelegramUser:
-        telegram_id = int(user_data['id'])
+        telegram_id = int(user_data["id"])
         get = user_data.get
-        first_name, last_name, username = get('first_name'), get('last_name'), get('username')
+        first_name, last_name, username = (
+            get("first_name"),
+            get("last_name"),
+            get("username"),
+        )
         internal_user = self.service.get_or_create_internal_user(
             entities.TelegramUserData(
                 id=telegram_id,
@@ -207,32 +224,37 @@ class TelegramAuthUserView(APIView):
         return internal_user
 
     def auth_token_for_user(self, user: models.TelegramUser) -> str:
-        return jwt.encode({
-            'telegram_id': user.telegram_id,
-            'user_id': user.pk,
-        }, settings.SECRET_KEY, algorithm='HS256')
+        return jwt.encode(
+            {"telegram_id": user.telegram_id, "user_id": user.pk,},
+            settings.SECRET_KEY,
+            algorithm="HS256",
+        )
 
     def post(self, request, *args, **kwargs):
         user_data = request.data.copy()
-        user_data.pop('format', '')
-        self.service.verify_telegram_payload(
-            user_data
-        )
+        user_data.pop("format", "")
+        self.service.verify_telegram_payload(user_data)
         user = self.authenticate_user(user_data=user_data)
-        return Response({
-            'id': user.pk,
-            'token': self.auth_token_for_user(user=user),
-            'username': user.username,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "id": user.pk,
+                "token": self.auth_token_for_user(user=user),
+                "username": user.username,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class TelegramTokenVerifyView(APIView):
 
-    permission_classes = (AllowAny, TelegramAuthAccess, )
+    permission_classes = (
+        AllowAny,
+        TelegramAuthAccess,
+    )
 
     def get(self, request, *args, **kwargs):
         telegram_user = request.telegram_user
-        return Response({
-            'id': telegram_user.pk,
-            'username': telegram_user.username,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {"id": telegram_user.pk, "username": telegram_user.username,},
+            status=status.HTTP_200_OK,
+        )
