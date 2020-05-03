@@ -73,9 +73,9 @@ def create_directories():
 
 def copy_configuration_files():
     files_to_copy = (
-        'docker-compose.prod.yml',
-        'deployment/nginx/maintenance_off.html',
-        'deployment/manage.sh',
+        "docker-compose.prod.yml",
+        "deployment/nginx/maintenance_off.html",
+        "deployment/manage.sh",
     )
     with cd(DEPLOYMENT_DIR):
         for filename in files_to_copy:
@@ -111,7 +111,9 @@ def stop_previous_containers():
 def launch_containers():
     with cd(DEPLOYMENT_DIR):
         logger.info("Launching backend container")
-        sudo("docker-compose -f docker-compose.prod.yml up --build -d backend")
+        sudo(
+            "docker-compose -f docker-compose.prod.yml up --build -d backend apartment_notifier_bot"
+        )
 
 
 def copy_local_environment_settings():
@@ -176,6 +178,8 @@ def setup_seo():
 
 
 def pull_backend_image():
+    env.DOCKER_USERNAME = "deployer"
+    env.DOCKER_PASSWORD = "d2a9e55b49b7d52815145676afa6f728"
     # Check credentials in environment
     if "DOCKER_USERNAME" not in env and "DOCKER_PASSWORD" not in env:
         raise ValueError('"DOCKER_USERNAME" or "DOCKER_PASSWORD" env var is missing.')
@@ -282,9 +286,8 @@ def import_production_data_to_local_db():
         "apartments_analyzer.RentApartment",
         "apartments_analyzer.ApartmentScrapingResults",
     ]
-    command = (
-        "python3 manage.py dumpdata {models} > {output_file}"
-        .format(models=" ".join(models_to_export), output_file=exported_file)
+    command = "python3 manage.py dumpdata {models} > {output_file}".format(
+        models=" ".join(models_to_export), output_file=exported_file
     )
     container_id = _get_backend_container_id()
     _exec_docker_command(container_id, command)
@@ -292,9 +295,7 @@ def import_production_data_to_local_db():
     get(remote_path=exported_gz_file, local_path=exported_gz_file)
     local(f"gzip -d {exported_gz_file} || true")
     local("python manage.py remove_parsed_apartments")
-    local(
-        f"python manage.py loaddata {exported_file}"
-    )
+    local(f"python manage.py loaddata {exported_file}")
 
 
 def setup_periodic_jobs():
@@ -309,27 +310,38 @@ def setup_periodic_jobs():
         filename="deployment/crontab.template",
         destination=target_crontab_dir,
         context={
-            'APPLICATION_DIR': DEPLOYMENT_DIR,
-            'MANAGEMENT_SCRIPT_PATH': './deployment/manage.sh',
-            'LOG_DIR': '/var/log/cron',
+            "APPLICATION_DIR": DEPLOYMENT_DIR,
+            "MANAGEMENT_SCRIPT_PATH": "./deployment/manage.sh",
+            "LOG_DIR": "/var/log/cron",
         },
-        use_sudo=True, backup=False,
+        use_sudo=True,
+        backup=False,
     )
     upload_template(
         filename="deployment/logrotate.template",
         destination="/etc/logrotate.d/mrlokanslogs",
-        context={
-            'LOG_DIR': '/var/log/cron',
-        },
-        use_sudo=True, backup=False,
+        context={"LOG_DIR": "/var/log/cron",},
+        use_sudo=True,
+        backup=False,
     )
     sudo(f"crontab {target_crontab_dir}")
+
+
+def maintain_machine():
+    sudo("journalctl --vacuum-time=1d")
+
+
+def reload_compose_configs():
+    copy_configuration_files()
+    copy_local_environment_settings()
+    stop_previous_containers()
+    launch_containers()
 
 
 def deploy():
     launch_docker()
     create_directories()
-    backup_database()
+    # backup_database()
     copy_configuration_files()
     pull_backend_image()
     copy_local_environment_settings()
@@ -347,4 +359,23 @@ def deploy():
         maintenance_finished - maintenance_started,
     )
     setup_autostart()
+    check_site_availability()
+
+
+def quick_deploy():
+    copy_configuration_files()
+    pull_backend_image()
+    copy_local_environment_settings()
+    maintenance_started = time.monotonic()
+    enable_maintenance_page()
+    stop_previous_containers()
+    launch_containers()
+    setup_nginx()
+    disable_maintenance_page()
+    restart_nginx()
+    maintenance_finished = time.monotonic()
+    logger.info(
+        "Site was unavailable for %d seconds",
+        maintenance_finished - maintenance_started,
+    )
     check_site_availability()
