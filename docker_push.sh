@@ -13,8 +13,21 @@ IMAGE_VERSION="$(cat VERSION)-$(date +'%Y-%m-%d_%H-%M-%S')-$(git rev-parse --sho
 IMAGE_NAME=personal_site
 FULL_IMAGE_NAME=$DOCKER_REGISTRY_URL/$IMAGE_NAME:$IMAGE_VERSION
 LATEST_IMAGE_NAME=$DOCKER_REGISTRY_URL/$IMAGE_NAME:latest
+BUILD_DIR=deployment_build
 
 export DOCKER_BUILDKIT=1
+
+
+prepare_build_dir () {
+  git checkout-index -a -f --prefix=./$BUILD_DIR/
+  cp .deployment-env ./$BUILD_DIR
+  pushd $BUILD_DIR
+}
+
+
+clean_up () {
+  rm -rf $BUILD_DIR
+}
 
 
 use_base_image () {
@@ -41,6 +54,8 @@ login_to_registry () {
 }
 
 
+prepare_build_dir
+
 login_to_registry
 use_base_image
 
@@ -54,4 +69,5 @@ echo "Pushing images to the registry."
 docker push $FULL_IMAGE_NAME
 docker push $LATEST_IMAGE_NAME
 
-
+clean_up
+popd
