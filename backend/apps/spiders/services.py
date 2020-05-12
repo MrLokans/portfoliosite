@@ -16,10 +16,3 @@ class SpiderManagementService:
                 for config in bot.spiderconfiguration_set.all()
             ],
         }
-
-    def register_event(self, spider_name: str, event_data: dict):
-        bot = models.Spider.objects.get(name=spider_name)
-        event_kind = event_data.pop("kind")
-        models.SpiderEvent.objects.create(
-            associated_spider=bot, event_data=event_data, event_kind=event_kind
-        )

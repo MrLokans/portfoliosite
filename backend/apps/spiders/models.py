@@ -5,7 +5,8 @@ from django.db import models
 from django_better_admin_arrayfield.models.fields import ArrayField
 
 
-class SpiderEventKind(enum.Enum):
+@enum.unique
+class SpiderEventKind(enum.IntEnum):
     SPIDER_STARTED = 0
     SPIDER_FINISHED = 1
 
@@ -29,9 +30,9 @@ class SpiderConfiguration(models.Model):
 
 
 class SpiderEvent(models.Model):
-    associated_spider = models.ForeignKey(Spider, on_delete=models.DO_NOTHING)
+    associated_spider = models.ForeignKey(Spider, on_delete=models.CASCADE)
     event_kind = models.PositiveSmallIntegerField(
-        choices=[(tag, tag.value) for tag in SpiderEventKind]
+        choices=[(tag.value, tag.name) for tag in SpiderEventKind]
     )
     event_data = JSONField()
     received_at = models.DateTimeField(auto_now=True)

@@ -106,6 +106,10 @@ class SearchAreasView(ListAPIView):
         search = self.service.get_search(self.request.telegram_user)
         return search.areas_of_interest.all()
 
+    @method_decorator(cache_page(60 * 60 * 6))
+    def get(self, *args, **kwargs):
+        return super().get(*args, **kwargs)
+
 
 class PriceFluctuationsAPIView(APIView):
     permission_classes = (AllowAny,)

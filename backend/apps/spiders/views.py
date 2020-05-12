@@ -1,8 +1,9 @@
 from rest_framework import status, generics
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 
-from apps.spiders import services
+from apps.spiders import serializers, services
 
 
 class SpiderListView(generics.ListAPIView):
@@ -25,3 +26,9 @@ class SpiderConfigView(generics.RetrieveAPIView):
             data=self.service.get_config_for_spider(spider_name),
             status=status.HTTP_200_OK,
         )
+
+
+class SpiderEventsView(generics.CreateAPIView):
+
+    permission_classes = (AllowAny, )
+    serializer_class = serializers.SpiderEventSerializer
