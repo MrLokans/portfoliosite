@@ -1,7 +1,6 @@
 import pytest
 
-from apps.apartments_analyzer.management.commands.run_apartments_bot import TelegramSearchRepository
-
+from apps.apartments_analyzer.telegram_bot.repository import TelegramSearchRepository
 
 pytestmark = pytest.mark.django_db
 
