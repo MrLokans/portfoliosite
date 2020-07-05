@@ -102,16 +102,21 @@ class SearchReporter:
             is_active=True
         )
         for search in searches:
-            self.log.info("Processing %s", search)
-            model = self.__model_type_map__[search.apartment_type]
-            matching_apartments = self.find_matching_apartments(search, model=model)
-            failed = self.report_search_results(search, matching_apartments)
-            if not failed:
-                SearchResults.objects.create(
-                    search_filter=search,
-                    search_filter_version=search.search_version,
-                    reported_urls=[ap.bullettin_url for ap in matching_apartments],
-                )
+            self.process_user_search(search)
+
+    def process_user_search(self, search: UserSearch, report_limit: int = None):
+        self.log.info("Processing %s", search)
+        model = self.__model_type_map__[search.apartment_type]
+        matching_apartments = self.find_matching_apartments(search, model=model)
+        if report_limit:
+            matching_apartments = matching_apartments[:report_limit]
+        failed = self.report_search_results(search, matching_apartments)
+        if not failed:
+            SearchResults.objects.create(
+                search_filter=search,
+                search_filter_version=search.search_version,
+                reported_urls=[ap.bullettin_url for ap in matching_apartments],
+            )
 
     def report_search_results(self, search: UserSearch, matching_apartments) -> bool:
         """Send matching apartments to the user via available contact method."""

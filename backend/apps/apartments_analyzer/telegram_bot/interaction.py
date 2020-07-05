@@ -2,6 +2,7 @@ from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import CallbackContext, Updater, ConversationHandler, CommandHandler, MessageHandler, Filters
 
 from apps.apartments_analyzer.models import ContactType
+from apps.apartments_analyzer.tasks import send_apartments_to_new_user
 from apps.apartments_analyzer.telegram_bot.constants import MenuState, MenuTitle, END
 from apps.apartments_analyzer.telegram_bot.utils import user_contact_description_from_update
 from apps.apartments_analyzer.telegram_bot.repository import TelegramSearchRepository
@@ -66,6 +67,8 @@ class ApartmentReporterBot:
                 ),
                 reply_markup=self.main_menu_for_contact(update.message.from_user.id),
             )
+            # Report in a minute to make sure user is with us and gets some results instantly
+            send_apartments_to_new_user.send_with_options(args=(user_id,), delay=60_000)
         else:
             update.message.reply_text(
                 text=f"Знакомые лица, ваши параметры:\n{search.as_displayed_to_user()}",
