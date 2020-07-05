@@ -47,6 +47,12 @@ REGISTRY_CERTS_DIR = "/etc/letsencrypt/live/registry.mrlokans.com"
 HEALTHCHECK_URL = "https://mrlokans.com/api/health/"
 AWAIT_TIMEOUT_IN_SEC, PAUSE_TIMEOUT = 60, 5
 
+SERVICES_TO_RUN = (
+    "backend",
+    "apartment_notifier_bot",
+    "async_tasks_worker",
+)
+
 
 env.hosts = ["mrlokans@188.166.109.166"]
 env.revision = getattr(env, "revision", "develop")
@@ -112,7 +118,7 @@ def launch_containers():
     with cd(DEPLOYMENT_DIR):
         logger.info("Launching backend container")
         sudo(
-            "docker-compose -f docker-compose.prod.yml up --build -d backend apartment_notifier_bot"
+            f"docker-compose -f docker-compose.prod.yml up --build -d {' '.join(SERVICES_TO_RUN)}"
         )
 
 
