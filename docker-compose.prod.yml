@@ -60,3 +60,19 @@ services:
     depends_on:
       - database
       - redis
+
+  # Django back-end
+  async_tasks_worker:
+    restart: unless-stopped
+    image: registry.mrlokans.com:5000/personal_site:${BACKEND_VERSION:-latest}
+    command: --async_tasks
+    env_file:
+      - ./.env
+    environment:
+      - DATABASE_HOST=database
+    working_dir: /app/
+    networks:
+      - production_network
+    depends_on:
+      - database
+      - redis

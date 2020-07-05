@@ -17,6 +17,9 @@ if [[ $@ == **prod** ]]; then
 elif [[ $@ == **bot** ]]; then
     echo "Running telegram bot."
     python manage.py run_apartments_bot
+elif [[ $@ == **async_tasks** ]]; then
+    echo "Running async tasks worker."
+    python manage.py rundramatiq --processes 2 --threads 6
 else
     echo "Web-application in dev configuration"
     gunicorn --log-config deployment/gunicorn.conf -w $GUNICORN_WORKERS -b :$GUNICORN_PORT apps.core.wsgi:application --reload -u $BACKEND_USER
