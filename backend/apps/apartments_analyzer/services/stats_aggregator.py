@@ -92,7 +92,7 @@ class ApartmentsStatisticsAggregator:
             .annotate(
                 average_price=models.Window(
                     expression=models.Avg("price_USD"),
-                    partition_by=[models.F("import_month"), models.F("room_count")],
+                    partition_by=[models.F("import_month"), models.F("total_rooms")],
                 )
             )
             .values("import_month", "total_rooms", "average_price")
