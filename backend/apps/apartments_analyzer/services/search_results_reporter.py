@@ -102,7 +102,10 @@ class SearchReporter:
             is_active=True
         )
         for search in searches:
-            self.process_user_search(search)
+            try:
+                self.process_user_search(search)
+            except Exception as exc:
+                self.__log_error(exc, search)
 
     def process_user_search(self, search: UserSearch, report_limit: int = None):
         self.log.info("Processing %s", search)

@@ -284,7 +284,7 @@ class UserSearch(TimeTrackable):
         if not contact:
             return "Search by unknown contact"
         identity = contact.description or contact.contact_identifier
-        return f"Search by {identity} ({self.min_price}$ - {self.max_price}$)"
+        return f"Search by {identity} ({self.min_price}$ - {self.max_price}$) - {len(self.get_search_polygons())} regions"
 
 
 class SearchResults(TimeTrackable):
