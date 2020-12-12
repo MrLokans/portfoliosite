@@ -22,7 +22,11 @@ urlpatterns = [
         views.DailyPriceFluctuationsAPIView.as_view(),
         name="daily-price-fluctuations",
     ),
-
+    path(
+        "stats/fluctuations/square-meter-price/monthly/",
+        views.SquareMeterMonthlyPriceFluctuationsAPIView.as_view(),
+        name="monthly-square-meter-price-fluctuations",
+    ),
     # TODO: find a better place
     path(
         "telegram-login/",

@@ -55,7 +55,7 @@ class ApartmentsStatisticsAggregator:
         return [[key, value] for key, value in qs.items()]
 
     @staticmethod
-    def get_average_square_meter_price_in_usd() -> List[Tuple[str, float]]:
+    def get_average_square_meter_price_in_usd() -> List[Tuple[str, int, float]]:
         qs = (
             SoldApartments.objects.exclude(last_active_parse_time=None)
             .annotate_import_month()
@@ -69,14 +69,14 @@ class ApartmentsStatisticsAggregator:
                 / models.F("average_square")
             )
             .values(
-                "average_price",
-                "average_square",
-                "average_square_meter_price",
                 "import_month",
+                "total_rooms",
+                "average_square_meter_price",
             )
+            .order_by("import_month", "total_rooms")
         )
         return [
-            (item["import_month"], item["average_square_meter_price"]) for item in qs
+            (item["import_month"], item["total_rooms"], item["average_square_meter_price"]) for item in qs
         ]
 
     @staticmethod

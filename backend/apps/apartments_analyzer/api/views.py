@@ -60,9 +60,6 @@ class ApartmentsStatsAPIView(APIView):
         stats = {}
         stats["by_hour"] = ApartmentsStatisticsAggregator.get_hour_aggregated_stats()
         stats[
-            "average_square_meter_price"
-        ] = ApartmentsStatisticsAggregator.get_average_square_meter_price_in_usd()
-        stats[
             "by_weekday"
         ] = ApartmentsStatisticsAggregator.get_weekday_aggregated_stats()
         return Response(stats)
@@ -139,6 +136,23 @@ class PriceFluctuationsAPIView(APIView):
                 ApartmentsStatisticsAggregator.prices_fluctuation_per_month()
             )
         )
+
+
+class SquareMeterMonthlyPriceFluctuationsAPIView(APIView):
+    permission_classes = (AllowAny,)
+
+    @method_decorator(cache_page(60 * 60 * 10))
+    def get(self, *args, **kwargs):
+        data = collections.defaultdict(lambda: {"rooms": {}})
+        fluctuations = ApartmentsStatisticsAggregator.get_average_square_meter_price_in_usd()
+        for item in fluctuations:
+            data[item[0]]["rooms"][item[1]] = item[2]
+        return Response([
+            [item, value]
+            for item, value in sorted(
+                data.items(), key=lambda item: data_representation_as_tuple(item[0])
+            )
+        ])
 
 
 class DailyPriceFluctuationsAPIView(APIView):

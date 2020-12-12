@@ -6,6 +6,7 @@
     <canvas id="apartmentsByWeekDay" width="110" height="80"></canvas>
     <canvas id="apartmentsByDayHour" width="110" height="80"></canvas>
     <canvas id="rentedApartmentPriceFluctuations" width="110" height="80"></canvas>
+    <canvas id="soldSquareMeterPriceFluctuations" width="110" height="80"></canvas>
 
 {% endblock %}
 
@@ -51,48 +52,22 @@
 
         });
 
-        $.get('/api/apartments/stats/', (resp) => {
-            _.each(plotData, elem => {
-                var displayedData = resp[elem.responseField];
-                return new Chart(document.getElementById(elem.selector), {
-                    type: 'bar',
-                    data: {
-                        labels: _.map(displayedData, el => el[0]),
-                        datasets: [{
-                            label: elem.label,
-                            data: _.map(displayedData, el => el[1]),
-                            backgroundColor: elem.color
-                        }]
-                    }
-                })
+
+        $.get('/api/apartments/stats/fluctuations/square-meter-price/monthly/', resp => {
+            return new Chart(document.getElementById('soldSquareMeterPriceFluctuations'), {
+                type: 'line',
+                data: {
+                    labels: _.map(resp, item => item[0]),
+                    datasets: _.map(knownApartmentTypes, (value, key) => {
+                        return {
+                            label: value,
+                            data: _.map(resp, item => item[1]['rooms'][key]),
+                        }
+                    })
+                }
             })
-            //
-            // var weekdayStats = resp.by_weekday;
-            // var hourStats = resp.by_hour;
-            //
-            // var chartByWeekDay = new Chart(document.getElementById("apartmentsByWeekDay"), {
-            //     type: 'bar',
-            //     data: {
-            //         labels: _.map(weekdayStats, elem => elem[0]),
-            //         datasets: [{
-            //             label: 'Apartments scraped by week day',
-            //             data: _.map(weekdayStats, elem => elem[1]),
-            //             backgroundColor: 'rgba(125, 200, 212, 255)',
-            //             borderColor: ['rgba(0, 0, 125, 255)']
-            //         }]
-            //     }
-            // });
-            //
-            // var chartByHour = new Chart(document.getElementById("apartmentsByDayHour"), {
-            //     type: 'bar',
-            //     data: {
-            //         labels: _.map(hourStats, elem => elem[0]),
-            //         datasets: [{
-            //             label: 'Apartments scraped by hour',
-            //             data: _.map(hourStats, elem => elem[1]),
-            //         }]
-            //     }
-            // });
+
         });
+
     </script>
 {% endblock %}
