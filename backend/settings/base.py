@@ -154,7 +154,15 @@ SITE_ID = 1
 DROPBOX_ACCESS_TOKEN = os.environ.get("DROPBOX_ACCESS_TOKEN")
 
 
-CORS_ORIGIN_WHITELIST = ("http://localhost:8100", "http://127.0.0.1:8000")
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:8100",
+    "http://localhost:3000",
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:3000",
+    "http://mrlokans.local",
+)
+
+
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
@@ -185,7 +193,7 @@ DRAMATIQ_RESULT_BACKEND = {
 DRAMATIQ_TASKS_DATABASE = "default"
 
 
-WAGTAIL_SITE_NAME = "mrlokans.com"
+WAGTAIL_SITE_NAME = "mrlokans.dev"
 
 GRAPHENE = {
     "SCHEMA": "core.schema.schema",

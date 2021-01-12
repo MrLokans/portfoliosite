@@ -46,6 +46,11 @@ Run the whole stack
 docker-compose up --build
 ```
 
+Run the proxy to access the front-end and the back-end
+```bash
+./run_proxy.sh
+```
+
 Commands
 ---
 Running parser and filling in initial database

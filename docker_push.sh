@@ -6,7 +6,7 @@
 set -e
 
 DOCKERFILE_DIR=.
-DOCKER_REGISTRY_URL=registry.mrlokans.com:5000
+DOCKER_REGISTRY_URL=registry.mrlokans.dev:5000
 
 # Union of version, current date and git revision
 IMAGE_VERSION="$(cat VERSION)-$(date +'%Y-%m-%d_%H-%M-%S')-$(git rev-parse --short --verify HEAD)"
@@ -32,10 +32,10 @@ clean_up () {
 
 use_base_image () {
 
-  docker pull registry.mrlokans.com:5000/personal_site_base:latest || true
+  docker pull $LATEST_IMAGE_NAME || true
 
-  docker build --tag registry.mrlokans.com:5000/personal_site_base:latest -f Dockerfile.base .
-  docker push registry.mrlokans.com:5000/personal_site_base:latest
+  docker build --tag $LATEST_IMAGE_NAME -f Dockerfile.base .
+  docker push $LATEST_IMAGE_NAME
 }
 
 

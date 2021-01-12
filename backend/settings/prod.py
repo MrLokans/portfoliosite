@@ -5,7 +5,8 @@ from .base import *  # noqa
 
 DEBUG = False
 ALLOWED_HOSTS = (
-    ".mrlokans.com",
+    ".mrlokans.dev",
+    "mrlokans.dev",
     # Health checks
     "http://localhost:8000",
 )
