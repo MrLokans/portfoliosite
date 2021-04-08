@@ -1,4 +1,4 @@
-Django==3.0.4
+Django==3.0.14
 
 # API building
 djangorestframework==3.11.0
