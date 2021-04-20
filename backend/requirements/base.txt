@@ -49,7 +49,7 @@ python-telegram-bot==12.4.1
 django-cors-headers==3.2.1
 
 # CMS capatibilities
-wagtail==2.8
+wagtail==2.11.6
 
 # Distance between points
 vincenty==0.1.4
